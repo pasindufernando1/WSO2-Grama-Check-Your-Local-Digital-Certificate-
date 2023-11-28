@@ -37,6 +37,9 @@ version = "1.5.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
 ]
+modules = [
+	{org = "ballerina", packageName = "constraint", moduleName = "constraint"}
+]
 
 [[package]]
 org = "ballerina"
@@ -379,6 +382,7 @@ org = "ramith_rodrigo"
 name = "identity_check_service"
 version = "0.1.0"
 dependencies = [
+	{org = "ballerina", name = "constraint"},
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
@@ -393,6 +397,7 @@ dependencies = [
 ]
 modules = [
 	{org = "ramith_rodrigo", packageName = "identity_check_service", moduleName = "identity_check_service"},
+	{org = "ramith_rodrigo", packageName = "identity_check_service", moduleName = "identity_check_service.DTO"},
 	{org = "ramith_rodrigo", packageName = "identity_check_service", moduleName = "identity_check_service.http.responses"}
 ]
 
