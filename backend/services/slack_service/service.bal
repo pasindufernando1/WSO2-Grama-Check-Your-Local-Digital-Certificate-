@@ -33,7 +33,7 @@ slack:ConnectionConfig slackConfig = {
 type newChannelParams record {|
     string channelName;
     boolean isPrivate;
-    string slackEmail;
+    string username;
 |};
 
 
@@ -70,12 +70,12 @@ service /api/v1/slack\-service on new http:Listener(9090) {
     }
 
     #A resource function to create a new channel for an user (Single user channel)
-    # + channelParams - channel name, isPrivate and slackEmail of the user
+    # + channelParams - contains the channel name, and the username (because the ballerina library needs the username to invite the user to the channel)
     # + return - returns the response from the slack service
     
     resource function post createchannel(newChannelParams channelParams) returns BadRequestError | InternalServerError | http:Created | error {
-        //first lookup the user by email
-        slack:User | error? userResponse = self.slackClient->lookupUserByEmail(channelParams.slackEmail);
+        //first lookup the user by username
+        slack:User | error? userResponse = self.slackClient->getUserInfoByUsername(channelParams.username);
         if (userResponse is error) {
             BadRequestError e = {
                 body: {
@@ -87,7 +87,7 @@ service /api/v1/slack\-service on new http:Listener(9090) {
         }
 
 
-        slack:Channel | error response = self.slackClient->createConversation(channelParams.channelName);
+        slack:Channel | error response = self.slackClient->createConversation(channelParams.channelName, channelParams.isPrivate); //usually cannot invite users to private channels (found in testing)
         if (response is error) {
             InternalServerError e = {
                 body: {
@@ -101,9 +101,7 @@ service /api/v1/slack\-service on new http:Listener(9090) {
         //now invite the user to the channel
         slack:Channel channel = response;
 
-        string? userId = userResponse?.id;
-
-        if (userId is ()){
+        if (userResponse is ()){
             BadRequestError e = {
                 body: {
                     "message": "User not found"
@@ -112,9 +110,7 @@ service /api/v1/slack\-service on new http:Listener(9090) {
             return e;
         }
 
-        string[*] members = [userId];
-
-        slack:Channel | error inviteResponse = self.slackClient->inviteUsersToConversation(channel.name, members);
+        slack:Channel | error inviteResponse = self.slackClient->inviteUsersToConversation(channel.name, [channelParams.username]);
         if (inviteResponse is error) {
             InternalServerError e = {
                 body: {
