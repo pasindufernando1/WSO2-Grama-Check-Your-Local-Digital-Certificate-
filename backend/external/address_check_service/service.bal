@@ -22,7 +22,7 @@ service /api/v1 on new http:Listener(8080) {
         }
     }
 
-     resource function get address/'check (string nic,string line_01, string line_02, string line_03, string city) returns json {
+     resource function get addresscheck (string nic,string line_01, string line_02, string line_03, string city) returns json {
         AddressDetails | persist:Error address = self.db->/addressdetails/[nic];
         
 
