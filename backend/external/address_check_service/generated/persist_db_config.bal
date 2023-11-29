@@ -8,5 +8,4 @@ configurable string host = ?;
 configurable string user = ?;
 configurable string database = ?;
 configurable string password = ?;
-configurable mysql:Options & readonly connectionOptions = {connectTimeout: 10};
-
+configurable mysql:Options & readonly connectionOptions = {};
