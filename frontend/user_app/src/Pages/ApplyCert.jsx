@@ -8,7 +8,6 @@ import { Typography } from "@mui/material";
 import Axios from "axios";
 import SideNav from "../components/sideNav"
 import SideBar from "../components/SideBar"
-import PuffLoader from "react-spinners/PuffLoader";
 
 const override = {
   display: "block",

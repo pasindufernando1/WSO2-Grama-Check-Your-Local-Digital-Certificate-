@@ -12,7 +12,6 @@ import resubmitImage from "../images/resubmit.svg";
 import completedImage from "../images/completed.svg";
 import noneImage from "../images/none.svg";
 import Axios from "axios";
-import PuffLoader from "react-spinners/PuffLoader";
 
 import { TextField } from "@mui/material";
 import { Button } from "@mui/material";
