@@ -10,6 +10,7 @@ service /api/v1 on new http:Listener(8080) {
     private final Client db;
 
     public function init() {
+        
         Client | persist:Error db_connection = new();
 
         if (db_connection is Client) {
