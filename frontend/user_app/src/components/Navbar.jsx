@@ -70,6 +70,7 @@ export default function HideAppBar(props) {
                           lg: -2,
                           xl: -6,
                         },
+                        fontFamily: "Poppins",
                         fontSize: {
                           xs: 16,
                           sm: 20,
@@ -80,6 +81,10 @@ export default function HideAppBar(props) {
                           sm: 18,
                           md: 30,
                         },
+                        pl: {
+                        xs: "0%",
+                        sm: "5%",
+                      }
                       }}
                     >
                       GramCert
@@ -94,29 +99,28 @@ export default function HideAppBar(props) {
                         xs: "10%",
                         sm: "0%",
                       },
-
                       pr: {
-                        xs: "10%",
+                        xs: "0%",
                         sm: "0%",
                       },
                       mt: {
-                        xs: 3,
-                        sm: 2,
+                        xs: 1.5,
+                        sm: 1,
                         md: 1,
                         lg: 2.5,
                         xl: 2.5,
                       },
                       fontSize: {
-                        xs: 12,
+                        xs: 14,
                       },
                       mr: {
                         xs: 0,
                         sm: 18,
                         md: 30,
                       },
-                      backgroundColor: "#699eee",
+                      backgroundColor: "black",
                       ":hover": {
-                        backgroundColor: "#699eee",
+                        backgroundColor: "black",
                       },
                       width: {
                         xs: "100%",
@@ -125,7 +129,8 @@ export default function HideAppBar(props) {
                         lg: "60%",
                         xl: "50%",
                       },
-                      float:'left'
+                      textTransform: "none",
+                      float:{sm:"left",xs:"right"}
                     }}
                   >
                     Sign in

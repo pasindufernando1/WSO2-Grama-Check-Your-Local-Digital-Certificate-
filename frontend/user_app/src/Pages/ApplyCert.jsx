@@ -5,9 +5,15 @@ import { TextField } from "@mui/material";
 import { Button } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
+import { Select } from "@mui/material";
 import Axios from "axios";
-import SideNav from "../components/sideNav"
-import SideBar from "../components/SideBar"
+import SideNav from "../components/sideNav";
+import SideBar from "../components/SideBar";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+
+//
+import { useAuthContext } from "@asgardeo/auth-react"
 
 const override = {
   display: "block",
@@ -16,29 +22,44 @@ const override = {
   marginLeft: "53%",
 };
 
+
+
+
 function ApplyCertificate() {
-    const [isSidebarOpen, setSidebarOpen] = useState(true);
+  
+const { getOIDCServiceEndpoints } = useAuthContext()
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
+  getOIDCServiceEndpoints().then((res) => {
+    console.log(res)
+  })
+
   return (
     <>
-   <SideNav/>
+      <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          bgcolor: "background.default",
+          bgcolor: "white",
           p: 3,
           width: {
             sm: "70%",
             md: "70%",
             lg: "70vw",
           },
-          ml: "22%",
-          mt: "5%",
+          ml: {
+            xs: "0%",
+            sm: "25%",
+          },
+          mt: "3%",
+          borderRadius: 4,
+          boxShadow:{xs:0 , sm:2},
+
         }}
       >
         <Grid
@@ -49,8 +70,8 @@ function ApplyCertificate() {
             justifyContent: "center",
             alignContent: "center",
             alignItems: { sm: "center" },
-            width: { xs: "100%", md: "100%", lg: "100%" },
-            ml: { xs: "14%", md: "0%" },
+            width: { xs: "80%", md: "100%", lg: "100%" },
+            mx:'auto',
           }}
         >
           <Grid container>
@@ -58,92 +79,103 @@ function ApplyCertificate() {
               variant="h4"
               component="div"
               sx={{
-                mb: { xs: "20%", sm: "15%", md: "10%", lg: "5%" },
-                mt: { xs: "15%", sm: "0%", md: "0%" },
-                fontWeight: 700,
-                textAlign:"center",
-                fontFamily: "Segoe UI",
+                mb: 5,
+                mt: { xs: "5%", sm: "0%", md: "0%" },
+                fontWeight: 500,
+                textAlign: "center",
+                fontFamily: "Poppins",
                 fontSize: {
-                  xs: 13,
+                  xs: 16,
                   sm: 20,
                   md: 20,
-                  lg: 24,
+                  lg: 22,
                 },
               }}
             >
-            You can apply for your{" "}
-              <span style={{ color: "#699eee" }}>
-                police clearance certificate
-              </span>{" "}
-              by filling the information
-              <span style={{ color: "#699eee" }}> below.</span>
+              You can apply for your{" "}
+              <span style={{ color: "#699eee" }}>Grama certificate</span> by
+              filling the following information
             </Typography>
           </Grid>
 
           <Grid>
+            <InputLabel htmlFor="username" sx={{color:"black"}}>NIC or Passport ID</InputLabel>
             <TextField
-              id="outlined-basic"
-              label="NIC or Passport ID"
-              variant="outlined"
+              id="filled-helperText"
+              label=""
+              variant="standard"
               size="small"
-              sx={{ width: { xs: "57vw", sm: "50vw" }, mb: 3 }}
-            />
-          </Grid>
-
-          <Grid>
-            <TextField
-              id="outlined-basic"
-              label="Address"
-              variant="outlined"
-              size="small"
-              multiline
-              rows={5}
-              sx={{ width: { xs: "57vw", sm: "50vw" }, mb: 3 }}
-            />
-          </Grid>
-
-          <Grid>
-            <Button
-              variant="contained"
-              component="label"
-              sx={{
-                width: { xs: "57vw", sm: "50vw" },
-
-                backgroundColor: "#699eee",
-                ":hover": {
-                  backgroundColor: "#699eee",
-                },
-                fontSize: {
-                  xs: 9,
-                  sm: 11,
-                  md: 10,
-                  lg: 12,
-                },
+              sx={{ width: { xs: "100%", sm: "50vw" }, mb: 2 }}
+              InputLabelProps={{
+                sx: { fontSize: { xs: 12, sm: 12 } }, // Adjust the font size as needed
               }}
+              mt="1"
+            />
+          </Grid>
+
+          <Grid>
+            <InputLabel htmlFor="username" sx={{color:"black"}}>Address</InputLabel>
+            <TextField
+              id="standard-helperText"
+              label="Line 1"
+              variant="standard"
+              size="small"
+              sx={{ width: { xs: "100%", sm: "50vw" }, mb: 1 }}
+              InputLabelProps={{
+                sx: { fontSize: { xs: 12, sm: 12 } }, // Adjust the font size as needed
+              }}
+            />
+          </Grid>
+          <Grid>
+            <TextField
+              id="standard-helperText"
+              label="Line 3"
+              variant="standard"
+              size="small"
+              sx={{ width: { xs: "100%", sm: "50vw" }, mb: 3 }}
+              InputLabelProps={{
+                sx: { fontSize: { xs: 12, sm: 12 } }, // Adjust the font size as needed
+              }}
+            />
+          </Grid>
+
+          <Grid>
+            <InputLabel htmlFor="username" sx={{color:"black"}}>Grama Division</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="standard-filled"
+              sx={{ width: { xs: "100%", sm: "50vw" } }}
+              size="small"
+              variant ="standard"
             >
-              Upload proof of address
-              <input type="file" hidden  />
-            </Button>
+              <MenuItem value={10}>Ten</MenuItem>
+              <MenuItem value={20}>Twenty</MenuItem>
+              <MenuItem value={30}>Thirty</MenuItem>
+            </Select>
           </Grid>
 
           <Grid>
             <Button
               variant="outlined"
               sx={{
-                mt: 6,
-                width: { xs: "21vw", sm: "17.5vw" },
+                mt: 3,
+                width: { xs: "100%", sm: "17.5vw" },
                 fontSize: {
-                  xs: 9,
+                  xs: 15,
                   sm: 11,
-                  md: 10,
-                  lg: 12,
+                  md: 13,
+                  lg: 14,
                 },
-                borderColor: "#699eee",
-                color: "#699eee",
+                backgroundColor: "#699eee",
+                textTransform: "none",
+                fontFamily: "Poppins",
+                borderRadius: 20,
+                color: "white",
                 ":hover": {
                   borderColor: "#699eee",
                   color: "#699eee",
                 },
+                p:1,
               }}
             >
               Submit
