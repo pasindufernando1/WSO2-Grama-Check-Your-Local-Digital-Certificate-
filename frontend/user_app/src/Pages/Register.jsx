@@ -16,7 +16,7 @@
   function Register() {
     
     const { state, signIn, signOut , getAccessToken, getIDToken } = useAuthContext();
- 
+
     return(
         
       <div
@@ -36,9 +36,6 @@
 
               <button onClick={() => signOut()}>Logout</button>
             </div>
-            // <Routes>
-            // <Route exact path="/checkstatus" component={CheckStatus} />
-            // </Routes>
            ) : (
         <div>
         <Nabar />
@@ -71,7 +68,7 @@
                     component="div"
                     sx={{
                       fontWeight: 700,
-                      fontFamily: "Segoe UI",
+                      fontFamily: "Poppins",
                       textAlign: { xs: 'center', sm: 'left' },
                       fontSize: {
                         xs: 30,
@@ -89,7 +86,7 @@
                     sx={{
                       mt: 2,
                       color: "#7a7979",
-                      fontFamily: "Segoe UI",
+                      fontFamily: "Poppins",
                       textAlign: { xs: 'center', sm: 'left' },
                       fontSize: {
                         xs: 13,
@@ -103,7 +100,9 @@
                   </Typography>
   
                   <div  style={{
-                      textAlign: 'left', 
+                      sm:{
+                        textAlign: 'left', 
+                      },
                       xs: {
                         textAlign: 'center',
                       },
@@ -118,10 +117,11 @@
                         backgroundColor: "#699eee",
                       },
                       fontSize: {
-                        xs: 9,
-                        sm: 11,
-                        md: 13,
+                        xs: 12,
+                        sm: 14,
+                        md: 15,
                       },
+                      textTransform: "none",
                     }} onClick={ () => signIn() }
                   >
                     Get Started

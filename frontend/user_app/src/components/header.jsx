@@ -7,31 +7,23 @@ const drawerWidth = "18%";
 
 function header({ name }) {
   return (
-    <AppBar
-      position="fixed"
-      sx={{
-        width: `calc(100% - ${drawerWidth}px)`,
-        ml: `${drawerWidth}px`,
-        bgcolor: "background.default",
-        boxShadow: "none",
-      }}
-    >
+
       <Toolbar>
         <Typography
           variant="h5"
           noWrap
           component="div"
           sx={{
-            ml: "21%",
+            ml: {xs:"0%",sm:"21%"},
             fontWeight: 600,
-            fontFamily: "Segoe UI",
+            fontFamily: "Poppins",
             color: "#000",
+            textAlign:{xs:"center",sm:"left"},
           }}
         >
           {name}
         </Typography>
       </Toolbar>
-    </AppBar>
   );
 }
 

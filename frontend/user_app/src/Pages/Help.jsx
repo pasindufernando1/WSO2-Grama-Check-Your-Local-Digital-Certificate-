@@ -5,24 +5,73 @@ import { TextField } from "@mui/material";
 import { Button } from "@mui/material";
 import { Grid } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import Axios from "axios";
-import SideNav from "../components/sideNav"
+import SideBar from "../components/SideBar";
+import { IoIosArrowDown } from "react-icons/io";
+
+const FaqItem = ({ question, answer, isOpen, toggle }) => (
+  <div style={{ borderBottom: "1px solid #ccc", padding: "8px 0" , width : "90%" , margin:"auto"}}>
+    <div
+      onClick={toggle}
+      style={{
+        cursor: "pointer",
+        display: "flex",
+        justifyContent: "space-between",
+      }}
+    >
+      <></>
+      <span>{question}</span>
+      <IoIosArrowDown
+        style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+      />
+    </div>
+    {isOpen && <div style={{ color: '#777', fontSize: '14px', marginTop: '8px' }}>
+        {answer}
+      </div>}
+  </div>
+);
 
 function Help() {
+  const faqData = [
+    {
+      id: 1,
+      question: "How to apply for certificate? ",
+      answer: "React is a JavaScript library for building user interfaces.",
+    },
+    {
+      id: 2,
+      question: "What to do when i get rejected from Grama Niladari?",
+      answer: "React is a JavaScript library for building user interfaces.",
+    },
+    {
+      id: 3,
+      question: "Can i apply before 6 months for another certificate?",
+      answer: "React is a JavaScript library for building user interfaces.",
+    },
+    // Add more FAQ items as needed
+  ];
+
+  const [openItems, setOpenItems] = useState([]);
+
+  const toggleItem = (itemId) => {
+    setOpenItems((prevOpenItems) =>
+      prevOpenItems.includes(itemId)
+        ? prevOpenItems.filter((id) => id !== itemId)
+        : [...prevOpenItems, itemId]
+    );
+  };
 
   return (
     <>
-     <SideNav/>
-      <Header name={"Help"} />
+      <SideBar />
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           bgcolor: "background.default",
           p: 3,
-          width: "70vw",
-          ml: "22%",
-          mt: "5%",
+          width: { xs: "100%", sm: "70vw" },
+          ml: { xs: "0%", sm: "22%" },
+          mt: "3%",
         }}
       >
         <Grid
@@ -33,31 +82,30 @@ function Help() {
             justifyContent: "center",
             alignContent: "center",
             alignItems: "center",
-            // width: "100%",
             width: { xs: "100%", md: "100%", lg: "100%" },
-            ml: { xs: "5%", md: "0%" },
+            ml: { xs: "0%", md: "0%" },
           }}
         >
-          <Grid container>
+          <Grid container xs={12}>
             <Typography
-              variant="h4"
+              variant="h3"
               component="div"
               sx={{
-                mb: { xs: "20%", sm: "15%", md: "10%", lg: "5%" },
-                mt: { xs: "15%", sm: "0%", md: "0%" },
-                ml: { xs: "10%", md: "0%" },
-
-                fontWeight: 700,
-                fontFamily: "Segoe UI",
+                fontWeight: 500,
+                fontFamily: "Poppins",
+                textAlign: { xs: "center", sm: "left" },
                 fontSize: {
-                  xs: 13,
+                  xs: 20,
                   sm: 20,
-                  md: 30,
-                  lg: 34,
+                  md: 20,
                 },
+                mb: 3,
+                mx: { xs: "auto" },
+                ml : {sm:1},
+                textAlign: { sm: "left" },
               }}
             >
-              How can we <span style={{ color: "#09ad58" }}> help</span> you
+              What can we <span style={{ color: "#699eee" }}>Help </span>you
               with?
             </Typography>
           </Grid>
@@ -69,8 +117,8 @@ function Help() {
               variant="outlined"
               size="small"
               multiline
-              rows={5}
-              sx={{ width: { xs: "57vw", sm: "50vw" }, mb: 3 }}
+              rows={3}
+              sx={{ width: { xs: "75vw", sm: "60vw" }, mb: 1 }}
             />
           </Grid>
         </Grid>
@@ -79,26 +127,63 @@ function Help() {
           <Button
             variant="outlined"
             sx={{
-              ml: { xs: "15%", sm: "14.5%" },
               mt: 1,
-              width: "12vw",
-              borderColor: "#09ad58",
-              color: "#09ad58",
-              ":hover": {
-                borderColor: "#09914b",
-                color: "#09ad58",
-              },
+              ml: 5,
+              width: { xs: "50%", sm: "13.5vw" },
               fontSize: {
-                xs: 9,
+                xs: 15,
                 sm: 11,
-                md: 10,
-                lg: 12,
+                md: 13,
+                lg: 14,
               },
+              backgroundColor: "#699eee",
+              textTransform: "none",
+              fontFamily: "Poppins",
+              borderRadius: 20,
+              color: "white",
+              ":hover": {
+                borderColor: "#699eee",
+                color: "#699eee",
+              },
+              mx: { xs: "auto" },
             }}
           >
             Submit
           </Button>
         </Grid>
+        <Grid container xs={12}>
+            <Typography
+              variant="h3"
+              component="div"
+              sx={{
+                fontWeight: 500,
+                fontFamily: "Poppins",
+                textAlign: { xs: "center", sm: "left" },
+                fontSize: {
+                  xs: 20,
+                  sm: 20,
+                  md: 20,
+                },
+                mb: 3,
+                mt : 3,
+                mx: { xs: "auto" },
+                ml : {sm:1},
+              }}
+            >
+              Frequent Questions & Answers 
+            </Typography>
+          </Grid>
+        <div>
+          {faqData.map((item) => (
+            <FaqItem
+              key={item.id}
+              question={item.question}
+              answer={item.answer}
+              isOpen={openItems.includes(item.id)}
+              toggle={() => toggleItem(item.id)}
+            />
+          ))}
+        </div>
       </Box>
     </>
   );
