@@ -27,7 +27,6 @@ function Dashboard() {
       >
         <Stack >
           <Requests/>
-          {/* <Numbers grama="Kottawa West" division="Maharagama" district="Colombo"/> */}
         </Stack>
       </Box>
     </>

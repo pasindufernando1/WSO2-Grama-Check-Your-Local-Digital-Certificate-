@@ -31,7 +31,7 @@
           ? ( 
             <div>
               <ul>
-                <li>{}</li>
+                <li>{state.email}</li>
               </ul>
 
               <button onClick={() => signOut()}>Logout</button>
