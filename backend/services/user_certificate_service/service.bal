@@ -1,10 +1,11 @@
 import ballerina/http;
 import ballerina/persist;
+import ballerina/time;
 
 # A service representing a network-accessible API
 # bound to port `9090`.
 # 
-const string CERTIFICATE_REQUEST_INTERVAL = "6 MONTH";
+const time:Seconds CERTIFICATE_REQUEST_INTERVAL_SEC = 6 * 30 * 24 * 60 * 60; //6 months in seconds
 
 service /api/v1/user\-certificate\-service on new http:Listener(9090) {
     private final Client serviceDBClient;
@@ -20,11 +21,11 @@ service /api/v1/user\-certificate\-service on new http:Listener(9090) {
     resource function get can\-request\-newcertificate(string asgardeoExternalId) returns boolean|error {
         //get the user's last certificate request date
         stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
-            whereClause = `asgardeo_external_id = ${asgardeoExternalId} AND issued_date >= CURDATE() - INTERVAL ${CERTIFICATE_REQUEST_INTERVAL}`, 
-            orderByClause = `issued_date DESC`,
-            limitClause = `1`);
+            whereClause = `asgardeo_external_id = ${asgardeoExternalId}`);
 
-        if (userCertificates.count() == 0) {
+        UserCertificate[] arr = check from var userCertificate in userCertificates where userCertificate.issued_date != null && CERTIFICATE_REQUEST_INTERVAL_SEC > time:utcDiffSeconds(time:utcNow(), check time:utcFromString(convertDateToUTCString(userCertificate.issued_date))) select userCertificate;
+
+        if (arr.length() == 0) {
             //no certificate requests found, the user can request a certificate
             return true;
         } else {
@@ -32,4 +33,63 @@ service /api/v1/user\-certificate\-service on new http:Listener(9090) {
             return false;
         }
     }
+}
+
+
+function convertDateToUTCString(time:Date? date) returns string {
+    if date == null {
+        return "";
+    }
+
+    string year = date.year.toString();
+    string month;
+
+    if date.month < 10 {
+        month = "0" + date.month.toString();
+    } else {
+        month = date.month.toString();
+    }
+
+    string day;
+
+    if date.day < 10 {
+        day = "0" + date.day.toString();
+    } else {
+        day = date.day.toString();
+    }
+
+    string hour;
+    if date.hour is () {
+        hour = "00";
+    } else {
+        if(date.hour < 10) {
+            hour = "0" + date.hour.toString();
+        } else {
+            hour = date.hour.toString();
+        }
+    }
+
+    string minute;
+    if date.minute is () {
+        minute = "00";
+    } else {
+        if(date.minute < 10) {
+            minute = "0" + date.minute.toString();
+        } else {
+            minute = date.minute.toString();
+        }
+    }
+
+    string second;
+    if date.second is () {
+        second = "00.00";
+    } else {
+        if(date.second < 10d) {
+            second = "0" + date.second.toString();
+        } else {
+            second = date.second.toString();
+        }
+    }
+
+    return year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second + "Z";
 }
