@@ -41,6 +41,9 @@ WORKDIR /app
 # Copy the built app from the previous stage
 COPY --from=build /app/build ./build
 
+# Define a non root user
+USER 10014
+
 # Expose port 80 to the outside world
 EXPOSE 3000
 
@@ -48,3 +51,4 @@ EXPOSE 3000
 
 # Start the application
 CMD ["npx", "serve", "-s", "build", "-l", "3000"]
+
