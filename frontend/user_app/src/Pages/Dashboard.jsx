@@ -25,9 +25,9 @@ function Dashboard() {
           ml: {xs:"0%" , sm:"22%"},
         }}
       >
-        <Stack>
+        <Stack >
           <Requests/>
-          <Numbers grama="Kottawa West" division="Maharagama" district="Colombo"/>
+          {/* <Numbers grama="Kottawa West" division="Maharagama" district="Colombo"/> */}
         </Stack>
       </Box>
     </>

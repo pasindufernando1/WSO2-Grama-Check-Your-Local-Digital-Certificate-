@@ -7,7 +7,7 @@ import ApplyCertificate from "../Pages/ApplyCert";
 import Help from "../Pages/Help";
 import CheckStatus from "../Pages/CheckStatus";
 import Dashboard from "../Pages/Dashboard";
-
+import Admin from "../Pages_admin/admin";
 function AppRoute() {
   return (
     <BrowserRouter>
@@ -17,6 +17,7 @@ function AppRoute() {
         <Route path="/help" element={<Help />} />
         <Route path="/CheckStatus" element={<CheckStatus />} />
         <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </BrowserRouter>
   );
