@@ -87,11 +87,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         </ul>
         {/* Sidebar footer */}
         <div className="fixed bottom-0 w-64 p-4">
-          <ul>
-            <li className="p-4 hover:bg-gray-700">
-              <Link to="/logout">Logout</Link>
-            </li>
-          </ul>
+          <div>
+            <Link to="/logout">Logout</Link>
+          </div>
         </div>
       </div>
     </div>
