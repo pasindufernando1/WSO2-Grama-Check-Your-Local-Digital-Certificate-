@@ -4,7 +4,7 @@ import ballerina/time;
 import ballerina/uuid;
 
 # A service representing a network-accessible API
-# bound to port `9090`.
+# bound to port `9000`.
 # 
 const time:Seconds CERTIFICATE_REQUEST_INTERVAL_SEC = 6 * 30 * 24 * 60 * 60; //6 months in seconds
 
@@ -23,7 +23,7 @@ type CertificateBadRequest record {|
     json body;
 |};
 
-service /api/v1/user\-certificate\-service on new http:Listener(9090) {
+service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     private final Client serviceDBClient;
 
     public function init() returns error? {
@@ -32,12 +32,12 @@ service /api/v1/user\-certificate\-service on new http:Listener(9090) {
     }
 
     # A resource for checking if the user can request a certificate (has passed 6 months since last request)
-    # + asgardeoExternalId - string - the user's asgardeo external id
+    # + userId - string - the user's asgardeo id
     # + return - boolean - true if the user can request a certificate, false otherwise. throws an error for internal server errors
-    resource function get can\-request\-newcertificate(string asgardeoExternalId) returns boolean|error {
+    resource function get can\-request\-newcertificate(string userId) returns boolean|error {
         //get the user's last certificate request date
         stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
-            whereClause = `asgardeo_external_id = ${asgardeoExternalId}`);
+            whereClause = `user_id = ${userId}`);
 
         UserCertificate[] arr = check from var userCertificate in userCertificates where userCertificate.issued_date != null && CERTIFICATE_REQUEST_INTERVAL_SEC > time:utcDiffSeconds(time:utcNow(), check time:utcFromString(convertDateToUTCString(userCertificate.issued_date))) select userCertificate;
 
@@ -51,17 +51,23 @@ service /api/v1/user\-certificate\-service on new http:Listener(9090) {
     }
 
     # A resource for adding a new user certificate request
-    # + asgardeoExternalId - string - the user's asgardeo external id
+    # + requestPayload - UserCertificateInsert - the user certificate request payload
     # + return - RequestCreated - the created request id. throws an error for internal server errors
     
-    resource function post create\-user\-certificate\-request(string asgardeoExternalId) returns RequestCreated|error {
+    resource function post create\-user\-certificate\-request(UserCertificateInsert requestPayload) returns RequestCreated|error {
         //create a new user certificate request
         UserCertificate userCertificate = {
             id: uuid:createType4AsString(),
-            asgardeo_external_id: asgardeoExternalId,
+            user_id: requestPayload.user_id,
+            nic: requestPayload.nic,
+            line_01: requestPayload.line_01,
+            line_02: requestPayload.line_02,
+            line_03: requestPayload.line_03,
+            city: requestPayload.city,
             issued_date: null,
             collected_date: null,
-            status : PENDING
+            status : PENDING,
+            grama_divisionId: requestPayload.grama_divisionId
         };
 
         //add the user certificate request to the service db
@@ -77,14 +83,58 @@ service /api/v1/user\-certificate\-service on new http:Listener(9090) {
         return response;
     }
 
-    # A resource for getting all user certificate requests
+    # A resource for getting all user certificate requests (also query params to filter by user id, grama division id and grama division name)
+    # + userId - string - the user's asgardeo id
+    # + gramaDivisionId - string - the grama division id
+    # + gramaDivisionName - string - the grama division name
     # + return - UserCertificate[] - all user certificate requests. throws an error for internal server errors
     
-    resource function get get\-all\-user\-certificate\-requests() returns UserCertificate[]|error {
+    resource function get get\-all\-user\-certificate\-requests(string? userId, string? gramaDivisionId, string? gramaDivisionName) returns UserCertificate[]|CertificateNotFound|error {
         //get all user certificate requests
-        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get();
+        if userId is () && gramaDivisionId is () && gramaDivisionName is () {
+            stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get();
+
+            UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
+
+            return arr;
+        }
+
+        string whereClause = "";
+
+        if userId is string {
+            whereClause = string `user_id = ${userId}`;
+        }
+
+        if gramaDivisionId is string {
+            if whereClause == "" {
+                whereClause = string `grama_divisionId = ${gramaDivisionId}`;
+            } else {
+                whereClause = whereClause + string ` and grama_divisionId = ${gramaDivisionId}`;
+            }
+        }
+
+        if gramaDivisionName is string {
+            if whereClause == "" {
+                whereClause = string `grama_divisionId in (select id from grama_divisions where name LIKE %${gramaDivisionName}%)`;
+            } else {
+                whereClause = whereClause + string ` and grama_divisionId in (select id from grama_divisions where name LIKE %${gramaDivisionName}%)`;
+            }
+        }
+
+        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get(whereClause = `${whereClause}`);
 
         UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
+
+        if(arr.length() == 0) {
+            //no user certificate requests found, throw an error
+            CertificateNotFound response = {
+                body : {
+                    message : "Could not find any user certificate requests for the given parameters"
+                }
+            };
+
+            return response;
+        }
 
         return arr;
     }
@@ -116,6 +166,86 @@ service /api/v1/user\-certificate\-service on new http:Listener(9090) {
             return arr[0];
         }
     }
+
+    # A resource for getting all user certificate requests by user id
+    # + userId - string - the user's asgardeo id
+    # + return - UserCertificate - the user certificate request. throws an error for internal server errors
+    
+    resource function get get\-user\-certificate\-requests\-by\-user\-id(string userId) returns UserCertificate[]| CertificateNotFound| error {
+        //get the user certificate request by user id
+        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
+            whereClause = `user_id = ${userId}`);
+
+        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
+
+        if (arr.length() == 0) {
+            //no user certificate request found, throw an error
+            CertificateNotFound response = {
+                body : {
+                    message : "Could not find any user certificate requests for the given user"
+                }
+            };
+
+            return response;
+            
+        } else {
+            //user certificates found, return them
+            return arr;
+        }
+    }
+
+    # A resource for getting all user certificate requests by grama division id
+    # + gramaDivisionId - string - the grama division id
+    # + return - UserCertificate - the user certificate request. throws an error for internal server errors
+    
+    resource function get get\-user\-certificate\-requests\-by\-grama\-division\-id(string gramaDivisionId) returns UserCertificate[]| CertificateNotFound| error {
+        //get the user certificate request by grama division id
+        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
+            whereClause = `grama_divisionId = ${gramaDivisionId}`);
+
+        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
+
+        if (arr.length() == 0) {
+            //no user certificate request found, throw an error
+            CertificateNotFound response = {
+                body : {
+                    message : "Could not find any user certificate requests for the given grama division"
+                }
+            };
+
+            return response;
+        } else {
+            //user certificates found, return them
+            return arr;
+        }
+    }
+
+    # A resource for getting all user certificate requests by grama division name
+    # + gramaDivisionName - string - the grama division name
+    # + return - UserCertificate[] - the user certificate requests. throws an error for internal server errors
+    
+    resource function get get\-user\-certificate\-requests\-by\-grama\-division\-name(string gramaDivisionName) returns UserCertificate[]| CertificateNotFound| error {
+        //get the user certificate request by grama division name
+        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
+            whereClause = `grama_divisionId in (select id from grama_divisions where name = ${gramaDivisionName})`);
+
+        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
+
+        if (arr.length() == 0) {
+            //no user certificate request found, throw an error
+            CertificateNotFound response = {
+                body : {
+                    message : "Could not find any user certificate requests for the given grama division"
+                }
+            };
+
+            return response;
+        } else {
+            //user certificates found, return them
+            return arr;
+        }
+    }
+
 
     # A resource for updating a user certificate request
     # + id - string - the user certificate request id
