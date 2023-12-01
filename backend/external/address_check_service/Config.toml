@@ -4,4 +4,4 @@ port = 28760
 user = "avnadmin"
 password = "AVNS_rlpyZvci3jQDfNuGYzZ"
 database = "AddressDB"
-options = {useSSL = true}
+# options = {useSSL = true}
