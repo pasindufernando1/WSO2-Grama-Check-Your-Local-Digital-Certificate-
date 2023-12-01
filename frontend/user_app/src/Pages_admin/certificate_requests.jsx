@@ -4,6 +4,8 @@ import Numbers from "../components/dashboardNumbers";
 import Requests from "../components/requests_admin";
 import Stack from '@mui/material/Stack'
 import SideBar from "../components/SideBar_admin";
+import Toolbar from "@mui/material/Toolbar";
+import Table from "../components/reqTable";
 
 function Dashboard() {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -14,20 +16,20 @@ function Dashboard() {
   return (
     <>
     <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <Box
+    <Box
         component="main"
         sx={{
           flexGrow: 1,
-          display:"flex",
           bgcolor: "background.default",
-          p: 3,
-          width: {xs:"100%", sm:"70vw"},
-          ml: {xs:"0%" , sm:"22%"},
+          pl: 3,
+          pr: 3,
+          width: "70vw",
+          height: "90vh",
+          ml: "22%",
         }}
       >
-        <Stack >
-          <Requests/>
-        </Stack>
+        <Toolbar />
+        <Table />
       </Box>
     </>
   );

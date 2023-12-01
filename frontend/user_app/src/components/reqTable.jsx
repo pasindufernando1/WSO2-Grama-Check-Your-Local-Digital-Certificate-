@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -14,34 +13,36 @@ import DangerousIcon from "@mui/icons-material/Dangerous";
 import ArticleIcon from "@mui/icons-material/Article";
 import Stack from "@mui/material/Stack";
 import Model from "../components/Model";
-import Axios from "axios";
-import { Link, Redirect } from "react-router-dom";
+import Button from "@mui/material/Button";
 
 const columns = [
-  { id: "nic", label: "NIC", minWidth: 120 },
+  { id: "Request ID", label: "req_id", minWidth: "25%",maxWidth: "25%" },
+  { id: "nic", label: "NIC", minWidth: "40%",maxWidth: "40%" },
   {
     id: "address",
     label: "Address",
-    minWidth: 400,
+    minWidth: "30%"
+    ,maxWidth: "30%"
   },
   {
     id: "more",
-    label: "Document",
-    minWidth: 100,
-  },
-
-  {
-    id: "Accept",
-    label: "Accept",
-    minWidth: 60,
-  },
-
-  {
-    id: "Reject",
-    label: "Reject",
-    minWidth: 60,
+    label: "",
+    minWidth: "5%",
+    maxWidth: "5%"
   },
 ];
+
+const generateDummyData = () => {
+  const data = [];
+  for (let i = 1; i <= 4; i++) {
+    const req_id = `Req${i}`;
+    const nic = `NIC${i}`;
+    const address = `Address ${i}`;
+    const proof = `Base64EncodedImage${i}`; // Replace with your actual base64 image
+    data.push([req_id,nic, address, proof]);
+  }
+  return Promise.resolve(data);
+};
 
 export default function StickyHeadTable() {
   const [open, setOpen] = React.useState(false);
@@ -50,16 +51,8 @@ export default function StickyHeadTable() {
   const [rows, setRows] = useState([]);
   const [clickedImage, setClickedImage] = useState("");
 
-  const config = {
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem("API_TOKEN"),
-    },
-  };
-
   const handleOpen = (index) => {
     setClickedImage(rows[index][2]);
-    console.log(rows[index][2]);
-    console.log("rows[index][2]");
     setOpen(true);
   };
 
@@ -68,51 +61,22 @@ export default function StickyHeadTable() {
   };
 
   const updateData = (nic) => {
-    const newRows = rows.filter((row) => row[0] != nic);
+    const newRows = rows.filter((row) => row[0] !== nic);
     setRows(newRows);
   };
 
   useEffect(() => {
-    const gramaArea = localStorage.getItem("area");
-
-    Axios.get(
-      "https://8659e866-c03e-45d5-a713-14c3f8f0d831-dev.e1-us-east-azure.choreoapis.dev/vjmx/therealaddresscheckapi/1.0.0/requests/" +
-        gramaArea +
-        "?status=Processing",
-      config
-    )
-      .then((res) => {
-        console.log(res.data[0]);
-        const arr = res.data.map((row) => [row.nic, row.address, row.proof]);
-        setRows(arr);
-      })
-      .catch();
+    generateDummyData().then((data) => setRows(data));
   }, []);
 
   const handleAccept = (nic) => {
-    const url =
-      "https://8659e866-c03e-45d5-a713-14c3f8f0d831-dev.e1-us-east-azure.choreoapis.dev/vjmx/therealaddresscheckapi/1.0.0/confirm/" +
-      nic;
-
-    Axios.put(url, {}, config)
-      .then((res) => {
-        console.log(res);
-        if (res.status == 201) updateData(nic);
-      })
-      .catch();
+    // Implement your logic for handling acceptance
+    updateData(nic);
   };
 
   const handleReject = (nic) => {
-    const url =
-      "https://8659e866-c03e-45d5-a713-14c3f8f0d831-dev.e1-us-east-azure.choreoapis.dev/vjmx/therealaddresscheckapi/1.0.0/missing/" +
-      nic;
-
-    Axios.put(url, {}, config)
-      .then((res) => {
-        console.log(res);
-        if (res.status == 201) updateData(nic);
-      })
-      .catch();
+    // Implement your logic for handling rejection
+    updateData(nic);
   };
 
   return (
@@ -131,8 +95,8 @@ export default function StickyHeadTable() {
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  align="left"
+                  style={{ minWidth: column.minWidth , maxWidth:column.maxWidth}}
                   sx={{ fontWeight: "bold", fontSize: 16 }}
                 >
                   {column.label}
@@ -150,51 +114,29 @@ export default function StickyHeadTable() {
                 >
                   <TableCell align="left">{row[0]}</TableCell>
                   <TableCell align="left">{row[1]}</TableCell>
+                  <TableCell align="left">{row[2]}</TableCell>
                   <TableCell
-                    align="left"
+                    align="right"
                     style={{ cursor: "pointer" }}
                     onClick={() => handleOpen(index)}
                   >
-                    <ArticleIcon
-                      fontSize="large"
-                      sx={{
-                        color: "#757575",
-                        ":hover": {
-                          color: "#1188f0",
-                        },
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell
-                    align="left"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleAccept(row[0])}
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#699eee",
+                      ":hover": {
+                        backgroundColor: "#699eee",
+                      },
+                      fontSize: {
+                        xs: 12,
+                        sm: 14,
+                        md: 15,
+                      },
+                      textTransform: "none",
+                    } }
                   >
-                    <CheckIcon
-                      fontSize="large"
-                      sx={{
-                        color: "#757575",
-                        ":hover": {
-                          color: "#09914b",
-                        },
-                      }}
-                    />
-                  </TableCell>
-
-                  <TableCell
-                    align="left"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleReject(row[0])}
-                  >
-                    <DangerousIcon
-                      fontSize="large"
-                      sx={{
-                        color: "#757575",
-                        ":hover": {
-                          color: "#cf0404",
-                        },
-                      }}
-                    />
+                    View more
+                  </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -208,7 +150,6 @@ export default function StickyHeadTable() {
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
-        // onRowsPerPageChange={handleChangeRowsPerPage}
       />
       <Model open={open} setOpen={setOpen} base64Image={clickedImage} />
     </Paper>
