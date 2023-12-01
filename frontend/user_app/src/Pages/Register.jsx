@@ -13,8 +13,8 @@
   
   import { useAuthContext } from "@asgardeo/auth-react";
   import { useEffect, useState } from "react";
-  import AdminDashboard from "../Pages_admin/dashboard";
   import Dashboard from "../Pages/Dashboard";
+  import Admin from "../Pages_admin/dashboard";
   
   function Register() {
     
@@ -144,13 +144,17 @@
         </Container>
         </div>)
         : (
-          <Routes>
-            {userInfo?.applicationRoles == "GramaSewaka"? (
-              <Route path="/dashboard" element={AdminDashboard} />
-            ) : (
-              <Route path="/dashboard" element={Dashboard} />
-            )}
-          </Routes>
+          <>
+            {userInfo?.applicationRoles == "GramaSewaka" ? 
+              (
+                <Admin/>
+              )  
+              : 
+              (
+                <Dashboard/>
+              )
+            }
+          </>
         )
       }
       </div>
