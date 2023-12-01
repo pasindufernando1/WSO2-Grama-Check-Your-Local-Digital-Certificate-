@@ -4,7 +4,7 @@
   import Grid from "@mui/material/Unstable_Grid2";
   import Typography from "@mui/material/Typography";
   import Button from "@mui/material/Button";
-  import { Route , Routes} from "react-router-dom";
+  import { Route , Routes, useNavigate} from "react-router-dom";
   //components
   import Nabar from "../components/Navbar";
   import CheckStatus from "./CheckStatus"
@@ -23,10 +23,20 @@
     console.log(state);
 
     const [userInfo, setUserInfo] = useState({});
+    const navigate = useNavigate();
 
     useEffect(() => {
       getBasicUserInfo().then((info) => {
         setUserInfo(info);
+
+        if(info.applicationRoles === "GramaSewaka"){
+          navigate("/admin/dashboard");
+        }
+        else{
+          if(info.applicationRoles === "Citizen"){
+            navigate("/Dashboard");
+          }
+        }
       });
     }
     , []);
@@ -143,19 +153,8 @@
           </Box>
         </Container>
         </div>)
-        : (
-          <>
-            {userInfo?.applicationRoles == "GramaSewaka" ? 
-              (
-                <Admin/>
-              )  
-              : 
-              (
-                <Dashboard/>
-              )
-            }
-          </>
-        )
+        : <>
+        </>
       }
       </div>
     );
