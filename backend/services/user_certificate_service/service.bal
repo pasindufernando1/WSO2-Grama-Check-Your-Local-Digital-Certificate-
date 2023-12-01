@@ -23,6 +23,16 @@ type CertificateBadRequest record {|
     json body;
 |};
 
+type UserCertificateInsertDTO record {|
+    string user_id;
+    string nic;
+    string line_01;
+    string line_02;
+    string line_03;
+    string city;
+    string grama_divisionId;
+|};
+
 service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     private final Client serviceDBClient;
 
@@ -54,7 +64,7 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     # + requestPayload - UserCertificateInsert - the user certificate request payload
     # + return - RequestCreated - the created request id. throws an error for internal server errors
     
-    resource function post create\-user\-certificate\-request(UserCertificateInsert requestPayload) returns RequestCreated|error {
+    resource function post create\-user\-certificate\-request(UserCertificateInsertDTO requestPayload) returns RequestCreated|error {
         //create a new user certificate request
         UserCertificate userCertificate = {
             id: uuid:createType4AsString(),
