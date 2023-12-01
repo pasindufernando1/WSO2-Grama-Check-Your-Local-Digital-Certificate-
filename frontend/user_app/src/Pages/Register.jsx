@@ -15,7 +15,13 @@
   
   function Register() {
     
-    const { state, signIn, signOut , getAccessToken, getIDToken } = useAuthContext();
+    const { state, signIn, signOut , getAccessToken, getIDToken, getBasicUserInfo } = useAuthContext();
+
+    console.log(state);
+
+    getBasicUserInfo().then((info) => {
+      console.log(info);
+    });
 
     return(
         
