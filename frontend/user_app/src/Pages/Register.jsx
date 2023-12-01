@@ -17,11 +17,11 @@
     
     const { state, signIn, signOut , getAccessToken, getIDToken, getBasicUserInfo } = useAuthContext();
 
-    console.log(state);
+    // console.log(state);
 
-    getBasicUserInfo().then((info) => {
-      console.log(info);
-    });
+    // getBasicUserInfo().then((info) => {
+    //   console.log(info);
+    // });
 
     return(
         

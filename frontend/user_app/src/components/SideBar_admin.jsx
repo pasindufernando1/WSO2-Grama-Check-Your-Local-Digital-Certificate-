@@ -85,9 +85,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <li className="p-4 hover:bg-gray-700">
             <Link to="/admin/requests">View Requests</Link>
           </li>
-          <li className="p-4 hover:bg-gray-700">
-            <Link to="/help"> Help</Link>{" "}
-          </li>
         </ul>
       </div>
     </div>
