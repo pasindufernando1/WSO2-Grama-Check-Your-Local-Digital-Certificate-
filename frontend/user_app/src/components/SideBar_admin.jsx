@@ -90,9 +90,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         </ul>
         {/* Sidebar footer */}
         <div className="fixed bottom-0 w-64 p-4">
-          <Button onClick={()=> signOut()}>
+          <button onClick={()=> signOut()}>
             Log out
-          </Button>
+          </button>
         </div>
       </div>
     </div>
