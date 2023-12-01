@@ -355,6 +355,28 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
             }
         }
     }
+
+    # A resource for getting all grama divisions
+    # + return - GramaDivision[] - all grama divisions. throws an error for internal server errors
+    
+    resource function get get\-grama\-divisions(string? divisionName) returns GramaDivision[]|error {
+        if divisionName is () {
+            //get all grama divisions
+            stream<GramaDivision, persist:Error?> gramaDivisions = self.serviceDBClient->/gramadivisions.get();
+
+            GramaDivision[] arr = check from var gramaDivision in gramaDivisions select gramaDivision;
+
+            return arr;
+        }
+
+        //get grama divisions by name
+        stream<GramaDivision, persist:Error?> gramaDivisions = self.serviceDBClient->/gramadivisions.get( 
+            whereClause = `name LIKE %${divisionName}%`);
+
+        GramaDivision[] arr = check from var gramaDivision in gramaDivisions select gramaDivision;
+
+        return arr;
+    }
 }
 
 
