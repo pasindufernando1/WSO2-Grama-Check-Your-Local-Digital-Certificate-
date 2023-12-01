@@ -1,17 +1,76 @@
 import ballerina/http;
+import ballerina/io;
+import ballerina/persist;
 
-# A service representing a network-accessible API
-# bound to port `9090`.
-service / on new http:Listener(9090) {
+#All errors fixed
 
-    # A resource for generating greetings
-    # + name - the input string name
-    # + return - string name with hello message or error
-    resource function get greeting(string name) returns string|error {
-        // Send a response back to the caller.
-        if name is "" {
-            return error("name should not be empty!");
+
+service /api/v1 on new http:Listener(8080) {
+
+    private final Client db;
+
+    public function init() {
+        
+        Client | persist:Error db_connection = new();
+
+        if (db_connection is Client) {
+            self.db = db_connection;
+            io:println("Database connection successful");
+            io:println("Address Check Service started on port 8080 ...");
+        } else {
+            io:println(db_connection.message());
+            panic error("Database connection failed");
         }
-        return "Hello, " + name;
+    }
+
+     resource function get addresscheck (string nic,string line_01, string line_02, string line_03, string city) returns json {
+        AddressDetails | persist:Error address = self.db->/addressdetails/[nic];
+        
+
+        if ( address is AddressDetails) {
+            io:println("Query parameters: " + nic + " " + line_01 + " " + line_02 + " " + line_03 + " " + city);
+            io:println("Retreived results: " + address.nic + " " + address.line_01 + " " + address.line_02 + " " + address.line_03 + " " + address.city);
+            if(address.line_01 == line_01 && address.line_02 == line_02 && address.line_03 == line_03 && address.city == city){
+                return {
+                    body:{
+                        validity: true,
+                        message: "Matching address found for the NIC",
+                        addressDB: {
+                            line_01: address.line_01,
+                            line_02: address.line_02,
+                            line_03: address.line_03,
+                            city: address.city
+                        }
+                    }
+                };
+            } else {
+                return {
+                    body:{
+                        validity: false,
+                        message: "Matching address not found for the NIC",
+                        addressDB: {
+                            line_01: address.line_01,
+                            line_02: address.line_02,
+                            line_03: address.line_03,
+                            city: address.city
+                        },
+                        addressInput: {
+                            line_01: line_01,
+                            line_02: line_02,
+                            line_03: line_03,
+                            city: city
+                        }
+                    }
+                };
+            }
+            
+        } else {
+            return {
+                body:{
+                    validity: false,
+                    message: "Address not found for the NIC"
+                }
+            };
+        }
     }
 }
