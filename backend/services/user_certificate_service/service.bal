@@ -2,7 +2,6 @@ import ballerina/http;
 import ballerina/persist;
 import ballerina/time;
 import ballerina/uuid;
-import ballerina/sql;
 
 # A service representing a network-accessible API
 # bound to port `9000`.
