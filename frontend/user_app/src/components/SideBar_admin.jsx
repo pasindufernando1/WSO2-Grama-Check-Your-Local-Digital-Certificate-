@@ -5,7 +5,8 @@ import { Grid } from "@mui/material";
 // react icons
 import { HiMenu } from "react-icons/hi";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-
+import { Button } from "@mui/base";
+import { useAuthContext } from "@asgardeo/auth-react";
 // Header component
 const Header = ({ toggleSidebar }) => (
   <header className=" bg-black text-white p-4">
@@ -66,6 +67,8 @@ const Header = ({ toggleSidebar }) => (
 
 // Sidebar component
 const Sidebar = ({ isOpen, toggleSidebar }) => {
+  const {signOut} = useAuthContext();
+
   return (
     <div>
       {/* Header */}
@@ -87,9 +90,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         </ul>
         {/* Sidebar footer */}
         <div className="fixed bottom-0 w-64 p-4">
-          <div>
-            <Link to="/logout">Logout</Link>
-          </div>
+          <Button onClick={()=> signOut()}>
+            Log out
+          </Button>
         </div>
       </div>
     </div>
