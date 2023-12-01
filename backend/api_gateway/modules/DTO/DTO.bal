@@ -2,9 +2,12 @@ import ballerina/constraint;
 
 # Description.
 #
+# + user_id - id of the user (returned from asgardeo)
 # + nic - valid nic in old or new format 
 # + address - address of the applicant
 public type CertificateRequestCreationDTO record {|
+
+    string user_id;
 
     @constraint:String {
         pattern: {
@@ -15,6 +18,8 @@ public type CertificateRequestCreationDTO record {|
     string nic;
 
     Address address;
+
+    string grama_division_id;
 |};
 
 # Description.

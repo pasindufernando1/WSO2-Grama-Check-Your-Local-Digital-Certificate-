@@ -323,6 +323,7 @@ modules = [
 	{org = "ramith_rodrigo", packageName = "api_gateway", moduleName = "api_gateway"},
 	{org = "ramith_rodrigo", packageName = "api_gateway", moduleName = "api_gateway.DTO"},
 	{org = "ramith_rodrigo", packageName = "api_gateway", moduleName = "api_gateway.address"},
+	{org = "ramith_rodrigo", packageName = "api_gateway", moduleName = "api_gateway.certificate"},
 	{org = "ramith_rodrigo", packageName = "api_gateway", moduleName = "api_gateway.identity"}
 ]
 
