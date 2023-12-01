@@ -17,11 +17,11 @@
     
     const { state, signIn, signOut , getAccessToken, getIDToken, getBasicUserInfo } = useAuthContext();
 
-    // console.log(state);
+    console.log(state);
 
-    // getBasicUserInfo().then((info) => {
-    //   console.log(info);
-    // });
+    getBasicUserInfo().then((info) => {
+      console.log(info);
+    });
 
     return(
         
@@ -37,7 +37,7 @@
           ? ( 
             <div>
               <ul>
-                <li> Heloooo {state.app_roles}</li>
+                <li> Heloooo {state.application_rules}</li>
               </ul>
 
               <button onClick={() => signOut()}>Logout</button>
