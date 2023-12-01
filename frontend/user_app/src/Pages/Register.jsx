@@ -37,7 +37,7 @@
           ? ( 
             <div>
               <ul>
-                <li> Heloooo {state.application_roles}</li>
+                <li> Heloooo {state.app_roles}</li>
               </ul>
 
               <button onClick={() => signOut()}>Logout</button>
