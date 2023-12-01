@@ -1,6 +1,6 @@
 [package]
 org = "ramith_rodrigo"
-name = "police_check_service"
+name = "slack_service"
 version = "0.1.0"
 distribution = "2201.8.2"
 
@@ -9,7 +9,7 @@ observabilityIncluded = true
 
 [persist]
 datastore = "mysql"
-module = "police_check_service"
+module = "slack_service"
 
 [[platform.java17.dependency]]
 groupId = "io.ballerina.stdlib"
