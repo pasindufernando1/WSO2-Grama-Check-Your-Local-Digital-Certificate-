@@ -12,6 +12,9 @@
   import homeImage from "../images/landing.png";
   
   import { useAuthContext } from "@asgardeo/auth-react";
+  import { useEffect, useState } from "react";
+  import AdminDashboard from "../Pages_admin/dashboard";
+  import Dashboard from "../Pages/Dashboard";
   
   function Register() {
     
@@ -19,9 +22,14 @@
 
     console.log(state);
 
-    getBasicUserInfo().then((info) => {
-      console.log(info);
-    });
+    const [userInfo, setUserInfo] = useState({});
+
+    useEffect(() => {
+      getBasicUserInfo().then((info) => {
+        setUserInfo(info);
+      });
+    }
+    , []);
 
     return(
         
@@ -33,16 +41,8 @@
         }}
       >
          {
-        state.isAuthenticated
-          ? ( 
-            <div>
-              <ul>
-                <li> Heloooo {state.application_rules}</li>
-              </ul>
-
-              <button onClick={() => signOut()}>Logout</button>
-            </div>
-           ) : (
+        !state.isAuthenticated
+          ? (
         <div>
         <Nabar />
         <Container maxWidth="xl">
@@ -142,7 +142,17 @@
             </Grid>
           </Box>
         </Container>
-        </div>)}
+        </div>)
+        : (
+          <Routes>
+            {userInfo?.applicationRoles == "GramaSewaka"? (
+              <Route path="/dashboard" element={AdminDashboard} />
+            ) : (
+              <Route path="/dashboard" element={Dashboard} />
+            )}
+          </Routes>
+        )
+      }
       </div>
     );
   }
