@@ -14,21 +14,22 @@ import ArticleIcon from "@mui/icons-material/Article";
 import Stack from "@mui/material/Stack";
 import Model from "../components/Model";
 import Button from "@mui/material/Button";
+import { Link } from "@mui/material";
 
 const columns = [
-  { id: "Request ID", label: "req_id", minWidth: "25%",maxWidth: "25%" },
-  { id: "nic", label: "NIC", minWidth: "40%",maxWidth: "40%" },
+  { id: "Request ID", label: "Request ID", minWidth: "25%",maxWidth: "25%" },
+  { id: "nic", label: "NIC", minWidth: "25%",maxWidth: "25%" },
   {
     id: "address",
     label: "Address",
-    minWidth: "30%"
-    ,maxWidth: "30%"
+    minWidth: "40%"
+    ,maxWidth: "40%"
   },
   {
     id: "more",
     label: "",
-    minWidth: "5%",
-    maxWidth: "5%"
+    minWidth: "10%",
+    maxWidth: "10%"
   },
 ];
 
@@ -51,10 +52,10 @@ export default function StickyHeadTable() {
   const [rows, setRows] = useState([]);
   const [clickedImage, setClickedImage] = useState("");
 
-  const handleOpen = (index) => {
-    setClickedImage(rows[index][2]);
-    setOpen(true);
-  };
+  // const handleOpen = (index) => {
+  //   // setClickedImage(rows[index][2]);
+  //   // setOpen(true);
+  // };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -118,25 +119,27 @@ export default function StickyHeadTable() {
                   <TableCell
                     align="right"
                     style={{ cursor: "pointer" }}
-                    onClick={() => handleOpen(index)}
+                    // onClick={() => handleOpen(index)}
                   >
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: "#699eee",
-                      ":hover": {
+                  <Link href="/admin/request_details/1">
+                    <Button
+                      variant="contained"
+                      sx={{
                         backgroundColor: "#699eee",
-                      },
-                      fontSize: {
-                        xs: 12,
-                        sm: 14,
-                        md: 15,
-                      },
-                      textTransform: "none",
-                    } }
-                  >
-                    View more
-                  </Button>
+                        ":hover": {
+                          backgroundColor: "#699eee",
+                        },
+                        fontSize: {
+                          xs: 12,
+                          sm: 14,
+                          md: 15,
+                        },
+                        textTransform: "none",
+                      } }
+                    >
+                      View more
+                    </Button>
+                  </Link>
                   </TableCell>
                 </TableRow>
               ))}

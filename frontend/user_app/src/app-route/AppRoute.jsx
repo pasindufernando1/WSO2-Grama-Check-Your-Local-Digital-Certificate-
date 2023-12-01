@@ -9,6 +9,8 @@ import CheckStatus from "../Pages/CheckStatus";
 import Dashboard from "../Pages/Dashboard";
 import Admin from "../Pages_admin/dashboard";
 import Requests from "../Pages_admin/certificate_requests";
+import RequestDetails from "../Pages_admin/RequestDetails";
+
 function AppRoute() {
   return (
     <BrowserRouter>
@@ -20,6 +22,7 @@ function AppRoute() {
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/admin/dashboard" element={<Admin />} />
         <Route path="/admin/requests" element={<Requests />} />
+        <Route path="/admin/request_details/:id" element={<RequestDetails />} />
       </Routes>
     </BrowserRouter>
   );
