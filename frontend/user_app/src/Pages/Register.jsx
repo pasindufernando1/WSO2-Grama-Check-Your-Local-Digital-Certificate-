@@ -1,3 +1,5 @@
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -16,7 +18,7 @@ import Admin from "../Pages_admin/dashboard";
 function Register() {
   
   const { state, signIn, signOut , getAccessToken, getIDToken, getBasicUserInfo } = useAuthContext();
-  console.log(state);
+  // console.log(state);
   const [userInfo, setUserInfo] = useState({});
   const navigate = useNavigate();
   useEffect(() => {
@@ -145,7 +147,27 @@ function Register() {
         </Box>
       </Container>
       </div>)
-      : <>
+      : 
+      <>
+                      <Button
+                  variant="contained"
+                  sx={{
+                    mr: 1,
+                    mt: 3,
+                    backgroundColor: "#699eee",
+                    ":hover": {
+                      backgroundColor: "#699eee",
+                    },
+                    fontSize: {
+                      xs: 12,
+                      sm: 14,
+                      md: 15,
+                    },
+                    textTransform: "none",
+                  }} onClick={ () => signOut() }
+                >
+                  Logout
+                </Button>
       </>
     }
     </div>
