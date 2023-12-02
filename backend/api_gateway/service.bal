@@ -95,7 +95,7 @@ isolated service /api/v1 on new http:Listener(9090) {
                 } else {
                     return <http:BadRequest>{
                         body: {
-                            "message": "Cannot apply requests for the same nic withi its validity period."
+                            "message": "Request creation failed please check entered details again."
                         }
                     };
                 }
@@ -103,5 +103,85 @@ isolated service /api/v1 on new http:Listener(9090) {
             }
         }
 
+    }
+
+    # A resource to update the certificate status
+    #
+    # + id - id of the certificate
+    # + new_status - new status of the certificate, should be one of the following
+    # - APPROVED
+    # - REJECTED
+    # - COLLECTED
+    # + return - http:Accepted,http:BadRequest or http:InternalServerError
+    resource function patch certificate/[string id]/update/status(DTO:CertificateStatus new_status) returns http:InternalServerError|http:BadRequest|http:Accepted {
+
+        lock {
+            int|error update_result = self.certificate_client.update_status(id, new_status);
+
+            if (update_result is error) {
+                io:println("Error: " + update_result.toString());
+                return <http:InternalServerError>{
+                    body: {
+                        "message": "Error occurred while updating the certificate status."
+                    }
+                };
+            } else {
+                if (update_result == 404 || update_result == 400) {
+                    return <http:BadRequest>{
+                        body: {
+                            "message": "Update failed please check entered details again."
+                        }
+                    };
+                } else {
+                    return <http:Accepted>{
+                        body: {
+                            "message": "Certificate status updated successfully."
+                        }
+                    };
+                }
+            }
+        }
+    }
+
+    # A resource to get the certificate details
+    #
+    # + certificate_id - id of the certificate
+    # + return - http:Ok,http:BadRequest or http:InternalServerError
+    resource function get certificate/[string certificate_id]/'check/status() returns http:Ok|http:BadRequest|http:InternalServerError {
+
+        lock {
+            json|http:BadRequest|error certificate = self.certificate_client.get_certificate_details(certificate_id);
+
+            if (certificate is error) {
+                return <http:InternalServerError>{
+                    body: {
+                        "message": "Error occurred while getting the certificate details."
+                    }
+                };
+            }
+            if (certificate is json) {
+                json|error certificate_status = certificate.status;
+                if (certificate_status is error) {
+                    io:println("Error: Response doesn't contain status");
+                    return <http:InternalServerError>{
+                        body: {
+                            "message": "Error occurred while getting the certificate status."
+                        }
+                    };
+                }
+                return <http:Ok>{
+                    body: {
+                        "id": certificate_id,
+                        "status": certificate_status.toString()
+                    }
+                };
+            }
+            return <http:BadRequest>{
+                body: {
+                    "message": "Certificate for the given id is not found."
+                }
+            };
+
+        }
     }
 }

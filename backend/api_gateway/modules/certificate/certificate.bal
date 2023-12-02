@@ -12,7 +12,9 @@ public class CertificateClient {
     public isolated function can_user_apply(string user_id) returns boolean|error {
 
         lock {
-            return <boolean>check self.certificate_api_client->/can\-request\-newcertificate(userId = user_id);
+            json response = check self.certificate_api_client->/can\-request\-newcertificate(userId = user_id);
+
+            return true == response;
         }
     }
 
@@ -26,20 +28,50 @@ public class CertificateClient {
                 line_02: req_line_02,
                 line_03: req_line_03,
                 city: req_city,
-                gram_divisionId: req_gram_division_id
+                grama_divisionId: req_gram_division_id
             });
-
             if (response is error) {
-                io:println("Error: " + response.message());
                 return error("Error: error occured at create_user_certificate_request function");
             } else {
-                if (response.statusCode == 200) {
+                if (response.statusCode == 201) {
                     return true;
                 } else {
                     return false;
                 }
             }
 
+        }
+    }
+
+    public isolated function update_status(string req_id, string new_status) returns int|error {
+
+        http:Response|error response = self.certificate_api_client->/update\-user\-certificate\-requests/[req_id].put({
+            },
+            updatingStatus = new_status
+        );
+
+        if (response is error) {
+            io:println(response.message());
+            return error("Error: error occured at update_status function");
+        } else {
+            return response.statusCode;
+        }
+    }
+
+    public isolated function get_certificate_details(string certtificate_id) returns error|json|http:BadRequest {
+
+        http:Response|error response = self.certificate_api_client->/get\-user\-certificate\-requests/[certtificate_id].get();
+
+        if (response is error) {
+            io:println(response.message());
+            return error("Error: error occured at get_certificate_details function");
+        } else {
+            if (response.statusCode == 200) {
+                return response.getJsonPayload();
+            } else {
+                return <http:BadRequest>{
+                };
+            }
         }
     }
 };

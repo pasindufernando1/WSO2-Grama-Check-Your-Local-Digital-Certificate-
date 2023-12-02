@@ -2,9 +2,10 @@ import ballerina/constraint;
 
 # Description.
 #
-# + user_id - id of the user (returned from asgardeo)
-# + nic - valid nic in old or new format 
-# + address - address of the applicant
+# + user_id - id of the user (returned from asgardeo)  
+# + nic - valid nic in old or new format  
+# + address - address of the applicant  
+# + grama_division_id - id of the grama niladhari division
 public type CertificateRequestCreationDTO record {|
 
     string user_id;
@@ -34,3 +35,11 @@ public type Address record {|
     string line_03?;
     string city;
 |};
+
+
+public enum CertificateStatus {
+    PENDING,
+    APPROVED,
+    REJECTED,
+    COLLECTED
+};
