@@ -23,6 +23,7 @@ function AppRoute() {
         <Route path="/admin/dashboard" element={<Admin />} />
         <Route path="/admin/requests" element={<Requests />} />
         <Route path="/admin/request_details/:id" element={<RequestDetails />} />
+        <Route path="/logout" element={<Register />} />
       </Routes>
     </BrowserRouter>
   );
