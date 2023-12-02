@@ -41,7 +41,7 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
         self.serviceDBClient = check new ();
     }
 
-    # A resource for checking if the user can request a certificate (has passed 6 months since last request)
+    # A resource for checking if the user can request a certificate (cannot request a certificate if there is already a pending request with no issued date)
     # + userId - string - the user's asgardeo id
     # + return - boolean - true if the user can request a certificate, false otherwise. throws an error for internal server errors
     resource function get can\-request\-newcertificate(string userId) returns boolean|error {
@@ -49,7 +49,7 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
         stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
             whereClause = `user_id = ${userId}`);
 
-        UserCertificate[] arr = check from var userCertificate in userCertificates where userCertificate.issued_date != null && CERTIFICATE_REQUEST_INTERVAL_SEC > time:utcDiffSeconds(time:utcNow(), check time:utcFromString(convertDateToUTCString(userCertificate.issued_date))) select userCertificate;
+        UserCertificate[] arr = check from var userCertificate in userCertificates where userCertificate.issued_date == null && userCertificate.status == PENDING select userCertificate;
 
         if (arr.length() == 0) {
             //no certificate requests found, the user can request a certificate
