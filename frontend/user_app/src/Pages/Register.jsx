@@ -26,6 +26,10 @@
     const navigate = useNavigate();
 
     useEffect(() => {
+      if(!state.isAuthenticated){
+        return;
+      }
+
       getBasicUserInfo().then((info) => {
         setUserInfo(info);
 
