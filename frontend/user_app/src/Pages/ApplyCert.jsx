@@ -13,7 +13,7 @@ import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 
 //
-import { useAuthContext } from "@asgardeo/auth-react"
+import { useAuthContext } from "@asgardeo/auth-react";
 
 const override = {
   display: "block",
@@ -22,21 +22,13 @@ const override = {
   marginLeft: "53%",
 };
 
-
-
-
 function ApplyCertificate() {
   
-const { getOIDCServiceEndpoints } = useAuthContext()
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
-
-  getOIDCServiceEndpoints().then((res) => {
-    console.log(res)
-  })
 
   return (
     <>
@@ -58,8 +50,7 @@ const { getOIDCServiceEndpoints } = useAuthContext()
           },
           mt: "3%",
           borderRadius: 4,
-          boxShadow:{xs:0 , sm:2},
-
+          boxShadow: { xs: 0, sm: 2 },
         }}
       >
         <Grid
@@ -71,7 +62,7 @@ const { getOIDCServiceEndpoints } = useAuthContext()
             alignContent: "center",
             alignItems: { sm: "center" },
             width: { xs: "80%", md: "100%", lg: "100%" },
-            mx:'auto',
+            mx: "auto",
           }}
         >
           <Grid container>
@@ -99,7 +90,9 @@ const { getOIDCServiceEndpoints } = useAuthContext()
           </Grid>
 
           <Grid>
-            <InputLabel htmlFor="username" sx={{color:"black"}}>NIC or Passport ID</InputLabel>
+            <InputLabel htmlFor="username" sx={{ color: "black" }}>
+              NIC or Passport ID
+            </InputLabel>
             <TextField
               id="filled-helperText"
               label=""
@@ -114,7 +107,9 @@ const { getOIDCServiceEndpoints } = useAuthContext()
           </Grid>
 
           <Grid>
-            <InputLabel htmlFor="username" sx={{color:"black"}}>Address</InputLabel>
+            <InputLabel htmlFor="username" sx={{ color: "black" }}>
+              Address
+            </InputLabel>
             <TextField
               id="standard-helperText"
               label="Line 1"
@@ -140,13 +135,15 @@ const { getOIDCServiceEndpoints } = useAuthContext()
           </Grid>
 
           <Grid>
-            <InputLabel htmlFor="username" sx={{color:"black"}}>Grama Division</InputLabel>
+            <InputLabel htmlFor="username" sx={{ color: "black" }}>
+              Grama Division
+            </InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="standard-filled"
               sx={{ width: { xs: "100%", sm: "50vw" } }}
               size="small"
-              variant ="standard"
+              variant="standard"
             >
               <MenuItem value={10}>Ten</MenuItem>
               <MenuItem value={20}>Twenty</MenuItem>
@@ -175,7 +172,7 @@ const { getOIDCServiceEndpoints } = useAuthContext()
                   borderColor: "#699eee",
                   color: "#699eee",
                 },
-                p:1,
+                p: 1,
               }}
             >
               Submit
