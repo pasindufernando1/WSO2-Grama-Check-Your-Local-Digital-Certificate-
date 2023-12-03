@@ -1,16 +1,18 @@
 import ballerina/http;
 import ballerinax/trigger.slack;
 import ballerina/log;
+import ballerinax/slack as slackClient;
 
 # A service representing the slack service
 # bound to port `9090`.
 
+configurable string SLACK_USER_OAUTH_TOKEN = ?;
 configurable string SLACK_VERIFICATION_TOKEN = ?;
 configurable string SLACK_HELP_CHANNEL_ID = ?;
 configurable string SUPPORT_TEAM_EMAIL = ?;
 configurable string EMAIL_SERVICE_URL = ?;
 
-slack:ListenerConfig slackConfig = {
+slack:ListenerConfig slackConfig = {    //this is for the webhook
     verificationToken: SLACK_VERIFICATION_TOKEN
 };
 
@@ -33,7 +35,29 @@ service slack:MessageService on slackListener{
             string user = payload.event["user"].toString();
             string text = payload.event["text"].toString();
 
-            string emailMsg = "There is a new message in the help channel from " + user + ":\n\n" + text;
+            slackClient:ConnectionConfig slackClientConfig = {  //this is for the slack client
+                auth : {
+                    token : SLACK_USER_OAUTH_TOKEN
+                }
+            };
+
+            slackClient:Client|error slackClientConection = check new (slackClientConfig);
+
+            if (slackClientConection is error) {
+                log:printError("Error while creating the slack client", slackClientConection);
+                return;
+            }
+
+            slackClient:User|error userResponse = slackClientConection->getUserInfoByUserId(user);
+
+            if (userResponse is error) {
+                log:printError("Error while getting the user info", userResponse);
+                return;
+            }
+
+            string userName = userResponse.name;
+
+            string emailMsg = "There is a new message in the help channel from " + userName + ":\n\n" + text;
 
             json emailPayload = {
                 "email": SUPPORT_TEAM_EMAIL,
