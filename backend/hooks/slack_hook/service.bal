@@ -28,14 +28,14 @@ service slack:MessageService on slackListener{
                 return;
             }
 
-            string user = <string>payload.event["user"];
+            string user = <string>payload.event["name"];
             string text = <string>payload.event["text"];
 
-            string emailMsg = "There is a new message in the help channel from " + user + ":\n" + text;
+            string emailMsg = "There is a new message in the help channel from " + user + ":\n\n" + text;
 
             json emailPayload = {
                 "email": SUPPORT_TEAM_EMAIL,
-                "subject": "New message in the help channel",
+                "subject": "New message in the Help channel of Grama-Sewa app in Slack",
                 "message": emailMsg,
                 "isHTMLMsg": false
             };
