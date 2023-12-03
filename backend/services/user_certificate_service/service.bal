@@ -163,12 +163,9 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     
     resource function get get\-user\-certificate\-requests/[string id]() returns CertificateNotFound|UserCertificate|error {
         //get the user certificate request by id
-        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
-            whereClause = `id = ${id}`);
+        UserCertificate|error userCertificate = self.serviceDBClient->/usercertificates/[id];
 
-        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
-
-        if (arr.length() == 0) {
+        if (userCertificate is error) {
             //no user certificate request found, throw an error
             CertificateNotFound response = {
                 body : {
@@ -180,7 +177,7 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
             
         } else {
             //user certificate request found, return it
-            return arr[0];
+            return userCertificate;
         }
     }
 
