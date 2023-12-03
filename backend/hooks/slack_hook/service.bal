@@ -55,7 +55,11 @@ service slack:MessageService on slackListener{
                 return;
             }
 
-            string userName = userResponse.name;
+            string userName = userResponse.profile.displayName;
+
+            if (userName == "") {   //if the user has not set a display name
+                userName = userResponse.profile.realName;
+            }
 
             string emailMsg = "There is a new message in the help channel from " + userName + ":\n\n" + text;
 
