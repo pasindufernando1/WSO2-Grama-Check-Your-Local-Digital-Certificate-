@@ -101,39 +101,46 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     
     resource function get get\-all\-user\-certificate\-requests(string? userId, string? gramaDivisionId, string? gramaDivisionName) returns UserCertificate[]|CertificateNotFound|error {
         //get all user certificate requests
+        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates;
+        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
+
         if userId is () && gramaDivisionId is () && gramaDivisionName is () {
-            stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get();
-
-            UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
-
             return arr;
         }
 
-        string whereClause = "";
-
         if userId is string {
-            whereClause = string `user_id = ${userId}`;
+            if gramaDivisionId is string {
+                arr = from var userCertificate in arr where userCertificate.user_id == userId && userCertificate.grama_divisionId == gramaDivisionId select userCertificate;
+            }
+            else{
+                arr = from var userCertificate in arr where userCertificate.user_id == userId select userCertificate;
+            }
         }
-
-        if gramaDivisionId is string {
-            if whereClause == "" {
-                whereClause = string `grama_divisionId = ${gramaDivisionId}`;
-            } else {
-                whereClause = whereClause + string ` and grama_divisionId = ${gramaDivisionId}`;
+        else{
+            if gramaDivisionId is string {
+                arr = from var userCertificate in arr where userCertificate.grama_divisionId == gramaDivisionId select userCertificate;
             }
         }
 
+        //now filter by grama division name
         if gramaDivisionName is string {
-            if whereClause == "" {
-                whereClause = string `grama_divisionId in (select id from grama_divisions where name LIKE %${gramaDivisionName}%)`;
-            } else {
-                whereClause = whereClause + string ` and grama_divisionId in (select id from grama_divisions where name LIKE %${gramaDivisionName}%)`;
-            }
+            //get the grama division id by name
+            stream<GramaDivision, persist:Error?> gramaDivisions = self.serviceDBClient->/gramadivisions;
+
+            GramaDivision[] gramaDivisionsArr = check from var gramaDivision in gramaDivisions select gramaDivision;
+
+            gramaDivisionsArr = gramaDivisionsArr.filter(function (GramaDivision gramaDivision) returns boolean {
+                //regex to check if the grama division name contains the given grama division name
+                string:RegExp regex = re `.*${gramaDivisionName}.*`;
+                return regex.isFullMatch(gramaDivision.name);
+            });
+
+            //filter by grama division id
+            arr = from var userCertificate in arr 
+                from var gramaDivision in gramaDivisionsArr 
+                where userCertificate.grama_divisionId == gramaDivision.id
+                select userCertificate;
         }
-
-        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get(whereClause = `${whereClause}`);
-
-        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
 
         if(arr.length() == 0) {
             //no user certificate requests found, throw an error
