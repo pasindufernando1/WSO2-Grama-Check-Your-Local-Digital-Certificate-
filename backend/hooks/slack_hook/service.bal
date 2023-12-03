@@ -28,8 +28,10 @@ service slack:MessageService on slackListener{
                 return;
             }
 
-            string user = <string>payload.event["name"];
-            string text = <string>payload.event["text"];
+            log:printInfo(payload.toJsonString());
+
+            string user = payload.event["user"].toString();
+            string text = payload.event["text"].toString();
 
             string emailMsg = "There is a new message in the help channel from " + user + ":\n\n" + text;
 
