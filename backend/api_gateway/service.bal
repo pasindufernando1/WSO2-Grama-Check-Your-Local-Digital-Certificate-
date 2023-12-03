@@ -2,6 +2,7 @@ import api_gateway.DTO;
 import api_gateway.address;
 import api_gateway.certificate;
 import api_gateway.identity;
+import api_gateway.policecheck;
 
 import ballerina/http;
 import ballerina/io;
@@ -11,6 +12,7 @@ isolated service /api/v1 on new http:Listener(9090) {
     private identity:IdentityClient identity_client = check new ();
     private address:AddressClient address_client = check new ();
     private certificate:CertificateClient certificate_client = check new ();
+    private policecheck:PoliceCheckClient police_check_client = check new ();
 
     public function init() returns error? {
 
@@ -114,7 +116,7 @@ isolated service /api/v1 on new http:Listener(9090) {
     # - REJECTED
     # - COLLECTED
     # + return - http:Accepted,http:BadRequest or http:InternalServerError
-    resource function patch certificates/[string id]/update/status(DTO:CertificateStatus new_status) returns http:InternalServerError|http:BadRequest|http:Accepted {
+    resource function patch certificate/[string id]/status/update(DTO:CertificateStatus new_status) returns http:InternalServerError|http:BadRequest|http:Accepted {
 
         lock {
             int|error update_result = self.certificate_client.update_status(id, new_status);
@@ -147,12 +149,12 @@ isolated service /api/v1 on new http:Listener(9090) {
 
     # A resource to get the certificate details
     #
-    # + certificate_id - id of the certificate
+    # + id - id of the certificate
     # + return - http:Ok,http:BadRequest or http:InternalServerError
-    resource function get certificate/[string certificate_id]/'check/status() returns http:Ok|http:BadRequest|http:InternalServerError {
+    resource function get certificate/[string id]/status() returns http:Ok|http:BadRequest|http:InternalServerError {
 
         lock {
-            json|http:BadRequest|error certificate = self.certificate_client.get_certificate_details(certificate_id);
+            json|http:BadRequest|error certificate = self.certificate_client.get_certificate_details(id);
 
             if (certificate is error) {
                 return <http:InternalServerError>{
@@ -173,7 +175,7 @@ isolated service /api/v1 on new http:Listener(9090) {
                 }
                 return <http:Ok>{
                     body: {
-                        "id": certificate_id,
+                        "id": id,
                         "status": certificate_status.toString()
                     }
                 };
@@ -190,7 +192,7 @@ isolated service /api/v1 on new http:Listener(9090) {
     # A resource to get the grama division details
     #
     # + return - http:Ok,http:BadRequest or http:InternalServerError
-    resource function get grama\-division() returns http:Ok|http:BadRequest|http:InternalServerError {
+    resource function get gramadivisions() returns http:Ok|http:BadRequest|http:InternalServerError {
 
         lock {
             json|error|http:BadRequest grama_divisions = self.certificate_client.get_grama_division_details(());
@@ -216,12 +218,12 @@ isolated service /api/v1 on new http:Listener(9090) {
     }
 
     # A resource to get the certificate details by user id, grama division id or grama division name
-    # 
+    #
     # + user_id - id of the user
     # + grama_division_id - id of the grama division
     # + grama_division_name - name of the grama division
     # + return - http:Ok,http:BadRequest or http:InternalServerError
-    resource function get certificate(string? user_id, string? grama_division_id, string? grama_division_name) returns http:Ok|http:BadRequest|http:InternalServerError {
+    resource function get certificates(string? user_id, string? grama_division_id, string? grama_division_name) returns http:Ok|http:BadRequest|http:InternalServerError {
 
         lock {
 
@@ -255,6 +257,61 @@ isolated service /api/v1 on new http:Listener(9090) {
             return <http:BadRequest>{
                 body: {
                     "message": "Certificate for the given id is not found."
+                }
+            };
+        }
+
+    }
+
+    # A resource to get the certificate details by user id, grama division id or grama division name
+    #
+    # + certificate_id - id of the certificate
+    # + return - http:Ok,http:BadRequest or http:InternalServerError
+    resource function get certificate/[string certificate_id]() returns http:Ok|http:BadRequest|http:InternalServerError {
+
+        lock {
+
+            json|error|http:BadRequest response = self.certificate_client.get_certificate_details(certificate_id);
+
+            if (response is error) {
+                return <http:InternalServerError>{
+                    body: {
+                        "message": "Error occurred while getting the certificate details."
+                    }
+                };
+            }
+            if (response is json) {
+                json|error nic = response.nic;
+                if (nic is error) {
+                    io:println("Error: Response doesn't contain nic");
+                    return <http:InternalServerError>{
+                        body: {
+                            "message": "Error occurred while getting the nic."
+                        }
+                    };
+                } else {
+                    json|error|http:BadRequest police_check_response = self.police_check_client.get_police_records_by_NIC(nic.toString());
+                    if (police_check_response is error) {
+                        return <http:InternalServerError>{
+                            body: {
+                                "message": "Error occurred while getting the police check details."
+                            }
+                        };
+                    }
+                    if (police_check_response is json) {
+                        return <http:Ok>{
+                            body: {
+                                "id": certificate_id,
+                                "certificate_details": response.clone(),
+                                "police_check_details": police_check_response.clone()
+                            }
+                        };
+                    }
+                }
+            }
+            return <http:BadRequest>{
+                body: {
+                    "message": "Invalid request."
                 }
             };
         }
