@@ -184,4 +184,29 @@ isolated service /api/v1 on new http:Listener(9090) {
 
         }
     }
+
+    resource function get grama\-division() returns http:Ok|http:BadRequest|http:InternalServerError {
+
+        lock {
+            json|error|http:BadRequest grama_divisions = self.certificate_client.get_grama_division_details(());
+
+            if (grama_divisions is error) {
+                return <http:InternalServerError>{
+                    body: {
+                        "message": "Error occurred while getting the grama division details."
+                    }
+                };
+            }
+            if (grama_divisions is json) {
+                return <http:Ok>{
+                    body: grama_divisions.clone()
+                };
+            }
+            return <http:BadRequest>{
+                body: {
+                    "message": "Grama division for the given name is not found."
+                }
+            };
+        }
+    }
 }

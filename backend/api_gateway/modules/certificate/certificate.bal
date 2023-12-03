@@ -74,4 +74,28 @@ public class CertificateClient {
             }
         }
     }
+
+    public isolated function get_grama_division_details(string? division_name) returns error|json|http:BadRequest {
+
+        http:Response|error response = new ();
+        if (division_name is string) {
+            response = self.certificate_api_client->/get\-grama\-divisions.get({
+                divisionName: division_name
+            });
+        } else {
+            response = self.certificate_api_client->/get\-grama\-divisions.get();
+        }
+
+        if (response is error) {
+            io:println(response.message());
+            return error("Error: error occured at get_grama_division_details function");
+        } else {
+            if (response.statusCode == 200) {
+                return response.getJsonPayload();
+            } else {
+                return <http:BadRequest>{
+                };
+            }
+        }
+    }
 };
