@@ -101,39 +101,46 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     
     resource function get get\-all\-user\-certificate\-requests(string? userId, string? gramaDivisionId, string? gramaDivisionName) returns UserCertificate[]|CertificateNotFound|error {
         //get all user certificate requests
+        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates;
+        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
+
         if userId is () && gramaDivisionId is () && gramaDivisionName is () {
-            stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get();
-
-            UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
-
             return arr;
         }
 
-        string whereClause = "";
-
         if userId is string {
-            whereClause = string `user_id = ${userId}`;
+            if gramaDivisionId is string {
+                arr = from var userCertificate in arr where userCertificate.user_id == userId && userCertificate.grama_divisionId == gramaDivisionId select userCertificate;
+            }
+            else{
+                arr = from var userCertificate in arr where userCertificate.user_id == userId select userCertificate;
+            }
         }
-
-        if gramaDivisionId is string {
-            if whereClause == "" {
-                whereClause = string `grama_divisionId = ${gramaDivisionId}`;
-            } else {
-                whereClause = whereClause + string ` and grama_divisionId = ${gramaDivisionId}`;
+        else{
+            if gramaDivisionId is string {
+                arr = from var userCertificate in arr where userCertificate.grama_divisionId == gramaDivisionId select userCertificate;
             }
         }
 
+        //now filter by grama division name
         if gramaDivisionName is string {
-            if whereClause == "" {
-                whereClause = string `grama_divisionId in (select id from grama_divisions where name LIKE %${gramaDivisionName}%)`;
-            } else {
-                whereClause = whereClause + string ` and grama_divisionId in (select id from grama_divisions where name LIKE %${gramaDivisionName}%)`;
-            }
+            //get the grama division id by name
+            stream<GramaDivision, persist:Error?> gramaDivisions = self.serviceDBClient->/gramadivisions;
+
+            GramaDivision[] gramaDivisionsArr = check from var gramaDivision in gramaDivisions select gramaDivision;
+
+            gramaDivisionsArr = gramaDivisionsArr.filter(function (GramaDivision gramaDivision) returns boolean {
+                //regex to check if the grama division name contains the given grama division name
+                string:RegExp regex = re `.*${string:toLowerAscii(gramaDivisionName.toString())}.*`;
+                return regex.isFullMatch(string:toLowerAscii(gramaDivision.name));
+            });
+
+            //filter by grama division id
+            arr = from var userCertificate in arr 
+                from var gramaDivision in gramaDivisionsArr 
+                where userCertificate.grama_divisionId == gramaDivision.id
+                select userCertificate;
         }
-
-        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get(whereClause = `${whereClause}`);
-
-        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
 
         if(arr.length() == 0) {
             //no user certificate requests found, throw an error
@@ -156,12 +163,9 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     
     resource function get get\-user\-certificate\-requests/[string id]() returns CertificateNotFound|UserCertificate|error {
         //get the user certificate request by id
-        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
-            whereClause = `id = ${id}`);
+        UserCertificate|error userCertificate = self.serviceDBClient->/usercertificates/[id];
 
-        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
-
-        if (arr.length() == 0) {
+        if (userCertificate is error) {
             //no user certificate request found, throw an error
             CertificateNotFound response = {
                 body : {
@@ -173,7 +177,7 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
             
         } else {
             //user certificate request found, return it
-            return arr[0];
+            return userCertificate;
         }
     }
 
@@ -236,10 +240,23 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     
     resource function get get\-user\-certificate\-requests\-by\-grama\-division\-name(string gramaDivisionName) returns UserCertificate[]| CertificateNotFound| error {
         //get the user certificate request by grama division name
-        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
-            whereClause = `grama_divisionId in (select id from grama_divisions where name = ${gramaDivisionName})`);
+        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates;
 
-        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
+        stream<GramaDivision, persist:Error?> gramaDivisions = self.serviceDBClient->/gramadivisions;
+
+        GramaDivision[] gramaDivisionsArr = check from var gramaDivision in gramaDivisions select gramaDivision;
+        //filter by grama division name
+        gramaDivisionsArr = gramaDivisionsArr.filter(function (GramaDivision gramaDivision) returns boolean {
+            //regex to check if the grama division name contains the given grama division name
+            string:RegExp regex = re `.*${string:toLowerAscii(gramaDivisionName.toString())}.*`;
+            return regex.isFullMatch(string:toLowerAscii(gramaDivision.name));
+        });
+
+        UserCertificate[] arr = check from var userCertificate in userCertificates 
+            from var gramaDivision in gramaDivisionsArr 
+            where userCertificate.grama_divisionId == gramaDivision.id
+            select userCertificate;
+
 
         if (arr.length() == 0) {
             //no user certificate request found, throw an error
@@ -265,12 +282,9 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     
     resource function put update\-user\-certificate\-requests/[string id](status updatingStatus) returns CertificateNotFound|UserCertificate|CertificateBadRequest|error {
         //get the user certificate request by id
-        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
-            whereClause = `id = ${id}`);
+        UserCertificate|error userCertificate = self.serviceDBClient->/usercertificates/[id];
 
-        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
-
-        if (arr.length() == 0) {
+        if (userCertificate is error) {
             //no user certificate request found, throw an error
             CertificateNotFound response = {
                 body : {
@@ -310,7 +324,7 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
             }
             else if(updatingStatus == COLLECTED) {
                 //check if the current status is approved
-                if(arr[0].status != APPROVED) {
+                if(userCertificate.status != APPROVED) {
                     //the current status is not approved, throw an error
                     CertificateBadRequest response = {
                         body : {
@@ -360,21 +374,17 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     # + return - GramaDivision[] - all grama divisions. throws an error for internal server errors
     
     resource function get get\-grama\-divisions(string? divisionName) returns GramaDivision[]|error {
+        //get all grama divisions
+        stream<GramaDivision, persist:Error?> gramaDivisions = self.serviceDBClient->/gramadivisions.get();
         if divisionName is () {
-            //get all grama divisions
-            stream<GramaDivision, persist:Error?> gramaDivisions = self.serviceDBClient->/gramadivisions.get();
-
             GramaDivision[] arr = check from var gramaDivision in gramaDivisions select gramaDivision;
 
             return arr;
         }
 
-        //get grama divisions by name
-        stream<GramaDivision, persist:Error?> gramaDivisions = self.serviceDBClient->/gramadivisions.get( 
-            whereClause = `name LIKE %${divisionName}%`);
-
-        GramaDivision[] arr = check from var gramaDivision in gramaDivisions select gramaDivision;
-
+        //filter by grama division name using regex
+        string:RegExp regex = re `.*${string:toLowerAscii(divisionName.toString())}.*`;
+        GramaDivision[] arr = check from var gramaDivision in gramaDivisions where regex.isFullMatch(string:toLowerAscii(gramaDivision.name)) select gramaDivision;
         return arr;
     }
 }
