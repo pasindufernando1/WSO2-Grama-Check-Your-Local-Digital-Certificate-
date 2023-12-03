@@ -3,6 +3,8 @@ import ballerina/io;
 
 configurable string CERTIFICATE_API_URL = ?;
 
+# Description.
+# Client used to communicate with the certificate API.
 public class CertificateClient {
     private http:Client certificate_api_client = check new (CERTIFICATE_API_URL);
 
@@ -69,6 +71,8 @@ public class CertificateClient {
             if (response.statusCode == 200) {
                 return response.getJsonPayload();
             } else {
+                io:println(response.statusCode);
+                io:println(response.getJsonPayload());
                 return <http:BadRequest>{
                 };
             }
@@ -93,6 +97,49 @@ public class CertificateClient {
             if (response.statusCode == 200) {
                 return response.getJsonPayload();
             } else {
+                io:println(response.statusCode);
+                io:println(response.getJsonPayload());
+                return <http:BadRequest>{
+                };
+            }
+        }
+    }
+
+    public isolated function get_certificate_details_by_user_id(string user_id) returns error|json|http:BadRequest {
+
+        http:Response|error response = self.certificate_api_client->/get\-all\-user\-certificate\-requests.get(userId = user_id);
+
+        if (response is error) {
+            io:println(response.message());
+            return error("Error: error occured at get_certificate_details_by_user_id function");
+        } else {
+            if (response.statusCode == 200) {
+                return response.getJsonPayload();
+            } else {
+                io:println(response.statusCode);
+                io:println(response.getJsonPayload());
+                return <http:BadRequest>{
+                };
+            }
+        }
+    }
+
+    public isolated function get_certificate_details_by_grama_division(string? grama_division_id, string? grama_division_name) returns json|error|http:BadRequest {
+
+        http:Response|error response = self.certificate_api_client->/get\-all\-user\-certificate\-requests.get(
+            gramaDivisionId = grama_division_id.toString(),
+            gramaDivisionName = grama_division_name.toString()
+        );
+
+        if (response is error) {
+            io:println(response.message());
+            return error("Error: error occured at get_certificate_details_by_grama_division function");
+        } else {
+            if (response.statusCode == 200) {
+                return response.getJsonPayload();
+            } else {
+                io:println(response.statusCode);
+                io:println(response.getJsonPayload());
                 return <http:BadRequest>{
                 };
             }
