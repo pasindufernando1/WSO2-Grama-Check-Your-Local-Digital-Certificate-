@@ -5,7 +5,7 @@ import ballerina/uuid;
 
 # A service representing a network-accessible API
 # bound to port `9000`.
-# 
+#
 const time:Seconds CERTIFICATE_REQUEST_INTERVAL_SEC = 6 * 30 * 24 * 60 * 60; //6 months in seconds
 
 type RequestCreated record {|
@@ -46,10 +46,13 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     # + return - boolean - true if the user can request a certificate, false otherwise. throws an error for internal server errors
     resource function get can\-request\-newcertificate(string userId) returns boolean|error {
         //get the user's last certificate request date
-        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
-            whereClause = `user_id = ${userId}`);
+        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get(
+            whereClause = `user_id = ${userId}`
+        );
 
-        UserCertificate[] arr = check from var userCertificate in userCertificates where userCertificate.issued_date == null && userCertificate.status == PENDING select userCertificate;
+        UserCertificate[] arr = check from var userCertificate in userCertificates
+            where userCertificate.issued_date == null && userCertificate.status == PENDING
+            select userCertificate;
 
         if (arr.length() == 0) {
             //no certificate requests found, the user can request a certificate
@@ -63,7 +66,6 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     # A resource for adding a new user certificate request
     # + requestPayload - UserCertificateInsert - the user certificate request payload
     # + return - RequestCreated - the created request id. throws an error for internal server errors
-    
     resource function post create\-user\-certificate\-request(UserCertificateInsertDTO requestPayload) returns RequestCreated|error {
         //create a new user certificate request
         UserCertificate userCertificate = {
@@ -76,7 +78,7 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
             city: requestPayload.city,
             issued_date: null,
             collected_date: null,
-            status : PENDING,
+            status: PENDING,
             grama_divisionId: requestPayload.grama_divisionId
         };
 
@@ -84,9 +86,9 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
         string[] ids = check self.serviceDBClient->/usercertificates.post([userCertificate]);
 
         RequestCreated response = {
-            body : {
-                message : "User certificate request created successfully",
-                id : ids[0]
+            body: {
+                message: "User certificate request created successfully",
+                id: ids[0]
             }
         };
 
@@ -98,11 +100,11 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     # + gramaDivisionId - string - the grama division id
     # + gramaDivisionName - string - the grama division name
     # + return - UserCertificate[] - all user certificate requests. throws an error for internal server errors
-    
     resource function get get\-all\-user\-certificate\-requests(string? userId, string? gramaDivisionId, string? gramaDivisionName) returns UserCertificate[]|CertificateNotFound|error {
         //get all user certificate requests
         stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates;
-        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
+        UserCertificate[] arr = check from var userCertificate in userCertificates
+            select userCertificate;
 
         if userId is () && gramaDivisionId is () && gramaDivisionName is () {
             return arr;
@@ -110,15 +112,21 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
 
         if userId is string {
             if gramaDivisionId is string {
-                arr = from var userCertificate in arr where userCertificate.user_id == userId && userCertificate.grama_divisionId == gramaDivisionId select userCertificate;
+                arr = from var userCertificate in arr
+                    where userCertificate.user_id == userId && userCertificate.grama_divisionId == gramaDivisionId
+                    select userCertificate;
             }
-            else{
-                arr = from var userCertificate in arr where userCertificate.user_id == userId select userCertificate;
+            else {
+                arr = from var userCertificate in arr
+                    where userCertificate.user_id == userId
+                    select userCertificate;
             }
         }
-        else{
+        else {
             if gramaDivisionId is string {
-                arr = from var userCertificate in arr where userCertificate.grama_divisionId == gramaDivisionId select userCertificate;
+                arr = from var userCertificate in arr
+                    where userCertificate.grama_divisionId == gramaDivisionId
+                    select userCertificate;
             }
         }
 
@@ -127,26 +135,27 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
             //get the grama division id by name
             stream<GramaDivision, persist:Error?> gramaDivisions = self.serviceDBClient->/gramadivisions;
 
-            GramaDivision[] gramaDivisionsArr = check from var gramaDivision in gramaDivisions select gramaDivision;
+            GramaDivision[] gramaDivisionsArr = check from var gramaDivision in gramaDivisions
+                select gramaDivision;
 
-            gramaDivisionsArr = gramaDivisionsArr.filter(function (GramaDivision gramaDivision) returns boolean {
+            gramaDivisionsArr = gramaDivisionsArr.filter(function(GramaDivision gramaDivision) returns boolean {
                 //regex to check if the grama division name contains the given grama division name
                 string:RegExp regex = re `.*${string:toLowerAscii(gramaDivisionName.toString())}.*`;
                 return regex.isFullMatch(string:toLowerAscii(gramaDivision.name));
             });
 
             //filter by grama division id
-            arr = from var userCertificate in arr 
-                from var gramaDivision in gramaDivisionsArr 
+            arr = from var userCertificate in arr
+                from var gramaDivision in gramaDivisionsArr
                 where userCertificate.grama_divisionId == gramaDivision.id
                 select userCertificate;
         }
 
-        if(arr.length() == 0) {
+        if (arr.length() == 0) {
             //no user certificate requests found, throw an error
             CertificateNotFound response = {
-                body : {
-                    message : "Could not find any user certificate requests for the given parameters"
+                body: {
+                    message: "Could not find any user certificate requests for the given parameters"
                 }
             };
 
@@ -160,7 +169,6 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     # + id - string - the user certificate request id
     # + return - UserCertificate - the user certificate request. throws an error for internal server errors
     # + return - CertificateNotFound - the user certificate request not found error
-    
     resource function get get\-user\-certificate\-requests/[string id]() returns CertificateNotFound|UserCertificate|error {
         //get the user certificate request by id
         UserCertificate|error userCertificate = self.serviceDBClient->/usercertificates/[id];
@@ -168,13 +176,13 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
         if (userCertificate is error) {
             //no user certificate request found, throw an error
             CertificateNotFound response = {
-                body : {
-                    message : "User certificate request not found"
+                body: {
+                    message: "User certificate request not found"
                 }
             };
 
             return response;
-            
+
         } else {
             //user certificate request found, return it
             return userCertificate;
@@ -184,24 +192,25 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     # A resource for getting all user certificate requests by user id
     # + userId - string - the user's asgardeo id
     # + return - UserCertificate - the user certificate request. throws an error for internal server errors
-    
-    resource function get get\-user\-certificate\-requests\-by\-user\-id(string userId) returns UserCertificate[]| CertificateNotFound| error {
+    resource function get get\-user\-certificate\-requests\-by\-user\-id(string userId) returns UserCertificate[]|CertificateNotFound|error {
         //get the user certificate request by user id
-        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
-            whereClause = `user_id = ${userId}`);
+        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get(
+            whereClause = `user_id = ${userId}`
+        );
 
-        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
+        UserCertificate[] arr = check from var userCertificate in userCertificates
+            select userCertificate;
 
         if (arr.length() == 0) {
             //no user certificate request found, throw an error
             CertificateNotFound response = {
-                body : {
-                    message : "Could not find any user certificate requests for the given user"
+                body: {
+                    message: "Could not find any user certificate requests for the given user"
                 }
             };
 
             return response;
-            
+
         } else {
             //user certificates found, return them
             return arr;
@@ -211,19 +220,20 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     # A resource for getting all user certificate requests by grama division id
     # + gramaDivisionId - string - the grama division id
     # + return - UserCertificate - the user certificate request. throws an error for internal server errors
-    
-    resource function get get\-user\-certificate\-requests\-by\-grama\-division\-id(string gramaDivisionId) returns UserCertificate[]| CertificateNotFound| error {
+    resource function get get\-user\-certificate\-requests\-by\-grama\-division\-id(string gramaDivisionId) returns UserCertificate[]|CertificateNotFound|error {
         //get the user certificate request by grama division id
-        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get( 
-            whereClause = `grama_divisionId = ${gramaDivisionId}`);
+        stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates.get(
+            whereClause = `grama_divisionId = ${gramaDivisionId}`
+        );
 
-        UserCertificate[] arr = check from var userCertificate in userCertificates select userCertificate;
+        UserCertificate[] arr = check from var userCertificate in userCertificates
+            select userCertificate;
 
         if (arr.length() == 0) {
             //no user certificate request found, throw an error
             CertificateNotFound response = {
-                body : {
-                    message : "Could not find any user certificate requests for the given grama division"
+                body: {
+                    message: "Could not find any user certificate requests for the given grama division"
                 }
             };
 
@@ -237,32 +247,31 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
     # A resource for getting all user certificate requests by grama division name
     # + gramaDivisionName - string - the grama division name
     # + return - UserCertificate[] - the user certificate requests. throws an error for internal server errors
-    
-    resource function get get\-user\-certificate\-requests\-by\-grama\-division\-name(string gramaDivisionName) returns UserCertificate[]| CertificateNotFound| error {
+    resource function get get\-user\-certificate\-requests\-by\-grama\-division\-name(string gramaDivisionName) returns UserCertificate[]|CertificateNotFound|error {
         //get the user certificate request by grama division name
         stream<UserCertificate, persist:Error?> userCertificates = self.serviceDBClient->/usercertificates;
 
         stream<GramaDivision, persist:Error?> gramaDivisions = self.serviceDBClient->/gramadivisions;
 
-        GramaDivision[] gramaDivisionsArr = check from var gramaDivision in gramaDivisions select gramaDivision;
+        GramaDivision[] gramaDivisionsArr = check from var gramaDivision in gramaDivisions
+            select gramaDivision;
         //filter by grama division name
-        gramaDivisionsArr = gramaDivisionsArr.filter(function (GramaDivision gramaDivision) returns boolean {
+        gramaDivisionsArr = gramaDivisionsArr.filter(function(GramaDivision gramaDivision) returns boolean {
             //regex to check if the grama division name contains the given grama division name
             string:RegExp regex = re `.*${string:toLowerAscii(gramaDivisionName.toString())}.*`;
             return regex.isFullMatch(string:toLowerAscii(gramaDivision.name));
         });
 
-        UserCertificate[] arr = check from var userCertificate in userCertificates 
-            from var gramaDivision in gramaDivisionsArr 
+        UserCertificate[] arr = check from var userCertificate in userCertificates
+            from var gramaDivision in gramaDivisionsArr
             where userCertificate.grama_divisionId == gramaDivision.id
             select userCertificate;
-
 
         if (arr.length() == 0) {
             //no user certificate request found, throw an error
             CertificateNotFound response = {
-                body : {
-                    message : "Could not find any user certificate requests for the given grama division"
+                body: {
+                    message: "Could not find any user certificate requests for the given grama division"
                 }
             };
 
@@ -273,13 +282,11 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
         }
     }
 
-
     # A resource for updating a user certificate request
     # + id - string - the user certificate request id
     # + updatingStatus - string - the user certificate request status
     # + return - UserCertificate - the updated user certificate request. throws an error for internal server errors
     # + return - CertificateNotFound - the user certificate request not found error 
-    
     resource function put update\-user\-certificate\-requests/[string id](status updatingStatus) returns CertificateNotFound|UserCertificate|CertificateBadRequest|error {
         //get the user certificate request by id
         UserCertificate|error userCertificate = self.serviceDBClient->/usercertificates/[id];
@@ -287,13 +294,13 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
         if (userCertificate is error) {
             //no user certificate request found, throw an error
             CertificateNotFound response = {
-                body : {
-                    message : "User certificate request not found"
+                body: {
+                    message: "User certificate request not found"
                 }
             };
 
             return response;
-            
+
         } else {
             //user certificate request found, update it
             if updatingStatus == APPROVED {
@@ -310,7 +317,6 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
 
                 splitDate = regex.split(splitDate[0]);
 
-
                 UserCertificate userCertificateResult = check self.serviceDBClient->/usercertificates/[id].put({
                     status: updatingStatus,
                     issued_date: {
@@ -322,17 +328,17 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
 
                 return userCertificateResult;
             }
-            else if(updatingStatus == COLLECTED) {
+            else if (updatingStatus == COLLECTED) {
                 //check if the current status is approved
-                if(userCertificate.status != APPROVED) {
+                if (userCertificate.status != APPROVED) {
                     //the current status is not approved, throw an error
                     CertificateBadRequest response = {
-                        body : {
-                            message : "User certificate request status is not approved"
+                        body: {
+                            message: "User certificate request status is not approved"
                         }
                     };
 
-                    return response;   
+                    return response;
                 }
 
                 //update the user certificate request in the service db
@@ -372,25 +378,85 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
 
     # A resource for getting all grama divisions
     # + return - GramaDivision[] - all grama divisions. throws an error for internal server errors
-    
     resource function get get\-grama\-divisions(string? divisionName) returns GramaDivision[]|error {
         //get all grama divisions
         stream<GramaDivision, persist:Error?> gramaDivisions = self.serviceDBClient->/gramadivisions.get();
         if divisionName is () {
-            GramaDivision[] arr = check from var gramaDivision in gramaDivisions select gramaDivision;
+            GramaDivision[] arr = check from var gramaDivision in gramaDivisions
+                select gramaDivision;
 
             return arr;
         }
 
         //filter by grama division name using regex
         string:RegExp regex = re `.*${string:toLowerAscii(divisionName.toString())}.*`;
-        GramaDivision[] arr = check from var gramaDivision in gramaDivisions where regex.isFullMatch(string:toLowerAscii(gramaDivision.name)) select gramaDivision;
+        GramaDivision[] arr = check from var gramaDivision in gramaDivisions
+            where regex.isFullMatch(string:toLowerAscii(gramaDivision.name))
+            select gramaDivision;
         return arr;
+    }
+
+    resource function get get\-user\-certificate\-request\-current/[string userId]() returns UserCertificate|CertificateNotFound|error {
+
+        stream<UserCertificate, persist:Error?> usercertificates = self.serviceDBClient->/usercertificates(
+            whereClause = `user_id = ${userId}`
+        );
+
+        UserCertificate[] userCertificateArr = check from var userCertificate in usercertificates
+            select userCertificate;
+
+        if (userCertificateArr.length() == 0) {
+            return <CertificateNotFound>{
+                body:{
+                    message: "User has not requested a certificate."
+                }
+            };
+        }
+
+        UserCertificate[] userPendingCertificateArr = userCertificateArr.filter(function(UserCertificate userCertificate) returns boolean {
+            return userCertificate.status == PENDING;
+        });
+
+        if (userPendingCertificateArr.length() == 1) {
+            return userPendingCertificateArr[0];
+        }
+
+        UserCertificate? latestUserCertificate = userCertificateArr.reduce(isolated function (UserCertificate? latest_certificate, UserCertificate next_certificate) returns UserCertificate? {
+            if (latest_certificate is ()) {
+                return next_certificate;
+            }
+            if (latest_certificate.status == PENDING) {
+                return next_certificate;
+            }
+            if (next_certificate.status == PENDING) {
+                return latest_certificate;
+            }
+            time:Utc|error latest_certificate_time = time:utcFromString(convertDateToUTCString(latest_certificate.issued_date));
+            time:Utc|error next_certificate_time = time:utcFromString(convertDateToUTCString(next_certificate.issued_date));
+            if( latest_certificate_time is time:Utc && next_certificate_time is time:Utc) {
+                if (latest_certificate_time < next_certificate_time) {
+                    return next_certificate;
+                } else {
+                    return latest_certificate;
+                }
+            }
+            return ();
+        },userCertificateArr[0]);
+
+        if( latestUserCertificate is UserCertificate) {
+            return latestUserCertificate;
+        } else {
+            return <CertificateNotFound>{
+                body: {
+                    message: "User certificate request not found"
+                } 
+            };
+        }
+
     }
 }
 
-
-function convertDateToUTCString(time:Date? date) returns string {
+isolated function convertDateToUTCString(time:Date? date) returns string {
     if date == null {
         return "";
     }
@@ -416,7 +482,7 @@ function convertDateToUTCString(time:Date? date) returns string {
     if date.hour is () {
         hour = "00";
     } else {
-        if(date.hour < 10) {
+        if (date.hour < 10) {
             hour = "0" + date.hour.toString();
         } else {
             hour = date.hour.toString();
@@ -427,7 +493,7 @@ function convertDateToUTCString(time:Date? date) returns string {
     if date.minute is () {
         minute = "00";
     } else {
-        if(date.minute < 10) {
+        if (date.minute < 10) {
             minute = "0" + date.minute.toString();
         } else {
             minute = date.minute.toString();
@@ -438,7 +504,7 @@ function convertDateToUTCString(time:Date? date) returns string {
     if date.second is () {
         second = "00.00";
     } else {
-        if(date.second < 10d) {
+        if (date.second < 10d) {
             second = "0" + date.second.toString();
         } else {
             second = date.second.toString();
