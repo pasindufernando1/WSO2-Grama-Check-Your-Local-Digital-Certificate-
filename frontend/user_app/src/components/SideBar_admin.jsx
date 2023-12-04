@@ -7,10 +7,11 @@ import { HiMenu } from "react-icons/hi";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { Button } from "@mui/base";
 import { useAuthContext } from "@asgardeo/auth-react";
+
 // Header component
 const Header = ({ toggleSidebar }) => (
-  <header className=" bg-black text-white p-4">
-    <Grid container spacing={2} className="md">
+  <header className=" bg-black text-white w-full h-[65px] p-5 fixed top-0p-4" style={{ zIndex: 200 }}>
+    <Grid container spacing={2} className=" md">
       <Grid item xs={8}>
         <Grid container spacing={2}>
           <Grid item xs={2} className="md:hidden">
@@ -67,17 +68,18 @@ const Header = ({ toggleSidebar }) => (
 
 // Sidebar component
 const Sidebar = ({ isOpen, toggleSidebar }) => {
-  const {signOut} = useAuthContext();
+  const { signOut } = useAuthContext();
 
   return (
-    <div>
+    <div >
       {/* Header */}
       <Header toggleSidebar={toggleSidebar} />
 
       {/* Sidebar - Hidden by default on small screens */}
       <div
-        className={`fixed h-screen bg-black text-white w-64  ${isOpen ? "translate-x-0" : "-translate-x-full"
-          } transition-transform duration-300 ease-in-out md:translate-x-0 `}
+        className={`fixed h-screen mt-[65px] bg-black text-white w-64  ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300 ease-in-out md:translate-x-0 `}
         style={{ zIndex: 100 }}
       >
         <ul className="mt-8">
@@ -87,33 +89,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <li className="p-4 hover:bg-gray-700">
             <Link to="/admin/requests">View Requests</Link>
           </li>
-          <li>
-                     </li>
+          <li></li>
         </ul>
         {/* Sidebar footer */}
-        <div className=" bottom-0 w-64 p-4">
-        <Button
-                  variant="contained"
-                  sx={{
-                    mr: 1,
-                    mt: 3,
-                    backgroundColor: "#699eee",
-                    ":hover": {
-                      backgroundColor: "#699eee",
-                    },
-                    fontSize: {
-                      xs: 12,
-                      sm: 14,
-                      md: 15,
-                    },
-                    zIndex:200,
-                    textTransform: "none",
-                  }} onClick={ () => signOut() }
-                >
-                  Logout
-                </Button>
-          <button onClick={()=> signOut()}>
-
+        <div className="mt-auto mb-0 mt-60">  
+          <button onClick={()=> signOut()} className=" w-[80%] bg-[#699eee] p-1 pr-3 pl-3 m-3 rounded-lg">
             Log out
           </button>
         </div>
