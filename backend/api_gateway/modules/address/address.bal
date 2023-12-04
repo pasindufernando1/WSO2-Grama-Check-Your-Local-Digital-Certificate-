@@ -3,6 +3,8 @@ import ballerina/io;
 
 configurable string ADDRESS_API_URL = ?;
 
+# Description.
+# This is the client for the address API.
 public isolated class AddressClient {
 
     private http:Client address_api_client = check new (ADDRESS_API_URL);

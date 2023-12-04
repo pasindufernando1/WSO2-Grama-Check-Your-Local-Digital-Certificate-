@@ -3,6 +3,8 @@ import ballerina/io;
 
 configurable string POLICE_CHECK_API_URL = ?;
 
+# Description.
+# This is the client for the police check API.
 public isolated class PoliceCheckClient {
     private http:Client police_check_client = check new (POLICE_CHECK_API_URL);
 

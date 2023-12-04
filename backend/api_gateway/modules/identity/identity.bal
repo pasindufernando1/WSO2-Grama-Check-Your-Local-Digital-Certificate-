@@ -3,6 +3,8 @@ import ballerina/io;
 
 configurable string IDENTITY_API_URL = ?;
 
+# Description.
+# This is the client for the identity API.
 public isolated class IdentityClient {
 
     private http:Client identity_api_client = check new (IDENTITY_API_URL);

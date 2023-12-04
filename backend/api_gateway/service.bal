@@ -1,9 +1,12 @@
+// Modules for the API gateway service
 import api_gateway.DTO;
 import api_gateway.address;
 import api_gateway.certificate;
 import api_gateway.identity;
+import api_gateway.notifications;
 import api_gateway.policecheck;
 
+// Modules by ballerina
 import ballerina/http;
 import ballerina/io;
 
@@ -13,6 +16,7 @@ isolated service /api/v1 on new http:Listener(9090) {
     private address:AddressClient address_client = check new ();
     private certificate:CertificateClient certificate_client = check new ();
     private policecheck:PoliceCheckClient police_check_client = check new ();
+    private notifications:NotificationClient notifications_client = check new ();
 
     public function init() returns error? {
 
@@ -317,4 +321,5 @@ isolated service /api/v1 on new http:Listener(9090) {
         }
 
     }
+
 }
