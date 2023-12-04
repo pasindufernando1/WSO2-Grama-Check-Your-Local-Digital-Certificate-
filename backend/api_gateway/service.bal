@@ -322,4 +322,33 @@ isolated service /api/v1 on new http:Listener(9090) {
 
     }
 
+    # A resource to get the certificate details of the last request by user
+    # + user_id - id of the user
+    # + return - http:Ok,http:BadRequest or http:InternalServerError
+    resource function get certificate/[string user_id]/current() returns http:Ok|http:BadRequest|http:InternalServerError {
+        
+        lock {
+            http:BadRequest|json|error result = self.certificate_client.get_last_certificate_request(user_id);
+
+            if (result is error) {
+                return <http:InternalServerError>{
+                    body: {
+                        "message": "Error occurred while getting the certificate details."
+                    }
+                };
+            }
+            if (result is json) {
+                return <http:Ok>{
+                    body: result.clone()
+                };
+            }
+            return <http:BadRequest>{
+                body: {
+                    "message": "Invalid request."
+                }
+            };
+        }
+
+    }
+
 }

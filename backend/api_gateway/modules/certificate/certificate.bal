@@ -145,4 +145,25 @@ public class CertificateClient {
             }
         }
     }
+
+    public isolated function get_last_certificate_request(string user_id) returns json|http:BadRequest|error? {
+
+        lock {
+            http:Response|error response = self.certificate_api_client->/get\-user\-certificate\-request\-current/[user_id];
+
+            if ( response is error ) {
+                io:println("Error: " + response.message());
+                return error("Error: error occured at get_last_certificate_request function");
+            } else {
+                if( response.statusCode == 200) {
+                    return response.getJsonPayload();
+                } else {
+                    return <http:BadRequest>{
+                    };
+                }
+            
+            }
+        }
+
+    }
 };
