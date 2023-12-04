@@ -87,6 +87,27 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <li className="p-4 hover:bg-gray-700">
             <Link to="/admin/requests">View Requests</Link>
           </li>
+          <li>
+                      <Button
+                  variant="contained"
+                  sx={{
+                    mr: 1,
+                    mt: 3,
+                    backgroundColor: "#699eee",
+                    ":hover": {
+                      backgroundColor: "#699eee",
+                    },
+                    fontSize: {
+                      xs: 12,
+                      sm: 14,
+                      md: 15,
+                    },
+                    zIndex:200,
+                    textTransform: "none",
+                  }} onClick={ () => signOut() }
+                >
+                  Logout
+                </Button></li>
         </ul>
         {/* Sidebar footer */}
         <div className="fixed bottom-0 w-64 p-4">
