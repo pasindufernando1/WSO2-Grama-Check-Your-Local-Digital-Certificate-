@@ -88,7 +88,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <Link to="/admin/requests">View Requests</Link>
           </li>
           <li>
-                      <Button
+                     </li>
+        </ul>
+        {/* Sidebar footer */}
+        <div className=" bottom-0 w-64 p-4">
+        <Button
                   variant="contained"
                   sx={{
                     mr: 1,
@@ -107,11 +111,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   }} onClick={ () => signOut() }
                 >
                   Logout
-                </Button></li>
-        </ul>
-        {/* Sidebar footer */}
-        <div className="fixed bottom-0 w-64 p-4">
+                </Button>
           <button onClick={()=> signOut()}>
+
             Log out
           </button>
         </div>
