@@ -4,9 +4,6 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import AppRoute from "./app-route/AppRoute";
 import { AuthProvider } from "@asgardeo/auth-react";
-import configData from "../public/config.json";
-
-window.configs = configData;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
