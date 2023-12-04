@@ -53,7 +53,7 @@ function CheckStatus() {
           "Content-Type": "application/scim+json"
         },
         method: "GET",
-        url: "https://cf3a4176-54c9-4547-bcd6-c6fe400ad0d8-dev.e1-us-east-azure.choreoapis.dev/ojjz/usercertificateservice/api-v1-user-certificate-service-cb4/v1.0/get-grama-divisions"
+        url: "https://cf3a4176-54c9-4547-bcd6-c6fe400ad0d8-dev.e1-us-east-azure.choreoapis.dev/ojjz/usercertificateservice/api-v1-user-certificate-service-cb4/v1.0/get-grama-divisions/"
       };
 
       const response = await httpRequest(requestConfig);
