@@ -12,8 +12,8 @@ type TwilioConfig record {|
 |};
 
 
-configurable string accountSId = "AC32b96232ef92c9ea76d7241c91f08bec";
-configurable string authToken = "b7d397a1d5ccfdebf201b240fd10a404";
+configurable string accountSId = ?;
+configurable string authToken = ?;
 
 configurable TwilioConfig twillioConfig = ?;
 
