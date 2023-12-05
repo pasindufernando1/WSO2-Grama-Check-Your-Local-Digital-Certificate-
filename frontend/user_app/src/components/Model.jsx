@@ -1,6 +1,5 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -51,46 +50,49 @@ export default function BasicModal({ open, setOpen, inputType, inputData }) {
                     Requested Address
                   </Typography>
                   <Typography
-                  variant="h7"
-                  sx={{ height: 70, width: "50%", textAlign: "center" }}
-                  color="text.secondary"
-                >
-                  New
-                </Typography>
+                    variant="h7"
+                    sx={{ height: 70, width: "50%", textAlign: "center" }}
+                    color="text.secondary"
+                  >
+                    New
+                  </Typography>
                 </div>
                 <div style={{ width: "50%", textAlign: "center" }}>
                   <Typography variant="h8" component="div" mb={2}>
                     Actual Address
                   </Typography>
                   <Typography
-                  variant="h7"
-                  sx={{ height: 50, width: "50%", textAlign: "center" }}
-                  color="text.secondary"
-                >
-                  New
-                </Typography>
+                    variant="h7"
+                    sx={{ height: 50, width: "50%", textAlign: "center" }}
+                    color="text.secondary"
+                  >
+                    New
+                  </Typography>
                 </div>
-                
               </>
             ) : (
               <>
-              <Typography
+                <Typography
                   variant="h7"
                   sx={{ height: 30, width: "100%", textAlign: "center" }}
                   component="div"
                   mb={2}
                 >
-                  Criminal offenses recorded 
+                  Criminal offenses recorded
                 </Typography>
                 <Typography
-                variant="h7"
-                sx={{ width: "50%", textAlign: "left" ,borderBottom: "0.1px solid #ccc" , p:1, }}
-                color="text.secondary"
-              >
-                New
-              </Typography>
+                  variant="h7"
+                  sx={{
+                    width: "50%",
+                    textAlign: "left",
+                    borderBottom: "0.1px solid #ccc",
+                    p: 1,
+                  }}
+                  color="text.secondary"
+                >
+                  New
+                </Typography>
               </>
-              
             )}
           </Grid>
         </Box>

@@ -29,7 +29,6 @@ HideOnScroll.propTypes = {
 };
 
 export default function HideAppBar(props) {
- 
   return (
     <React.Fragment>
       <CssBaseline />
@@ -51,8 +50,8 @@ export default function HideAppBar(props) {
                       component="div"
                       sx={{
                         fontWeight: 700, // Set to 700 for bold
-                        color: '#000',  // Set to '#000' for black
-                        textAlign : "Left",
+                        color: "#000", // Set to '#000' for black
+                        textAlign: "Left",
                         mt: {
                           xs: 3,
                           sm: 2,
@@ -79,9 +78,9 @@ export default function HideAppBar(props) {
                           md: 30,
                         },
                         pl: {
-                        xs: "0%",
-                        sm: "5%",
-                      }
+                          xs: "0%",
+                          sm: "5%",
+                        },
                       }}
                     >
                       GramCert
@@ -127,7 +126,7 @@ export default function HideAppBar(props) {
                         xl: "50%",
                       },
                       textTransform: "none",
-                      float:{sm:"left",xs:"right"}
+                      float: { sm: "left", xs: "right" },
                     }}
                   >
                     Sign in

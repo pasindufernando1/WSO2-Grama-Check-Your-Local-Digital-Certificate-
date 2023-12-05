@@ -5,12 +5,14 @@ import { Grid } from "@mui/material";
 // react icons
 import { HiMenu } from "react-icons/hi";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-import { Button } from "@mui/base";
 import { useAuthContext } from "@asgardeo/auth-react";
 
 // Header component
 const Header = ({ toggleSidebar }) => (
-  <header className=" bg-black text-white w-full h-[65px] p-5 fixed top-0 p-4" style={{ zIndex: 200 }}>
+  <header
+    className=" bg-black text-white w-full h-[65px] p-5 fixed top-0 p-4"
+    style={{ zIndex: 200 }}
+  >
     <Grid container spacing={2} className=" md">
       <Grid item xs={8}>
         <Grid container spacing={2}>
@@ -89,13 +91,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <li className="p-4 hover:bg-gray-700">
             <Link to="/admin/requests">View Requests</Link>
           </li>
-          <li className="p-4 hover:bg-gray-700">
-            <Link to="/help"> Help</Link>{" "}
-          </li>
         </ul>
 
         <div className="fixed bottom-0 w-64 p-4">
-        <button onClick={()=> signOut()} className=" w-[80%] bg-[#699eee] p-1 pr-3 pl-3 m-3 rounded-lg">
+          <button
+            onClick={() => signOut()}
+            className=" w-[80%] bg-[#699eee] p-1 pr-3 pl-3 m-3 rounded-lg"
+          >
             Log out
           </button>
         </div>

@@ -16,15 +16,15 @@ const DataCard = ({ data, description }) => (
       p: 2,
       backgroundColor: "#f6f6f6",
       width: {
-        xs:"70%",
-        sm:"100%",
+        xs: "70%",
+        sm: "100%",
       },
       height: "27%",
       mb: 3,
-      ml : {
-        xs:1.3,
-        sm : 0
-      }
+      ml: {
+        xs: 1.3,
+        sm: 0,
+      },
     }}
   >
     <Grid container>
@@ -69,8 +69,8 @@ const DataCard = ({ data, description }) => (
 const chartOptions = {
   plugins: {
     legend: {
-      position: 'left',
-      align: 'middle',
+      position: "left",
+      align: "middle",
       labels: {
         boxWidth: 10,
         rotation: 90, // Rotate labels 90 degrees
@@ -90,7 +90,6 @@ const data = {
   ],
 };
 
-
 function requests() {
   return (
     <>
@@ -101,17 +100,21 @@ function requests() {
           width: { xs: "100%", sm: "70vw" },
         }}
         justifyContent="center"
-        p = {0}
+        p={0}
       >
         <Grid xs={9} sm={4} height={300}>
-          <Card sx={{ p: 4, backgroundColor: "#f9f9f9" , height:300 }}>
+          <Card sx={{ p: 4, backgroundColor: "#f9f9f9", height: 300 }}>
             <Stack
               direction="column"
               justifyContent="space-around"
               alignItems="center"
               spacing={2}
             >
-              <img src={Check} width="100%" style={{ marginTop: 2 , marginBottom:19 }} />
+              <img
+                src={Check}
+                width="100%"
+                style={{ marginTop: 2, marginBottom: 19 }}
+              />
               <Button
                 variant="outlined"
                 sx={{
@@ -141,18 +144,9 @@ function requests() {
         </Grid>
 
         <Grid xs={12} sm={4} pl={3} height={300}>
-          <DataCard
-            data="Certificates Requested"
-            description="13"
-          />
-          <DataCard
-            data="Certificates Issued"
-            description="2"
-          />
-          <DataCard
-            data="Certificates Rejected"
-            description="11"
-          />
+          <DataCard data="Certificates Requested" description="13" />
+          <DataCard data="Certificates Issued" description="2" />
+          <DataCard data="Certificates Rejected" description="11" />
         </Grid>
         <Grid
           container
@@ -162,12 +156,12 @@ function requests() {
           pl={1}
           sx={{
             mx: "auto",
-            textAlign: 'center',
+            textAlign: "center",
           }}
         >
-          <div style={{ width: '300px',height: '300px'}} >
+          <div style={{ width: "300px", height: "300px" }}>
             <h1>Certificates Issued</h1>
-            <Pie data={data} options={chartOptions}/>
+            <Pie data={data} options={chartOptions} />
           </div>
         </Grid>
       </Grid>

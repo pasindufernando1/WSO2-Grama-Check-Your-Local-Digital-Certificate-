@@ -17,19 +17,19 @@ import Button from "@mui/material/Button";
 import { Link } from "@mui/material";
 
 const columns = [
-  { id: "Request ID", label: "Request ID", minWidth: "25%",maxWidth: "25%" },
-  { id: "nic", label: "NIC", minWidth: "25%",maxWidth: "25%" },
+  { id: "Request ID", label: "Request ID", minWidth: "25%", maxWidth: "25%" },
+  { id: "nic", label: "NIC", minWidth: "25%", maxWidth: "25%" },
   {
     id: "address",
     label: "Address",
-    minWidth: "40%"
-    ,maxWidth: "40%"
+    minWidth: "40%",
+    maxWidth: "40%",
   },
   {
     id: "more",
     label: "",
     minWidth: "10%",
-    maxWidth: "10%"
+    maxWidth: "10%",
   },
 ];
 
@@ -40,7 +40,7 @@ const generateDummyData = () => {
     const nic = `NIC${i}`;
     const address = `Address ${i}`;
     const proof = `Base64EncodedImage${i}`; // Replace with your actual base64 image
-    data.push([req_id,nic, address, proof]);
+    data.push([req_id, nic, address, proof]);
   }
   return Promise.resolve(data);
 };
@@ -97,7 +97,10 @@ export default function StickyHeadTable() {
                 <TableCell
                   key={column.id}
                   align="left"
-                  style={{ minWidth: column.minWidth , maxWidth:column.maxWidth}}
+                  style={{
+                    minWidth: column.minWidth,
+                    maxWidth: column.maxWidth,
+                  }}
                   sx={{ fontWeight: "bold", fontSize: 16 }}
                 >
                   {column.label}
@@ -121,25 +124,25 @@ export default function StickyHeadTable() {
                     style={{ cursor: "pointer" }}
                     // onClick={() => handleOpen(index)}
                   >
-                  <Link href="/admin/request_details/1">
-                    <Button
-                      variant="contained"
-                      sx={{
-                        backgroundColor: "#699eee",
-                        ":hover": {
+                    <Link href="/admin/request_details/1">
+                      <Button
+                        variant="contained"
+                        sx={{
                           backgroundColor: "#699eee",
-                        },
-                        fontSize: {
-                          xs: 12,
-                          sm: 14,
-                          md: 15,
-                        },
-                        textTransform: "none",
-                      } }
-                    >
-                      View more
-                    </Button>
-                  </Link>
+                          ":hover": {
+                            backgroundColor: "#699eee",
+                          },
+                          fontSize: {
+                            xs: 12,
+                            sm: 14,
+                            md: 15,
+                          },
+                          textTransform: "none",
+                        }}
+                      >
+                        View more
+                      </Button>
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}
