@@ -36,7 +36,7 @@ public class CertificateClient {
                 return error("Error: error occured at create_user_certificate_request function");
             } else {
                 if (response.statusCode == 201) {
-                    json| error response_json = response.getJsonPayload();
+                    json|error response_json = response.getJsonPayload();
                     if (response_json is json) {
                         json|error email = response_json.gramaDivisionEmail;
                         if (email is json) {
@@ -163,17 +163,17 @@ public class CertificateClient {
         lock {
             http:Response|error response = self.certificate_api_client->/get\-user\-certificate\-request\-current/[user_id];
 
-            if ( response is error ) {
+            if (response is error) {
                 io:println("Error: " + response.message());
                 return error("Error: error occured at get_last_certificate_request function");
             } else {
-                if( response.statusCode == 200) {
+                if (response.statusCode == 200) {
                     return response.getJsonPayload();
                 } else {
                     return <http:BadRequest>{
                     };
                 }
-            
+
             }
         }
 

@@ -160,7 +160,17 @@ isolated service /api/v1 on new http:Listener(9090) {
                         }
                     };
                 } else {
-                    // TODO: send notification to the user
+                    error? sms_response = ();
+                    if (new_status == DTO:APPROVED) {
+                        sms_response = self.notifications_client.notify_certificate_request_status(true);
+                    } else if (new_status == DTO:REJECTED) {
+                        sms_response = self.notifications_client.notify_certificate_request_status(false);
+                    }
+
+                    if (sms_response is error) {
+                        io:println("Error: " + sms_response.toString());
+                        io:println("Error: Failed to send sms to relevant user.");
+                    }
                     return <http:Accepted>{
                         body: {
                             "message": "Certificate status updated successfully."

@@ -36,7 +36,9 @@ public type Address record {|
     string city;
 |};
 
-
+# Description.
+#
+# Status of the certificate request
 public enum CertificateStatus {
     PENDING,
     APPROVED,
