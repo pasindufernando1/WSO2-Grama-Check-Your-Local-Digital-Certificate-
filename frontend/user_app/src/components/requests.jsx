@@ -84,16 +84,14 @@ function Requests() {
 
       const certificateResponseConfig = {
         headers: {
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/scim+json"
-          },
-          method: "GET",
-          URL: window.configs.resourceServerURLs[0] + "certificates",
-          params: {
-            user_id: info.sub
-          }
+          "Accept": "application/json",
+          "Content-Type": "application/scim+json"
         },
+        method: "GET",
+        URL: window.configs.resourceServerURLs[0] + "certificates",
+        params: {
+          user_id: info.sub
+        }
       }
 
       const certificateResponse = await httpRequest(certificateResponseConfig);
