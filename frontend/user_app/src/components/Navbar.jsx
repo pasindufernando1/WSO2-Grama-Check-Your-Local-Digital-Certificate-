@@ -10,9 +10,6 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import logo from "../images/logo.svg";
-// import { useAuthContext } from "@asgardeo/auth-react";
-
 function HideOnScroll(props) {
   const { children, window } = props;
   const trigger = useScrollTrigger({
