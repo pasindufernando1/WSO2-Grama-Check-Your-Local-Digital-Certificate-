@@ -29,14 +29,16 @@ function CheckStatus() {
 
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
+  const [currentRequest, setCurrentRequest] = useState({});
+
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
-  const { httpRequest} = useAuthContext();
+  const { httpRequest, state} = useAuthContext();
 
   useEffect(() => {
-    const getGramaDivisionsCheck = async () => {
+    const getLatestCertificateRequest = async () => {
       const requestConfig = {
         headers: {
           "Accept": "application/json",
@@ -44,15 +46,19 @@ function CheckStatus() {
         },
         method: "GET",
         
-        url:"https://cf3a4176-54c9-4547-bcd6-c6fe400ad0d8-dev.e1-us-east-azure.choreoapis.dev/ojjz/apigateway/api-v1-863/v1/gramadivisions"
+        url:`https://cf3a4176-54c9-4547-bcd6-c6fe400ad0d8-dev.e1-us-east-azure.choreoapis.dev/ojjz/apigateway/api-v1-863/v1/certificate/${state.sub}/current`
       };
 
       const response = await httpRequest(requestConfig);
 
       console.log(response);
-    }
 
-    getGramaDivisionsCheck();
+      if (response.status === 200) {
+        console.log(response.data);
+        setCurrentRequest(response.data);
+      }
+    }
+    getLatestCertificateRequest();
   }
   , []);
 
