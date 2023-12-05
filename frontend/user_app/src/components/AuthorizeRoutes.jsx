@@ -15,7 +15,8 @@ const AuthorizeRoutes = ({ allowedRoles }) => {
         if(!state.isAuthenticated) return;  // If not authenticated, return
     
         getBasicUserInfo().then((info) => {
-          setUserGroup(info.groups[0]);
+            console.log(info.groups[0]);
+            setUserGroup(info.groups[0]);
         });
     }
 
