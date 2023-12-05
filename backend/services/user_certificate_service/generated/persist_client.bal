@@ -35,7 +35,8 @@ public isolated client class Client {
                 city: {columnName: "city"},
                 grama_divisionId: {columnName: "grama_divisionId"},
                 "grama_division.id": {relation: {entityName: "grama_division", refField: "id"}},
-                "grama_division.name": {relation: {entityName: "grama_division", refField: "name"}}
+                "grama_division.name": {relation: {entityName: "grama_division", refField: "name"}},
+                "grama_division.email": {relation: {entityName: "grama_division", refField: "email"}}
             },
             keyFields: ["id"],
             joinMetadata: {grama_division: {entity: GramaDivision, fieldName: "grama_division", refTable: "GramaDivision", refColumns: ["id"], joinColumns: ["grama_divisionId"], 'type: psql:ONE_TO_MANY}}
@@ -46,6 +47,7 @@ public isolated client class Client {
             fieldMetadata: {
                 id: {columnName: "id"},
                 name: {columnName: "name"},
+                email: {columnName: "email"},
                 "user_certificates[].id": {relation: {entityName: "user_certificates", refField: "id"}},
                 "user_certificates[].user_id": {relation: {entityName: "user_certificates", refField: "user_id"}},
                 "user_certificates[].issued_date": {relation: {entityName: "user_certificates", refField: "issued_date"}},

@@ -63,11 +63,13 @@ public type UserCertificateUpdate record {|
 public type GramaDivision record {|
     readonly string id;
     string name;
+    string email;
 |};
 
 public type GramaDivisionOptionalized record {|
     string id?;
     string name?;
+    string email?;
 |};
 
 public type GramaDivisionWithRelations record {|
@@ -81,5 +83,6 @@ public type GramaDivisionInsert GramaDivision;
 
 public type GramaDivisionUpdate record {|
     string name?;
+    string email?;
 |};
 

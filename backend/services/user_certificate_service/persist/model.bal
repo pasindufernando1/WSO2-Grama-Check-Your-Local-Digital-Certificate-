@@ -18,6 +18,7 @@ type UserCertificate record {|
 type GramaDivision record {|
     readonly string id;
     string name;
+    string email;
     UserCertificate[] user_certificates; //there are many certificates for one grama division
 |};
 

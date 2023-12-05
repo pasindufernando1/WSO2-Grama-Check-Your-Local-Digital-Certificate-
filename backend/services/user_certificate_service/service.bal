@@ -85,10 +85,13 @@ service /api/v1/user\-certificate\-service on new http:Listener(9000) {
         //add the user certificate request to the service db
         string[] ids = check self.serviceDBClient->/usercertificates.post([userCertificate]);
 
+        GramaDivision gramaDivision = check self.serviceDBClient->/gramadivisions/[requestPayload.grama_divisionId];
+
         RequestCreated response = {
             body: {
                 message: "User certificate request created successfully",
-                id: ids[0]
+                id: ids[0],
+                gramaDivisionEmail: gramaDivision.email
             }
         };
 
