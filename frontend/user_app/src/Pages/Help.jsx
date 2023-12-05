@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import Header from "../components/header";
 import { TextField } from "@mui/material";
 import { Button } from "@mui/material";
 import { Grid } from "@mui/material";
@@ -9,7 +8,14 @@ import SideBar from "../components/SideBar";
 import { IoIosArrowDown } from "react-icons/io";
 
 const FaqItem = ({ question, answer, isOpen, toggle }) => (
-  <div style={{ borderBottom: "1px solid #ccc", padding: "8px 0" , width : "90%" , margin:"auto"}}>
+  <div
+    style={{
+      borderBottom: "1px solid #ccc",
+      padding: "8px 0",
+      width: "90%",
+      margin: "auto",
+    }}
+  >
     <div
       onClick={toggle}
       style={{
@@ -24,9 +30,11 @@ const FaqItem = ({ question, answer, isOpen, toggle }) => (
         style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
       />
     </div>
-    {isOpen && <div style={{ color: '#777', fontSize: '14px', marginTop: '8px' }}>
+    {isOpen && (
+      <div style={{ color: "#777", fontSize: "14px", marginTop: "8px" }}>
         {answer}
-      </div>}
+      </div>
+    )}
   </div>
 );
 
@@ -62,37 +70,102 @@ function Help() {
 
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
-const toggleSidebar = () => {
-  setSidebarOpen(!isSidebarOpen);
-};
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
 
   return (
     <>
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="pt-8">
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          bgcolor: "background.default",
-          p: 3,
-          width: { xs: "100%", sm: "70vw" },
-          ml: { xs: "0%", sm: "22%" },
-          mt: 8,
-        }}
-      >
-        <Grid
-          container
-          direction="column"
+        <Box
+          component="main"
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignContent: "center",
-            alignItems: "center",
-            width: { xs: "100%", md: "100%", lg: "100%" },
-            ml: { xs: "0%", md: "0%" },
+            flexGrow: 1,
+            bgcolor: "background.default",
+            p: 3,
+            width: { xs: "100%", sm: "70vw" },
+            ml: { xs: "0%", sm: "22%" },
+            mt: 8,
           }}
         >
+          <Grid
+            container
+            direction="column"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignContent: "center",
+              alignItems: "center",
+              width: { xs: "100%", md: "100%", lg: "100%" },
+              ml: { xs: "0%", md: "0%" },
+            }}
+          >
+            <Grid container xs={12}>
+              <Typography
+                variant="h3"
+                component="div"
+                sx={{
+                  fontWeight: 500,
+                  fontFamily: "Poppins",
+                  textAlign: { xs: "center", sm: "left" },
+                  fontSize: {
+                    xs: 20,
+                    sm: 20,
+                    md: 20,
+                  },
+                  mb: 3,
+                  mx: { xs: "auto" },
+                  ml: { sm: 1 },
+                  textAlign: { sm: "left" },
+                }}
+              >
+                What can we <span style={{ color: "#699eee" }}>Help </span>you
+                with?
+              </Typography>
+            </Grid>
+
+            <Grid>
+              <TextField
+                id="outlined-basic"
+                label="Type your issue"
+                variant="outlined"
+                size="small"
+                multiline
+                rows={3}
+                sx={{ width: { xs: "75vw", sm: "60vw" }, mb: 1 }}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container>
+            <Button
+              variant="outlined"
+              sx={{
+                mt: 1,
+                ml: 5,
+                width: { xs: "50%", sm: "13.5vw" },
+                fontSize: {
+                  xs: 15,
+                  sm: 11,
+                  md: 13,
+                  lg: 14,
+                },
+                backgroundColor: "#699eee",
+                textTransform: "none",
+                fontFamily: "Poppins",
+                borderRadius: 20,
+                color: "white",
+                ":hover": {
+                  borderColor: "#699eee",
+                  color: "#699eee",
+                },
+                mx: { xs: "auto" },
+              }}
+            >
+              Submit
+            </Button>
+          </Grid>
           <Grid container xs={12}>
             <Typography
               variant="h3"
@@ -107,91 +180,26 @@ const toggleSidebar = () => {
                   md: 20,
                 },
                 mb: 3,
+                mt: 3,
                 mx: { xs: "auto" },
-                ml : {sm:1},
-                textAlign: { sm: "left" },
+                ml: { sm: 1 },
               }}
             >
-              What can we <span style={{ color: "#699eee" }}>Help </span>you
-              with?
+              Frequent Questions & Answers
             </Typography>
           </Grid>
-
-          <Grid>
-            <TextField
-              id="outlined-basic"
-              label="Type your issue"
-              variant="outlined"
-              size="small"
-              multiline
-              rows={3}
-              sx={{ width: { xs: "75vw", sm: "60vw" }, mb: 1 }}
-            />
-          </Grid>
-        </Grid>
-
-        <Grid container>
-          <Button
-            variant="outlined"
-            sx={{
-              mt: 1,
-              ml: 5,
-              width: { xs: "50%", sm: "13.5vw" },
-              fontSize: {
-                xs: 15,
-                sm: 11,
-                md: 13,
-                lg: 14,
-              },
-              backgroundColor: "#699eee",
-              textTransform: "none",
-              fontFamily: "Poppins",
-              borderRadius: 20,
-              color: "white",
-              ":hover": {
-                borderColor: "#699eee",
-                color: "#699eee",
-              },
-              mx: { xs: "auto" },
-            }}
-          >
-            Submit
-          </Button>
-        </Grid>
-        <Grid container xs={12}>
-            <Typography
-              variant="h3"
-              component="div"
-              sx={{
-                fontWeight: 500,
-                fontFamily: "Poppins",
-                textAlign: { xs: "center", sm: "left" },
-                fontSize: {
-                  xs: 20,
-                  sm: 20,
-                  md: 20,
-                },
-                mb: 3,
-                mt : 3,
-                mx: { xs: "auto" },
-                ml : {sm:1},
-              }}
-            >
-              Frequent Questions & Answers 
-            </Typography>
-          </Grid>
-        <div>
-          {faqData.map((item) => (
-            <FaqItem
-              key={item.id}
-              question={item.question}
-              answer={item.answer}
-              isOpen={openItems.includes(item.id)}
-              toggle={() => toggleItem(item.id)}
-            />
-          ))}
-        </div>
-      </Box>
+          <div>
+            {faqData.map((item) => (
+              <FaqItem
+                key={item.id}
+                question={item.question}
+                answer={item.answer}
+                isOpen={openItems.includes(item.id)}
+                toggle={() => toggleItem(item.id)}
+              />
+            ))}
+          </div>
+        </Box>
       </div>
     </>
   );

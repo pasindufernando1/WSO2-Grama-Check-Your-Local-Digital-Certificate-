@@ -7,8 +7,8 @@ import ApplyCertificate from "../Pages/ApplyCert";
 import Help from "../Pages/Help";
 import CheckStatus from "../Pages/CheckStatus";
 import Dashboard from "../Pages/Dashboard";
-import Admin from "../Pages_admin/dashboard";
-import Requests from "../Pages_admin/certificate_requests";
+import Admin from "../Pages_admin/Dashboard";
+import Requests from "../Pages_admin/CertificateRequests";
 import RequestDetails from "../Pages_admin/RequestDetails";
 
 

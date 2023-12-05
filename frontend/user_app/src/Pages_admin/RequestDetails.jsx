@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -8,6 +8,9 @@ import CardMedia from "@mui/material/CardMedia";
 import Model from "../components/Model";
 import SideBar from "../components/SideBar_admin";
 import { Button } from "@mui/material";
+import AddressCheckImage from "../images/address.svg";
+import IdentityCheckImage from "../images/identity.svg";
+import PoliceCheckImage from "../images/police_check.jpg";
 
 function Dashboard() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -19,27 +22,27 @@ function Dashboard() {
   };
 
   const data = [
-      {
-        image: "/idcheck.jpg",
-        title: "Is the NIC legitimate?",
-        description:
-          "Is the NIC of the user a registered NIC in the Department for Registration of Persons?",
-        successMessage: "NIC is legitimate",
-      },
-      {
-        image: "/addresscheck.jpg",
-        title: "Is the Address provided legitimate?",
-        description:
-          "Does the address match with the registered address for the NIC?",
-        successMessage: "Address is legitimate",
-      },
-      {
-        image: "/police_check.jpg",
-        title: "Can the police clearance be issued?",
-        description:
-          "Are there any criminal offences committed by the citizen during his lifetime?",
-        successMessage: "Eligible for police clearance",
-      },
+    {
+      image: IdentityCheckImage,
+      title: "Is the NIC legitimate?",
+      description:
+        "Is the NIC of the user a registered NIC in the Department for Registration of Persons?",
+      successMessage: "NIC is legitimate",
+    },
+    {
+      image: AddressCheckImage,
+      title: "Is the Address provided legitimate?",
+      description:
+        "Does the address match with the registered address for the NIC?",
+      successMessage: "Address is legitimate",
+    },
+    {
+      image: PoliceCheckImage,
+      title: "Can the police clearance be issued?",
+      description:
+        "Are there any criminal offences committed by the citizen during his lifetime?",
+      successMessage: "Eligible for police clearance",
+    },
   ];
   const handleOpen = (index) => {
     setClickedImage(data[index].title);
@@ -47,8 +50,8 @@ function Dashboard() {
   };
   useEffect(() => {
     console.log(clickedImage);
-  }, [clickedImage]); 
-  
+  }, [clickedImage]);
+
   return (
     <>
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -70,14 +73,17 @@ function Dashboard() {
           {data.map((item, index) => (
             <Grid item key={index} xs={12} lg={4} pt={3} mt={3}>
               <Card>
-                <CardMedia
-                  component="img"
-                  sx={{ width: 100, mx: "auto" }}
-                  height={2}
-                  width={100}
-                  image={item.image}
-                  alt={item.title}
-                />
+                <div style={{ height: 180 }}>
+                  <CardMedia
+                    component="img"
+                    sx={{ width: 200, mx: "auto", p: 3 }}
+                    height={2}
+                    width={100}
+                    image={item.image}
+                    alt={item.title}
+                  />
+                </div>
+
                 <CardContent>
                   <Typography
                     variant="h7"
@@ -113,7 +119,7 @@ function Dashboard() {
               </Card>
             </Grid>
           ))}
-          <div style={{ display: "flex", width: "80%", margin: "auto", }}>
+          <div style={{ display: "flex", width: "80%", margin: "auto" }}>
             <Button
               variant="contained"
               sx={{
@@ -128,7 +134,7 @@ function Dashboard() {
                   sm: 14,
                   md: 15,
                 },
-                width:"50%",
+                width: "50%",
                 textTransform: "none",
               }}
             >
@@ -149,7 +155,7 @@ function Dashboard() {
                   sm: 14,
                   md: 15,
                 },
-                width:"50%",
+                width: "50%",
                 textTransform: "none",
               }}
             >
@@ -157,7 +163,12 @@ function Dashboard() {
             </Button>
           </div>
         </Grid>
-       <Model open={open} setOpen={setOpen} inputType={clickedImage} inputData={clickedImage} />
+        <Model
+          open={open}
+          setOpen={setOpen}
+          inputType={clickedImage}
+          inputData={clickedImage}
+        />
       </Box>
     </>
   );

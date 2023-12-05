@@ -3,13 +3,8 @@ import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Check from "../images/requests.svg";
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
-import ErrorIcon from "@mui/icons-material/Error";
-import FunctionsIcon from "@mui/icons-material/Functions";
-import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
