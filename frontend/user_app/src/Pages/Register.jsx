@@ -32,8 +32,8 @@ function Register() {
     }
 
     getBasicUserInfo().then((info) => {
-      setUserInfo(info);
-      if (info.applicationRoles === "GramaSewaka") {
+      console.log(info);
+      if(info.applicationRoles === "GramaSewaka"){
         navigate("/admin/dashboard");
       } else {
         navigate("/Dashboard");
