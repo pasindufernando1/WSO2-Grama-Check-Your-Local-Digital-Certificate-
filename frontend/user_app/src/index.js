@@ -6,6 +6,9 @@ import AppRoute from "./app-route/AppRoute";
 import { AuthProvider } from "@asgardeo/auth-react";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+console.log(window.configs);
+
 root.render(
   <AuthProvider
         config={ window.configs }
