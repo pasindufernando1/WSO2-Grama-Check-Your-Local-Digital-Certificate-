@@ -8,6 +8,11 @@ import { AuthProvider } from "@asgardeo/auth-react";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 console.log(window.configs);
+console.log(__dirname);
+// eslint-disable-next-line no-undef
+console.log(path.dirname(__filename));
+console.log(process.cwd());
+
 
 root.render(
   <AuthProvider
