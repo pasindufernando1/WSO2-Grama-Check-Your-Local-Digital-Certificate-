@@ -11,6 +11,7 @@ import Admin from "../Pages_admin/dashboard";
 import Requests from "../Pages_admin/certificate_requests";
 import RequestDetails from "../Pages_admin/RequestDetails";
 
+
 function AppRoute() {
   return (
     <BrowserRouter>

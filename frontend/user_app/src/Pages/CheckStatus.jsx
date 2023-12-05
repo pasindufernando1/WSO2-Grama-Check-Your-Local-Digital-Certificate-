@@ -8,6 +8,7 @@ import processingImage from "../images/processing.svg";
 import resubmitImage from "../images/resubmit.svg";
 import completedImage from "../images/completed.svg";
 import noneImage from "../images/none.svg";
+import rejectedImage from "../images/rejected.svg";
 import Link from '@mui/material/Link';
 import axios from "axios";
 import { useAuthContext } from "@asgardeo/auth-react";
@@ -24,17 +25,13 @@ const override = {
 
 function CheckStatus() {
   const arr = [
-    ["No ", "requests", noneImage],
-    ["Your request is ", "processing", processingImage],
-    ["Your request is ", "completed", completedImage],
-    [
-      "Address proof rejected due to unclearness of the image or invalid address. Resubmit address proof ",
-      "required",
-      resubmitImage,
-    ],
+    ["No ", "No requests", noneImage],
+    ["Your request is ", "Processing", processingImage],
+    ["Your request is ", "Accepted", completedImage],
+    ["Your request is ", "Rejected", rejectedImage],
   ];
 
-  const [textIndex, setTextIndex] = useState(1);
+  const [textIndex, setTextIndex] = useState(2);
   const [spinnerLoading, setSpinnerLloading] = useState(true);
   const [open, setOpen] = useState(false);
   const [image, setImage] = useState("");
@@ -45,24 +42,24 @@ function CheckStatus() {
 
   const { httpRequest } = useAuthContext();
 
-  useEffect(() => {
-    const getCertificates = async () => {
-      const requestConfig = {
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/scim+json"
-        },
-        method: "GET",
-        url: "https://cf3a4176-54c9-4547-bcd6-c6fe400ad0d8-dev.e1-us-east-azure.choreoapis.dev/ojjz/usercertificateservice/api-v1-user-certificate-service-cb4/v1.0/get-grama-divisions/"
-      };
+  // useEffect(() => {
+  //   const getCertificates = async () => {
+  //     const requestConfig = {
+  //       headers: {
+  //         "Accept": "application/json",
+  //         "Content-Type": "application/scim+json"
+  //       },
+  //       method: "GET",
+  //       url: "https://cf3a4176-54c9-4547-bcd6-c6fe400ad0d8-dev.e1-us-east-azure.choreoapis.dev/ojjz/usercertificateservice/api-v1-user-certificate-service-cb4/v1.0/get-grama-divisions/"
+  //     };
 
-      const response = await httpRequest(requestConfig);
+  //     const response = await httpRequest(requestConfig);
 
-      console.log(response);
+  //     console.log(response);
 
-    }
-    getCertificates();
-  }, []);
+  //   }
+  //   getCertificates();
+  // }, []);
 
 
 const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -70,6 +67,8 @@ const [isSidebarOpen, setSidebarOpen] = useState(true);
 const toggleSidebar = () => {
   setSidebarOpen(!isSidebarOpen);
 };
+
+
 
 return (
   <>
@@ -103,7 +102,7 @@ return (
           <img
             src={arr[textIndex][2]}
             style={{
-              maxWidth: { xs: "80%", sm: "100%" },
+              maxWidth: "80%",
               width: { xs: "80%", sm: "100%" },
               margin: { xs: "auto" },
             }}
@@ -155,7 +154,7 @@ return (
                 },
                 mt: 1,
                 mb: { xs: 2 },
-                backgroundColor: "#699eee",
+                backgroundColor: textIndex == 0 ? "#aaaaaa" :  textIndex == 1? "#699eee" : textIndex == 2? "#85cf51" : "#f4768a",
                 p: 1,
                 width: "60%",
                 textAlign: "center",
@@ -163,7 +162,7 @@ return (
                 borderRadius: 2,
               }}
             >
-              Processing
+              {arr[textIndex][1]}
             </Typography>
           </Grid>
           <Grid container xs={12}>

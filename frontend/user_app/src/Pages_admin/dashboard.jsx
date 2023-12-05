@@ -20,8 +20,14 @@ function Dashboard() {
           flexGrow: 1,
           display:"flex",
           bgcolor: "background.default",
-          p: 3,
-          pt:11,
+          p: {
+            xs:0,
+            sm:3,
+          },
+          pt:{
+            xs: 11,
+            sm:11,
+          },
           width: {xs:"100%", sm:"70vw"},
           ml: {xs:"0%" , sm:"22%"},
         }}

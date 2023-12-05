@@ -2,7 +2,7 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import Check from "../images/Check.svg";
+import Check from "../images/requests.svg";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import ErrorIcon from "@mui/icons-material/Error";
 import FunctionsIcon from "@mui/icons-material/Functions";
@@ -19,10 +19,17 @@ const DataCard = ({ data, description }) => (
   <Card
     sx={{
       p: 2,
-      backgroundColor: "#699eee",
-      width: "100%",
-      height: "25%",
+      backgroundColor: "#f6f6f6",
+      width: {
+        xs:"70%",
+        sm:"100%",
+      },
+      height: "27%",
       mb: 3,
+      ml : {
+        xs:1.3,
+        sm : 0
+      }
     }}
   >
     <Grid container>
@@ -36,7 +43,7 @@ const DataCard = ({ data, description }) => (
               sm: 10,
               md: 12,
             },
-            color: "#fff",
+            color: "black",
           }}
         >
           {data}
@@ -44,12 +51,17 @@ const DataCard = ({ data, description }) => (
       </Grid>
       <Grid xs={12}>
         <Typography
-          variant="h7"
           sx={{
-            color: "#fff",
-            fontWeight: 500,
+            color: "black",
+            fontWeight: 400,
+            fontFamily: "Poppins",
             textAlign: "left",
             width: 1,
+            fontSize: {
+              xs: 15,
+              sm: 15,
+              md: 15,
+            },
           }}
         >
           {description}
@@ -77,8 +89,8 @@ const data = {
   datasets: [
     {
       data: [30, 40, 30],
-      backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-      hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+      backgroundColor: ["#85cf51", "#f4768a", "#699eee"],
+      hoverBackgroundColor: ["#85cf51", "#f4768a", "#699eee"],
     },
   ],
 };
@@ -94,20 +106,20 @@ function requests() {
           width: { xs: "100%", sm: "70vw" },
         }}
         justifyContent="center"
+        p = {0}
       >
-        <Grid xs={12} sm={4}>
-          <Card sx={{ p: 4, backgroundColor: "#f9f9f9" }}>
+        <Grid xs={9} sm={4} height={300}>
+          <Card sx={{ p: 4, backgroundColor: "#f9f9f9" , height:300 }}>
             <Stack
               direction="column"
               justifyContent="space-around"
               alignItems="center"
               spacing={2}
             >
-              <img src={Check} width="90%" style={{ marginTop: 2 }} />
+              <img src={Check} width="100%" style={{ marginTop: 2 , marginBottom:19 }} />
               <Button
                 variant="outlined"
                 sx={{
-                  mt: 3,
                   width: { xs: "100%", sm: "17.5vw" },
                   fontSize: {
                     xs: 15,
@@ -132,34 +144,36 @@ function requests() {
             </Stack>
           </Card>
         </Grid>
+
+        <Grid xs={12} sm={4} pl={3} height={300}>
+          <DataCard
+            data="Certificates Requested"
+            description="13"
+          />
+          <DataCard
+            data="Certificates Issued"
+            description="2"
+          />
+          <DataCard
+            data="Certificates Rejected"
+            description="11"
+          />
+        </Grid>
         <Grid
           container
           xs={12}
           sm={4}
           height={30}
+          pl={1}
           sx={{
             mx: "auto",
             textAlign: 'center',
           }}
         >
-          <div style={{ width: '300px',height: '250px'}} >
+          <div style={{ width: '300px',height: '300px'}} >
             <h1>Certificates Issued</h1>
             <Pie data={data} options={chartOptions}/>
           </div>
-        </Grid>
-        <Grid xs={12} sm={3}>
-          <DataCard
-            data="Grama Division Assigned"
-            description="Horana Wewala"
-          />
-          <DataCard
-            data="Current Certificate Details"
-            description="Expiry : 2020/10/23"
-          />
-          <DataCard
-            data="Current Certificate Details"
-            description="Expiry : 2020/10/23"
-          />
         </Grid>
       </Grid>
     </>
