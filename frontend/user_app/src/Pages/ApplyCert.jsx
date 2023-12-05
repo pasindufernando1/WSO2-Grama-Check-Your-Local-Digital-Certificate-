@@ -11,9 +11,6 @@ import InputLabel from "@mui/material/InputLabel";
 import { useEffect } from "react";
 import { useAuthContext } from "@asgardeo/auth-react";
 
-//
-import { useAuthContext } from "@asgardeo/auth-react";
-
 const override = {
   display: "block",
   margin: "0 auto",
