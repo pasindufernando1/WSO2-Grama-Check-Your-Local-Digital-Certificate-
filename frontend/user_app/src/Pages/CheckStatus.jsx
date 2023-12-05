@@ -8,6 +8,8 @@ import completedImage from "../images/completed.svg";
 import noneImage from "../images/none.svg";
 import rejectedImage from "../images/rejected.svg";
 import Link from "@mui/material/Link";
+import { useEffect } from "react";
+import { useAuthContext } from "@asgardeo/auth-react";
 
 const override = {
   display: "block",
@@ -31,6 +33,28 @@ function CheckStatus() {
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
+
+  const { httpRequest} = useAuthContext();
+
+  useEffect(() => {
+    const getGramaDivisionsCheck = async () => {
+      const requestConfig = {
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/scim+json"
+        },
+        method: "GET",
+        url:"https://cf3a4176-54c9-4547-bcd6-c6fe400ad0d8-dev.e1-us-east-azure.choreoapis.dev/ojjz/apigateway/api-v1-863/v1/https://cf3a4176-54c9-4547-bcd6-c6fe400ad0d8-dev.e1-us-east-azure.choreoapis.dev/ojjz/apigateway/api-v1-863/v1/gramadivisions"
+      };
+
+      const response = await httpRequest(requestConfig);
+
+      console.log(response);
+    }
+
+    getGramaDivisionsCheck();
+  }
+  , []);
 
   return (
     <>
