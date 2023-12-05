@@ -14,6 +14,7 @@ const AuthorizeRoutes = ({ allowedRoles }) => {
             if (!state.isAuthenticated) return;
 
             const info = await getBasicUserInfo();
+            setUserGroup(info.groups[0]);
             setIsLoading(false); // Set loading state to false after fetching user info
         };
 
