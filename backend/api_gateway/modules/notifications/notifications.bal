@@ -3,6 +3,9 @@ import ballerina/io;
 
 configurable string EMAIL_SERVICE_API_URL = ?;
 
+public const string certificate_request_email_subject = "New certificate request";
+public const string certificate_request_email_body = "A new certificate request has been received. Please check the certificate request page for more details and approve/reject the request.";
+
 public isolated class NotificationClient {
 
     private http:Client email_client = check new (EMAIL_SERVICE_API_URL);

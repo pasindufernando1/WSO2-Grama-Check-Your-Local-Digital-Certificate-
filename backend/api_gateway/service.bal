@@ -81,7 +81,7 @@ isolated service /api/v1 on new http:Listener(9090) {
                 };
             }
 
-            boolean|error response = self.certificate_client.apply_certificate_request(certificate_request.user_id, certificate_request.nic, certificate_request.address.line_01, certificate_request.address.line_02, certificate_request.address.city, certificate_request.address.line_03.toString(),
+            string|boolean|error response = self.certificate_client.apply_certificate_request(certificate_request.user_id, certificate_request.nic, certificate_request.address.line_01, certificate_request.address.line_02, certificate_request.address.city, certificate_request.address.line_03.toString(),
                 certificate_request.grama_division_id);
 
             if (response is error) {
@@ -92,19 +92,39 @@ isolated service /api/v1 on new http:Listener(9090) {
                     }
                 };
             } else {
-                if (response) {
-                    // TODO: send notification to the gramaniladhari
+                if (response is string) {
+                    error? email_response = self.notifications_client.send_email_without_html_body(response, notifications:certificate_request_email_subject, notifications:certificate_request_email_body);
+                    if (email_response is error) {
+                        io:println("Error: " + email_response.toString());
+                        io:println("Error: Failed to send email to relevant gramaniladhari account.");
+                        return <http:Created>{
+                            body: {
+                                "message": "Certificate request created successfully."
+                            }
+                        };
+                    }
                     return <http:Created>{
                         body: {
                             "message": "Certificate request created successfully."
                         }
                     };
-                } else {
-                    return <http:BadRequest>{
-                        body: {
-                            "message": "Request creation failed please check entered details again."
-                        }
-                    };
+                }
+                else {
+                    if (response) {
+                        io:println("Error: Failed to send email to relevant gramaniladhari account.");
+                        return <http:Created>{
+                            body: {
+                                "message": "Certificate request created successfully."
+                            }
+                        };
+                    } else {
+                        return <http:BadRequest>{
+                            body: {
+                                "message": "Request creation failed please check entered details again."
+                            }
+                        };
+                    }
+
                 }
 
             }
@@ -326,7 +346,7 @@ isolated service /api/v1 on new http:Listener(9090) {
     # + user_id - id of the user
     # + return - http:Ok,http:BadRequest or http:InternalServerError
     resource function get certificate/[string user_id]/current() returns http:Ok|http:BadRequest|http:InternalServerError {
-        
+
         lock {
             http:BadRequest|json|error result = self.certificate_client.get_last_certificate_request(user_id);
 

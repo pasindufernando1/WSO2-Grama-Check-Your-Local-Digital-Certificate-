@@ -20,7 +20,7 @@ public class CertificateClient {
         }
     }
 
-    public isolated function apply_certificate_request(string req_user_id, string req_nic, string req_line_01, string req_line_02, string req_line_03, string req_city, string req_gram_division_id) returns error|boolean {
+    public isolated function apply_certificate_request(string req_user_id, string req_nic, string req_line_01, string req_line_02, string req_line_03, string req_city, string req_gram_division_id) returns error|string|boolean {
 
         lock {
             http:Response|error response = self.certificate_api_client->/create\-user\-certificate\-request.post({
@@ -36,7 +36,19 @@ public class CertificateClient {
                 return error("Error: error occured at create_user_certificate_request function");
             } else {
                 if (response.statusCode == 201) {
-                    return true;
+                    json| error response_json = response.getJsonPayload();
+                    if (response_json is json) {
+                        json|error email = response_json.gramaDivisionEmail;
+                        if (email is json) {
+                            return <string>email;
+                        } else {
+                            io:println("Error: " + email.message());
+                            return true;
+                        }
+                    } else {
+                        io:println("Error: " + response_json.message());
+                        return true;
+                    }
                 } else {
                     return false;
                 }
