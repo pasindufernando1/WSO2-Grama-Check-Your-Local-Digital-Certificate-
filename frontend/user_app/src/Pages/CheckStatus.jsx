@@ -8,7 +8,6 @@ import completedImage from "../images/completed.svg";
 import noneImage from "../images/none.svg";
 import rejectedImage from "../images/rejected.svg";
 import Link from "@mui/material/Link";
-import { useEffect } from "react";
 import { useAuthContext } from "@asgardeo/auth-react";
 
 const override = {
