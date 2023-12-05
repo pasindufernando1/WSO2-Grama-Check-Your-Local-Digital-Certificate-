@@ -89,7 +89,10 @@ function Requests() {
             "Content-Type": "application/scim+json"
           },
           method: "GET",
-          URL: window.configs.resourceServerURLs[0] + "certificates?user_id=" + info.sub,
+          URL: window.configs.resourceServerURLs[0] + "certificates",
+          params: {
+            user_id: info.sub
+          }
         },
       }
 
