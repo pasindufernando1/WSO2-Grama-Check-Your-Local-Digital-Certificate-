@@ -80,6 +80,8 @@ function Requests() {
       setUserInfo(info);
       setDisplayName(info.displayName);
 
+      console.log(window.configs.resourceServerURLs[0] + "certificates?user_id=" + info.sub);
+
       const certificateResponseConfig = {
         headers: {
           headers: {
