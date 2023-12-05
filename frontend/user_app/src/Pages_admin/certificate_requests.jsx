@@ -19,6 +19,7 @@ function Dashboard() {
     <Box
         component="main"
         sx={{
+          pt:6,
           flexGrow: 1,
           bgcolor: "background.default",
           pl: 3,

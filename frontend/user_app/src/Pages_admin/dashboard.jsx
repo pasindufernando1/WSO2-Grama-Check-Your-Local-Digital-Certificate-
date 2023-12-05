@@ -21,6 +21,7 @@ function Dashboard() {
           display:"flex",
           bgcolor: "background.default",
           p: 3,
+          pt:11,
           width: {xs:"100%", sm:"70vw"},
           ml: {xs:"0%" , sm:"22%"},
         }}
