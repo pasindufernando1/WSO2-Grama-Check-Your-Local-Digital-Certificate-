@@ -21,7 +21,7 @@ function Register() {
   // console.log(state);
   const [userInfo, setUserInfo] = useState({});
   const navigate = useNavigate();
-  console.log(state);
+  // console.log(state);
   
   useEffect(() => {
     if(!state.isAuthenticated){

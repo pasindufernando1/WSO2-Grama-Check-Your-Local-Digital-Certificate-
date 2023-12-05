@@ -74,15 +74,17 @@ const toggleSidebar = () => {
 return (
   <>
     <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+    <div className="pt-8">
     <Box
       component="main"
       sx={{
+        m: 4,
+        mt:8,
         flexGrow: 1,
         bgcolor: "background.default",
         ml: { sm: "22%" },
         boxShadow: 2,
         p: 3,
-        m: 4,
         pb: 7,
         borderRadius: { xs: 0, sm: 2 },
       }}
@@ -229,6 +231,7 @@ return (
         </Typography>
       </Grid>
     </Box>
+    </div>
   </>
 );
 }

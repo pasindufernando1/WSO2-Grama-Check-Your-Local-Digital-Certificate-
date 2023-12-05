@@ -33,9 +33,12 @@ function ApplyCertificate() {
   return (
     <>
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <div className="pt-8">
       <Box
         component="main"
+        margin={"auto"}
         sx={{
+          mt:8,
           flexGrow: 1,
           bgcolor: "white",
           p: 3,
@@ -48,7 +51,6 @@ function ApplyCertificate() {
             xs: "0%",
             sm: "25%",
           },
-          mt: "3%",
           borderRadius: 4,
           boxShadow: { xs: 0, sm: 2 },
         }}
@@ -180,6 +182,7 @@ function ApplyCertificate() {
           </Grid>
         </Grid>
       </Box>
+      </div>
     </>
   );
 }

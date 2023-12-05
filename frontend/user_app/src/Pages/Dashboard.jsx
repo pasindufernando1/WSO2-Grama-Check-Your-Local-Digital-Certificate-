@@ -14,6 +14,7 @@ function Dashboard() {
   return (
     <>
     <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+    <div className="pt-16">
       <Box
         component="main"
         sx={{
@@ -29,6 +30,7 @@ function Dashboard() {
           <Requests/>
         </Stack>
       </Box>
+      </div>
     </>
   );
 }
