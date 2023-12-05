@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // mui components
 import Typography from "@mui/material/Typography";
 import { Grid } from "@mui/material";
@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { useAuthContext } from "@asgardeo/auth-react";
 
 // Header component
-const Header = ({ toggleSidebar }) => (
+const Header = ({ toggleSidebar, displayName }) => (
  <header className=" bg-black text-white w-full h-[65px] p-5 fixed top-0 p-4" style={{ zIndex: 200 }}>
     <Grid container spacing={2} className="md">
       <Grid item xs={8}>
@@ -58,7 +58,7 @@ const Header = ({ toggleSidebar }) => (
             fontFamily: "Poppins",
           }}
         >
-          Shamin Fernando{" "}
+          {displayName +" "}
         </Typography>
       </Grid>
     </Grid>
@@ -67,11 +67,27 @@ const Header = ({ toggleSidebar }) => (
 
 // Sidebar component
 const Sidebar = ({ isOpen, toggleSidebar }) => {
-  const { state, signOut } = useAuthContext();
+  const { state, signOut, getBasicUserInfo } = useAuthContext();
+
+  const [displayName, setDisplayName] = useState("");
+
+  useEffect(() => {
+    const authInfo = async () => {
+      if(!state.isAuthenticated) return;  // If not authenticated, return
+      
+      const info = await getBasicUserInfo();
+
+      setDisplayName(info.displayName);
+    }
+
+    authInfo();
+  }
+  , []);
+
   return (
     <div>
       {/* Header */}
-      <Header toggleSidebar={toggleSidebar} />
+      <Header toggleSidebar={toggleSidebar} displayName={displayName} />
 
       {/* Sidebar - Hidden by default on small screens */}
       <div
