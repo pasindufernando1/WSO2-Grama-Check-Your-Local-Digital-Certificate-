@@ -29,7 +29,7 @@ function Register() {
     }
     
     getBasicUserInfo().then((info) => {
-      setUserInfo(info);
+      console.log(info);
       if(info.applicationRoles === "GramaSewaka"){
         navigate("/admin/dashboard");
       }
