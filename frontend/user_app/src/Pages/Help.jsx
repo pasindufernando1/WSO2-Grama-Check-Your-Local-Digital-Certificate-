@@ -60,9 +60,16 @@ function Help() {
     );
   };
 
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
+
+const toggleSidebar = () => {
+  setSidebarOpen(!isSidebarOpen);
+};
+
   return (
     <>
-      <SideBar />
+      <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <div className="pt-8">
       <Box
         component="main"
         sx={{
@@ -71,7 +78,7 @@ function Help() {
           p: 3,
           width: { xs: "100%", sm: "70vw" },
           ml: { xs: "0%", sm: "22%" },
-          mt: "3%",
+          mt: 8,
         }}
       >
         <Grid
@@ -185,6 +192,7 @@ function Help() {
           ))}
         </div>
       </Box>
+      </div>
     </>
   );
 }

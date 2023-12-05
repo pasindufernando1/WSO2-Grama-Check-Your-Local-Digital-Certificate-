@@ -10,7 +10,7 @@ import { useAuthContext } from "@asgardeo/auth-react";
 
 // Header component
 const Header = ({ toggleSidebar }) => (
-  <header className=" bg-black text-white w-full h-[65px] p-5 fixed top-0p-4" style={{ zIndex: 200 }}>
+  <header className=" bg-black text-white w-full h-[65px] p-5 fixed top-0 p-4" style={{ zIndex: 200 }}>
     <Grid container spacing={2} className=" md">
       <Grid item xs={8}>
         <Grid container spacing={2}>
@@ -71,29 +71,31 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const { signOut } = useAuthContext();
 
   return (
-    <div >
+    <div>
       {/* Header */}
       <Header toggleSidebar={toggleSidebar} />
 
       {/* Sidebar - Hidden by default on small screens */}
       <div
-        className={`fixed h-screen mt-[65px] bg-black text-white w-64  ${
+        className={`fixed h-screen bg-black text-white w-64  ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out md:translate-x-0 `}
         style={{ zIndex: 100 }}
       >
-        <ul className="mt-8">
+        <ul className="mt-20">
           <li className="p-4 hover:bg-gray-700">
             <Link to="/admin/dashboard">Home</Link>
           </li>
           <li className="p-4 hover:bg-gray-700">
             <Link to="/admin/requests">View Requests</Link>
           </li>
-          <li></li>
+          <li className="p-4 hover:bg-gray-700">
+            <Link to="/help"> Help</Link>{" "}
+          </li>
         </ul>
-        {/* Sidebar footer */}
-        <div className="mt-auto mb-0 mt-60">  
-          <button onClick={()=> signOut()} className=" w-[80%] bg-[#699eee] p-1 pr-3 pl-3 m-3 rounded-lg">
+
+        <div className="fixed bottom-0 w-64 p-4">
+        <button onClick={()=> signOut()} className=" w-[80%] bg-[#699eee] p-1 pr-3 pl-3 m-3 rounded-lg">
             Log out
           </button>
         </div>

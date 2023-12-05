@@ -2,7 +2,7 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import Check from "../images/Check.svg";
+import Check from "../images/request_cert.svg";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import ErrorIcon from "@mui/icons-material/Error";
 import FunctionsIcon from "@mui/icons-material/Functions";
@@ -10,11 +10,15 @@ import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
+import { AiFillBank } from "react-icons/ai";
+import { AiFillFileExcel } from "react-icons/ai";
+import { AiFillFile } from "react-icons/ai";
 
-const DataCard = ( {data , description} ) => (
-  <Card sx={{ p: 2, mt: 1, backgroundColor: "#699eee", width: "100%" ,height:"30%"}}>
+const DataCard = ( {data , description,icon: IconComponent} ) => (
+  <Card sx={{ p: 2, mt: 1, backgroundColor: "#f6f6f6", width: "100%" ,height:"30%"}}>
     <Grid container>
-      <Grid xs={10}>
+      <Grid xs={10} flexDirection={"row"}>
+      {IconComponent && <IconComponent fontSize={18} />}
         <Typography
           sx={{
             fontWeight: 400,
@@ -24,20 +28,27 @@ const DataCard = ( {data , description} ) => (
                 sm: 10,
                 md: 12,
               },
-            color: "#fff",
+            color: "black",
+            
           }}
+          mt={1}
         >
           {data}
         </Typography>
       </Grid>
-      <Grid xs={12} mt={1}>
+      <Grid xs={12} mt={0}>
         <Typography
-          variant="h7"
           sx={{
-            color: "#fff",
+            color: "black",
             fontWeight:500,
             textAlign:"left",
-            width:1
+            fontFamily:"Poppins",
+            width:1,
+            fontSize: {
+              xs: 15,
+              sm: 15,
+              md: 15,
+            },
           }}
         >
            {description}
@@ -49,7 +60,7 @@ const DataCard = ( {data , description} ) => (
 function requests() {
   return (
     <>
-    <Card sx={{ p: 2, mt: 1, mb:2, backgroundColor: "#699eee", width: "96%" ,height:"30%"}}>
+    <Card sx={{ p: 2, mt: 1, mb:2, backgroundColor: "#f6f6f6", width: "96%" ,height:"30%"}}>
     <Grid container>
       <Grid xs={10}>
         <Typography
@@ -58,7 +69,7 @@ function requests() {
             fontWeight: 400,
             fontFamily: "Poppins",
             fontWeight:500,
-            color: "#fff",
+            color: "black",
           }}
         >
           Hello Shamin,
@@ -68,7 +79,7 @@ function requests() {
         <Typography
           
           sx={{
-            color: "#fff",
+            color: "black",
             textAlign:"left",
             width:1,
             fontSize: {
@@ -98,7 +109,7 @@ function requests() {
             alignItems="center"
             spacing={2}
           >
-            <img src={Check} width="90%" style={{ marginTop: 2 }} />
+            <img src={Check} width="40%" style={{ marginTop: 2 }} />
             <Button
               variant="outlined"
               sx={{
@@ -156,9 +167,9 @@ function requests() {
       sx={{
           mx: "auto",
         }}>
-        <DataCard data="Grama Division Assigned" description="Horana Wewala"/>
-        <DataCard data="Current Certificate Details" description="Expiry : 2020/10/23"/>
-        <DataCard data="Number of Obtained certificates" description="10"/>
+        <DataCard data="Grama Division Assigned" description="Horana Wewala" icon={AiFillBank}/>
+        <DataCard data="Current Certificate Details" description="Expiry : 2020/10/23" icon={AiFillFileExcel}/>
+        <DataCard data="Number of Obtained certificates" description="10" icon={AiFillFile}/>
       </Grid>
     </Grid>
     </>
