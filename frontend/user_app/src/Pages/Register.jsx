@@ -33,7 +33,7 @@ function Register() {
 
     getBasicUserInfo().then((info) => {
       console.log(info);
-      if(info.applicationRoles === "GramaSewaka"){
+      if(info.groups[0] === "Grama-PSSR"){
         navigate("/admin/dashboard");
       } else {
         navigate("/Dashboard");
