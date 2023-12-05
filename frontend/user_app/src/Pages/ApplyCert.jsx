@@ -8,6 +8,8 @@ import { Select } from "@mui/material";
 import SideBar from "../components/SideBar";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
+import { useEffect } from "react";
+import { useAuthContext } from "@asgardeo/auth-react";
 
 //
 import { useAuthContext } from "@asgardeo/auth-react";
@@ -21,6 +23,39 @@ const override = {
 
 function ApplyCertificate() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
+
+  const [nic, setNic] = useState("");
+  const [line1, setLine1] = useState("");
+  const [line2, setLine2] = useState("");
+  const [line3, setLine3] = useState("");
+  const [grama, setGrama] = useState([]);
+  const [city, setCity] = useState("");
+  const [selectedGrama, setSelectedGrama] = useState("");
+
+  const { httpRequest, state } = useAuthContext();
+
+  useEffect(() => {
+    const getGramaDivisions = async () => {
+      const requestConfig = {
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/scim+json",
+        },
+        method: "GET",
+        url: `https://cf3a4176-54c9-4547-bcd6-c6fe400ad0d8-dev.e1-us-east-azure.choreoapis.dev/ojjz/apigateway/api-v1-863/v1/gramadivisions`,
+      };
+
+      const response = await httpRequest(requestConfig);
+
+      console.log(response);
+
+      if (response.status === 200) {
+        setGrama(response.data);
+      }
+    }
+
+    getGramaDivisions();
+  }, []);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -101,6 +136,7 @@ function ApplyCertificate() {
                   sx: { fontSize: { xs: 12, sm: 12 } }, // Adjust the font size as needed
                 }}
                 mt="1"
+                onChange={(e) => setNic(e.target.value)}
               />
             </Grid>
 
@@ -117,6 +153,20 @@ function ApplyCertificate() {
                 InputLabelProps={{
                   sx: { fontSize: { xs: 12, sm: 12 } }, // Adjust the font size as needed
                 }}
+                onChange={(e) => setLine1(e.target.value)}
+              />
+            </Grid>
+            <Grid>
+              <TextField
+                id="standard-helperText"
+                label="Line 2"
+                variant="standard"
+                size="small"
+                sx={{ width: { xs: "100%", sm: "50vw" }, mb: 3 }}
+                InputLabelProps={{
+                  sx: { fontSize: { xs: 12, sm: 12 } }, // Adjust the font size as needed
+                }}
+                onChange={(e) => setLine2(e.target.value)}
               />
             </Grid>
             <Grid>
@@ -129,6 +179,20 @@ function ApplyCertificate() {
                 InputLabelProps={{
                   sx: { fontSize: { xs: 12, sm: 12 } }, // Adjust the font size as needed
                 }}
+                onChange={(e) => setLine3(e.target.value)}
+              />
+            </Grid>
+            <Grid>
+              <TextField
+                id="standard-helperText"
+                label="City"
+                variant="standard"
+                size="small"
+                sx={{ width: { xs: "100%", sm: "50vw" }, mb: 3 }}
+                InputLabelProps={{
+                  sx: { fontSize: { xs: 12, sm: 12 } }, // Adjust the font size as needed
+                }}
+                onChange={(e) => setCity(e.target.value)}
               />
             </Grid>
 
@@ -142,10 +206,13 @@ function ApplyCertificate() {
                 sx={{ width: { xs: "100%", sm: "50vw" } }}
                 size="small"
                 variant="standard"
+                onSelect={(e) => setSelectedGrama(e.target.value)}
+                value={selectedGrama}
               >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                {grama.map((currGrama) => (
+                  <MenuItem value={currGrama.id}>{currGrama.name}</MenuItem>
+                ))}
+
               </Select>
             </Grid>
 
