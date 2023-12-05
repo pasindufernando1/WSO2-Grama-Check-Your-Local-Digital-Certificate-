@@ -13,7 +13,7 @@ type InvalidNICError record {|
 # the external api to check police reports
 # bound to port `9090`. for now
 
-service /api/v1/police\-check\-service on new http:Listener(9090) {
+service /api/v1 on new http:Listener(9090) {
 
     private final Client serviceDBClient;
 

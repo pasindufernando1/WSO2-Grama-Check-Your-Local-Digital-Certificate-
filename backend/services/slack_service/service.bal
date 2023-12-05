@@ -37,7 +37,7 @@ type newChannelParams record {|
 |};
 
 
-service /api/v1/slack\-service on new http:Listener(9090) {
+service /api/v1 on new http:Listener(9090) {
     private final slack:Client slackClient;
 
     public function init() returns error?{

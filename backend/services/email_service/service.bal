@@ -32,7 +32,7 @@ type EmailCreated record {|
 |};
 
 
-service /api/v1/email\-service on new http:Listener(9090) {
+service /api/v1 on new http:Listener(9090) {
     private final email:SmtpClient smtpClient;
 
     public function init() returns error? {

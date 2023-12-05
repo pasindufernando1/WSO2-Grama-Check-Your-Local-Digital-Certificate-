@@ -33,7 +33,7 @@ type UserCertificateInsertDTO record {|
     string grama_divisionId;
 |};
 
-service /api/v1/user\-certificate\-service on new http:Listener(9000) {
+service /api/v1 on new http:Listener(9000) {
     private final Client serviceDBClient;
 
     public function init() returns error? {
