@@ -18,11 +18,6 @@ function Dashboard() {
 
     const [basicInfo, setBasicInfo] = useState({});
     console.log(state);
-    getBasicUserInfo().then((info) => {
-      console.log("Information");
-      setBasicInfo(info);
-    });
-    
 
     const {requests, setRequests} = useState({});
     
@@ -48,8 +43,7 @@ function Dashboard() {
         
       }
       getCertificateRequests();
-    }
-      , []);
+    }, []);
 
     console.log(requests);
 
