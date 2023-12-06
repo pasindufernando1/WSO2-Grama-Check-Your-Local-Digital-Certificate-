@@ -18,6 +18,11 @@ const Unauthorized = () => {
             }
         
             getBasicUserInfo().then((info) => {
+              if(info.groups === undefined){ //there is no groups attribute in the token  
+                setGoBackLink("/Dashboard");
+                return;
+              }
+
                 if(info.groups[0] === "Grama-PSSR"){
                     setGoBackLink("/admin/dashboard");
                 } else {

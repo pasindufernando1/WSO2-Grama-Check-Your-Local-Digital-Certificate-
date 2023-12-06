@@ -18,7 +18,7 @@ function Dashboard() {
 
     const [basicInfo, setBasicInfo] = useState({});
 
-    const {requests, setRequests} = useState({});
+    const [requests, setRequests] = useState([]);
     
     useEffect(() => {
       getBasicUserInfo().then((info) => {
@@ -53,10 +53,10 @@ function Dashboard() {
       
     }, []);
 
-    useEffect(() => {
-      console.log("Requests");
-      console.log(requests);
-    }, [requests]);
+    
+  // Filter the requests and take the requests whose status is pending
+  const pendingRequests = requests.filter((request) => request.status === "PENDING");
+
 
 
   return (
@@ -76,7 +76,7 @@ function Dashboard() {
         }}
       >
         <Toolbar />
-        <Table />
+        <Table rows={pendingRequests} setRows={setRequests} />
       </Box>
     </>
   );
