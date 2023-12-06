@@ -139,6 +139,12 @@ function Register() {
                           ":hover": {
                             backgroundColor: "#699eee",
                           },
+                          display : {
+                            xs:"flex"
+                          },
+                          justifyContent:{
+                            xs:"center"
+                          },
                           fontSize: {
                             xs: 12,
                             sm: 14,
