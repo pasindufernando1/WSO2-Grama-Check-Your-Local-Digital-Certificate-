@@ -41,7 +41,7 @@ function Dashboard() {
             setRequests(response.data);
           }
           catch (error) {
-            if (error.response.status === 404) {
+            if (error.status === 404) {
               console.log("No requests found");
             }
           }
@@ -49,10 +49,11 @@ function Dashboard() {
         }
         getCertificateRequests();
       });
+      console.log("Requests");
+      console.log(requests);
       
     }, []);
 
-    console.log(requests);
 
   return (
     <>
