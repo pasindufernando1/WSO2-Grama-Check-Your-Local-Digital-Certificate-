@@ -81,7 +81,7 @@ isolated service /api/v1 on new http:Listener(9090) {
                 };
             }
 
-            string|boolean|error response = self.certificate_client.apply_certificate_request(certificate_request.user_id, certificate_request.nic, certificate_request.address.line_01, certificate_request.address.line_02, certificate_request.address.city, certificate_request.address.line_03.toString(),
+            string|boolean|error response = self.certificate_client.apply_certificate_request(certificate_request.user_id, certificate_request.nic, certificate_request.address.line_01, certificate_request.address.line_02, certificate_request.address.line_03.toString(), certificate_request.address.city,
                 certificate_request.grama_division_id);
 
             if (response is error) {
