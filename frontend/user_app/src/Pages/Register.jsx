@@ -128,6 +128,12 @@ function Register() {
                         xs: {
                           textAlign: "center",
                         },
+                        display : {
+                          xs:"flex"
+                        },
+                        justifyContent:{
+                          xs:"center"
+                        },
                       }}
                     >
                       <Button
@@ -138,12 +144,6 @@ function Register() {
                           backgroundColor: "#699eee",
                           ":hover": {
                             backgroundColor: "#699eee",
-                          },
-                          display : {
-                            xs:"flex"
-                          },
-                          justifyContent:{
-                            xs:"center"
                           },
                           fontSize: {
                             xs: 12,
