@@ -4,6 +4,8 @@ import SideBar from "../components/SideBar_admin";
 import Toolbar from "@mui/material/Toolbar";
 import Table from "../components/reqTable";
 import { useAuthContext } from "@asgardeo/auth-react";
+import apiCaller from "../api/apiCaller";
+import { useEffect } from "react";
 
 function Dashboard() {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -13,12 +15,38 @@ function Dashboard() {
     };
 
     const {state , getBasicUserInfo} = useAuthContext();
+
+    const [basicInfo, setBasicInfo] = useState({});
     console.log(state);
     getBasicUserInfo().then((info) => {
       console.log("Information");
-      console.log(info);
+      setBasicInfo(info);
     });
     
+
+    const {requests, setRequests} = useState({});
+    const params = {
+      grama_division_id: basicInfo.gramaDivision
+    }
+    useEffect(() => {
+      const getCertificateRequests = async () => {
+        try {
+          const response = await apiCaller('certificates', 'GET', null, params);
+          console.log(response);
+          setRequests(response.data);
+        }
+        catch (error) {
+          if (error.response.status === 404) {
+            console.log("No requests found");
+          }
+        }
+        
+      }
+      getCertificateRequests();
+    }
+      , [state]);
+
+    console.log(requests);
 
   return (
     <>
