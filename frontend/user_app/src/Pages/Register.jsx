@@ -33,6 +33,7 @@ function Register() {
 
     getBasicUserInfo().then((info) => {
       console.log(info);
+      console.log("userGroup" + info.groups[0]);
       if(info.groups[0] === "Grama-PSSR"){
         navigate("/admin/dashboard");
         window.location.reload();
