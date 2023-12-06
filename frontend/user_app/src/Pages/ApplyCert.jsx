@@ -93,16 +93,23 @@ function ApplyCertificate() {
 
     try {
       //send the request
+      //disable the button
+      
       const createResponse = await apiCaller('certificate/request', 'POST', sendingData);
 
       if (createResponse.status === 201) {
-        alert("successfully created ");
+        alert("successfully created");
         console.log(createResponse.data);
       }
     }
     catch (e) {
-      alert("failed to create the request");
       console.log(e);
+      if(e.status === 400) {
+        alert(e.body.message);
+      }
+      else{
+        alert("An error occurred while trying to create the request");
+      }
     }
   }
 
