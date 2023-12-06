@@ -61,7 +61,7 @@ function Dashboard() {
   //Get the parameters from the URL
   const { id } = useParams();
   console.log(id);
-  const [policeDetails, setPoliceDetails] = useState({});
+  const [policeDetails, setPoliceDetails] = useState([]);
 
   useEffect(() => {
     
@@ -82,6 +82,8 @@ function Dashboard() {
   }, []);
   console.log(policeDetails);
 
+  //Convert an object to an array
+  // const policeDetailsArray = Object.entries(policeDetails);
 
 
 
@@ -204,7 +206,7 @@ function Dashboard() {
           open={open}
           setOpen={setOpen}
           inputType={type}
-          dataCriminal={criminalRecord}
+          dataCriminal={Object.entries(policeDetails)}
         />
       </Box>
     </>
