@@ -97,8 +97,8 @@ export default function BasicModal({
                   }}
                   color="text.secondary"
                 >
-                  {dataCriminal.eligibility === false &&
-                    dataCriminal.records && (
+                  {dataCriminal?.eligibility === false &&
+                    dataCriminal?.records && (
                       <div style={{width:"100%"}}>
                           {dataCriminal.records.map((record, index) => (
                             <Grid
