@@ -35,8 +35,10 @@ function Register() {
       console.log(info);
       if(info.groups[0] === "Grama-PSSR"){
         navigate("/admin/dashboard");
+        window.location.reload();
       } else {
         navigate("/Dashboard");
+        window.location.reload();
       }
     });
   }, []);
