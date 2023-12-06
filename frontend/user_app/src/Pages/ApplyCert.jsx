@@ -139,7 +139,7 @@ function ApplyCertificate() {
   };
 
   const [toastOpen, setToastOpen] = useState(false);
-  const [toastMode, setToastMode] = useState(0); //0-success, 1-error, 2-pending
+  const [toastMode, setToastMode] = useState(-1); //0-success, 1-error, 2-pending
   const [toastText, setToastText] = useState("");
   
   return (

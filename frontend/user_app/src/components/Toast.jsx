@@ -70,7 +70,7 @@ export default function CustomizedSnackbars({ open, setOpen, mode,text }) {
           onClose={handleClose}
           anchorOrigin={{ vertical, horizontal }}
         >
-          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
           {text}
           </Alert>
         </Snackbar>
