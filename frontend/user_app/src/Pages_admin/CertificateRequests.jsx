@@ -24,14 +24,14 @@ function Dashboard() {
       getBasicUserInfo().then((info) => {
         console.log("Information");
         console.log(info);
-        setBasicInfo(info);
-        console.log("Basic Info");
-        console.log(basicInfo);
-        console.log("Grama Division");
-        console.log(basicInfo.gramaDivision);
+        // // setBasicInfo(info);
+        // console.log("Basic Info");
+        // console.log(basicInfo);
+        // console.log("Grama Division");
+        // console.log(basicInfo.gramaDivision);
 
         const params = {
-          grama_division_id : basicInfo.gramaDivision
+          grama_division_id : info.gramaDivision
         }
         console.log(params);
         const getCertificateRequests = async () => {
@@ -41,7 +41,7 @@ function Dashboard() {
             setRequests(response.data);
           }
           catch (error) {
-            if (error.response.status === 404) {
+            if (error.status === 404) {
               console.log("No requests found");
             }
           }
@@ -50,9 +50,14 @@ function Dashboard() {
         getCertificateRequests();
       });
       
+      
     }, []);
 
-    console.log(requests);
+    useEffect(() => {
+      console.log("Requests");
+      console.log(requests);
+    }, [requests]);
+
 
   return (
     <>
