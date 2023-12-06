@@ -127,14 +127,9 @@ function Register() {
                         },
                         xs: {
                           textAlign: "center",
-                        },
-                        display : {
-                          xs:"flex"
-                        },
-                        justifyContent:{
-                          xs:"center"
-                        },
-                      }}
+                          display:"flex",
+                          justifyContent:"center"
+                        },}}
                     >
                       <Button
                         variant="contained"
