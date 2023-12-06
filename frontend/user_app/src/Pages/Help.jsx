@@ -38,6 +38,42 @@ const FaqItem = ({ question, answer, isOpen, toggle }) => (
   </div>
 );
 
+const SlackInvitationButton = () => {
+  const invitationLink = "https://join.slack.com/t/srsp-gp/shared_invite/zt-27us9689f-luqUwIEwHnugatWX3ghrZA";
+
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      href={invitationLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      sx={{
+        mt: 1,
+        ml: 5,
+        width: { xs: "50%", sm: "13.5vw" },
+        fontSize: {
+          xs: 15,
+          sm: 11,
+          md: 13,
+          lg: 14,
+        },
+        backgroundColor: "#699eee",
+        textTransform: "none",
+        fontFamily: "Poppins",
+        borderRadius: 20,
+        color: "white",
+        ":hover": {
+          borderColor: "#699eee",
+          color: "#699eee",
+        },
+      }}
+    >
+      Join our Slack Workspace
+    </Button>
+  );
+};
+
 function Help() {
   const faqData = [
     {
@@ -126,46 +162,10 @@ function Help() {
             </Grid>
 
             <Grid>
-              <TextField
-                id="outlined-basic"
-                label="Type your issue"
-                variant="outlined"
-                size="small"
-                multiline
-                rows={3}
-                sx={{ width: { xs: "75vw", sm: "60vw" }, mb: 1 }}
-              />
+                 <SlackInvitationButton /> 
             </Grid>
           </Grid>
 
-          <Grid container>
-            <Button
-              variant="outlined"
-              sx={{
-                mt: 1,
-                ml: 5,
-                width: { xs: "50%", sm: "13.5vw" },
-                fontSize: {
-                  xs: 15,
-                  sm: 11,
-                  md: 13,
-                  lg: 14,
-                },
-                backgroundColor: "#699eee",
-                textTransform: "none",
-                fontFamily: "Poppins",
-                borderRadius: 20,
-                color: "white",
-                ":hover": {
-                  borderColor: "#699eee",
-                  color: "#699eee",
-                },
-                mx: { xs: "auto" },
-              }}
-            >
-              Submit
-            </Button>
-          </Grid>
           <Grid container xs={12}>
             <Typography
               variant="h3"
@@ -185,7 +185,7 @@ function Help() {
                 ml: { sm: 1 },
               }}
             >
-              Frequent Questions & Answers
+              Frequently Asked Questions & Answers
             </Typography>
           </Grid>
           <div>
