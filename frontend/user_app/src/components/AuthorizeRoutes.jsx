@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useAuthContext } from "@asgardeo/auth-react";
 import { useEffect, useState } from "react";
 
-const AuthorizeRoutes = ({ allowedRoles }) => {
+const AuthorizeRoutes = ({ allowedRoles,notAllowedRoles }) => {
     const { state, signIn, signOut, getAccessToken, getIDToken, getBasicUserInfo } = useAuthContext();
     const location = useLocation();
     const [userGroup, setUserGroup] = useState("");
@@ -29,7 +29,7 @@ const AuthorizeRoutes = ({ allowedRoles }) => {
         return <Navigate to="/" state={{ from: location }} replace />;
     }
 
-    if (allowedRoles.includes(userGroup)) {
+    if (!userGroup || (allowedRoles.includes(userGroup) && !notAllowedRoles.includes(userGroup))){
         return <Outlet />;
     } else {
         return <Navigate to="/unauthorized" state={{ from: location }} replace />;
@@ -38,6 +38,7 @@ const AuthorizeRoutes = ({ allowedRoles }) => {
 
 AuthorizeRoutes.propTypes = {
     allowedRoles: PropTypes.array,
+    notAllowedRoles: PropTypes.array,
 };
 
 export default AuthorizeRoutes;
