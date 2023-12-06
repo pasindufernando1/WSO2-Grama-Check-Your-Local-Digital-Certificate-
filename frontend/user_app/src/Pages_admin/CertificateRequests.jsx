@@ -29,6 +29,7 @@ function Dashboard() {
       const params = {
         grama_division_id : basicInfo.gramaDivision
       }
+      console.log(params);
       const getCertificateRequests = async () => {
         try {
           const response = await apiCaller('certificates', 'GET', null, params);
