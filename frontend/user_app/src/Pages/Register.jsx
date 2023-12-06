@@ -173,7 +173,28 @@ function Register() {
           </Container>
         </div>
       ) : (
-        <></>
+        <>
+         <Button
+                        variant="contained"
+                        sx={{
+                          mr: 1,
+                          mt: 3,
+                          backgroundColor: "#699eee",
+                          ":hover": {
+                            backgroundColor: "#699eee",
+                          },
+                          fontSize: {
+                            xs: 12,
+                            sm: 14,
+                            md: 15,
+                          },
+                          textTransform: "none",
+                        }}
+                        onClick={() => signOut()}
+                      >
+                        Logout
+                      </Button>
+        </>
       )}
     </div>
   );
