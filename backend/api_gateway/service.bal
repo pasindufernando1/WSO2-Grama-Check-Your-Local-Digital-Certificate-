@@ -32,7 +32,7 @@ isolated service /api/v1 on new http:Listener(9090) {
 
         lock {
 
-            boolean|error identity_check_result = self.identity_client.validate_nic(certificate_request.nic);
+            int|boolean|error identity_check_result = self.identity_client.validate_nic(certificate_request.nic);
 
             if (identity_check_result is error) {
                 io:println("Error: " + identity_check_result.toString());
@@ -43,13 +43,29 @@ isolated service /api/v1 on new http:Listener(9090) {
                 };
             }
 
-            boolean|error address_check_result = self.address_client.verify_address(certificate_request.nic, certificate_request.address.line_01, certificate_request.address.line_02, certificate_request.address.city, certificate_request.address.line_03.toString());
+            if (identity_check_result is int) {
+                return <http:BadRequest>{
+                    body: {
+                        "message": "Invalid nic."
+                    }
+                };
+            }
+
+            boolean|error|int address_check_result = self.address_client.verify_address(certificate_request.nic, certificate_request.address.line_01, certificate_request.address.line_02, certificate_request.address.city, certificate_request.address.line_03.toString());
 
             if (address_check_result is error) {
                 io:println("Error: " + address_check_result.toString());
                 return <http:InternalServerError>{
                     body: {
                         "message": "Error occurred while verifying the address."
+                    }
+                };
+            }
+
+            if (address_check_result is int) {
+                return <http:BadRequest>{
+                    body: {
+                        "message": "Invalid address."
                     }
                 };
             }
@@ -184,11 +200,11 @@ isolated service /api/v1 on new http:Listener(9090) {
     # A resource to get the certificate details
     #
     # + id - id of the certificate
-    # + return - http:Ok,http:BadRequest or http:InternalServerError
-    resource function get certificate/[string id]/status() returns http:Ok|http:BadRequest|http:InternalServerError {
+    # + return - http:Ok, http:BadRequest, http:NotFound or http:InternalServerError
+    resource function get certificate/[string id]/status() returns http:Ok|http:BadRequest|http:NotFound|http:InternalServerError {
 
         lock {
-            json|http:BadRequest|error certificate = self.certificate_client.get_certificate_details(id);
+            json|http:Response|error certificate = self.certificate_client.get_certificate_details(id);
 
             if (certificate is error) {
                 return <http:InternalServerError>{
@@ -214,11 +230,21 @@ isolated service /api/v1 on new http:Listener(9090) {
                     }
                 };
             }
-            return <http:BadRequest>{
-                body: {
-                    "message": "Certificate for the given id is not found."
+            if (certificate is http:Response) {
+                if (certificate.statusCode == 404) {
+                    return <http:NotFound>{
+                        body: {
+                            "message": "Certificate for the given id is not found."
+                        }
+                    };
+                } else {
+                    return <http:BadRequest>{
+                        body: {
+                            "message": "Error occurred while getting the certificate details."
+                        }
+                    };
                 }
-            };
+            }
 
         }
     }
@@ -256,12 +282,12 @@ isolated service /api/v1 on new http:Listener(9090) {
     # + user_id - id of the user
     # + grama_division_id - id of the grama division
     # + grama_division_name - name of the grama division
-    # + return - http:Ok,http:BadRequest or http:InternalServerError
-    resource function get certificates(string? user_id, string? grama_division_id, string? grama_division_name) returns http:Ok|http:BadRequest|http:InternalServerError {
+    # + return - http:Ok, http:BadRequest, http:NotFound or http:InternalServerError
+    resource function get certificates(string? user_id, string? grama_division_id, string? grama_division_name) returns http:Ok|http:BadRequest|http:NotFound|http:InternalServerError {
 
         lock {
 
-            json|error|http:BadRequest response = <json>{};
+            json|error|http:Response response = <json>{};
 
             if (user_id is string) {
                 response = self.certificate_client.get_certificate_details_by_user_id(user_id);
@@ -288,24 +314,32 @@ isolated service /api/v1 on new http:Listener(9090) {
                     body: response.clone()
                 };
             }
-            return <http:BadRequest>{
-                body: {
-                    "message": "Certificate for the given id is not found."
-                }
-            };
+            if (response.statusCode == 404) {
+                return <http:NotFound>{
+                    body: {
+                        "message": "Certificate for the given user id or grama division is not found."
+                    }
+                };
+            } else {
+                return <http:BadRequest>{
+                    body: {
+                        "message": "Invalid request."
+                    }
+                };
+            }
         }
 
     }
 
-    # A resource to get the certificate details by user id, grama division id or grama division name
+    # A resource to get the certificate details by certificate id
     #
     # + certificate_id - id of the certificate
-    # + return - http:Ok,http:BadRequest or http:InternalServerError
-    resource function get certificate/[string certificate_id]() returns http:Ok|http:BadRequest|http:InternalServerError {
+    # + return - http:Ok, http:BadRequest, http:NotFound or http:InternalServerError
+    resource function get certificate/[string certificate_id]() returns http:Ok|http:BadRequest|http:NotFound|http:InternalServerError {
 
         lock {
 
-            json|error|http:BadRequest response = self.certificate_client.get_certificate_details(certificate_id);
+            json|error|http:Response response = self.certificate_client.get_certificate_details(certificate_id);
 
             if (response is error) {
                 return <http:InternalServerError>{
@@ -343,6 +377,21 @@ isolated service /api/v1 on new http:Listener(9090) {
                     }
                 }
             }
+            if (response is http:Response) {
+                if (response.statusCode == 404) {
+                    return <http:NotFound>{
+                        body: {
+                            "message": "Certificate for the given id is not found."
+                        }
+                    };
+                } else {
+                    return <http:BadRequest>{
+                        body: {
+                            "message": "Invalid request."
+                        }
+                    };
+                }
+            }
             return <http:BadRequest>{
                 body: {
                     "message": "Invalid request."
@@ -354,11 +403,11 @@ isolated service /api/v1 on new http:Listener(9090) {
 
     # A resource to get the certificate details of the last request by user
     # + user_id - id of the user
-    # + return - http:Ok,http:BadRequest or http:InternalServerError
-    resource function get certificate/[string user_id]/current() returns http:Ok|http:BadRequest|http:InternalServerError {
+    # + return - http:Ok,http:BadRequest, http:NotFound or http:InternalServerError
+    resource function get certificate/[string user_id]/current() returns http:Ok|http:BadRequest|http:NotFound|http:InternalServerError {
 
         lock {
-            http:BadRequest|json|error result = self.certificate_client.get_last_certificate_request(user_id);
+            http:Response|json|error result = self.certificate_client.get_last_certificate_request(user_id);
 
             if (result is error) {
                 return <http:InternalServerError>{
@@ -370,6 +419,13 @@ isolated service /api/v1 on new http:Listener(9090) {
             if (result is json) {
                 return <http:Ok>{
                     body: result.clone()
+                };
+            }
+            if (result.statusCode == 404) {
+                return <http:NotFound>{
+                    body: {
+                        "message": "Certificate for the given user id is not found."
+                    }
                 };
             }
             return <http:BadRequest>{
