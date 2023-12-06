@@ -134,7 +134,9 @@ function Dashboard() {
                     {item.description}
                   </Typography>
                   <button
-                    className={`flex items-center bg-[#699eee] text-white text-sm font-bold px-4 py-3 mt-5 rounded-lg`}
+                    className={`flex items-center ${
+                      policeDetails.eligibility ? "bg-[#699eee]" : "bg-red-500"
+                    } text-white text-sm font-bold px-4 py-3 mt-5 rounded-lg`}
                     role="alert"
                     onClick={() => {
                       if (index === 2) {
