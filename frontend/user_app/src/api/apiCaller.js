@@ -15,7 +15,7 @@ const apiCaller = async (endpoint, method, body = null, queryParams = null) => {
             "Accept": "application/json",
             "Content-Type": "application/scim+json"
         },
-        url: window.configs[0] + endpoint
+        url: window.configs.resourceServerURLs[0] + endpoint
     };
 
     if(body){
@@ -31,6 +31,8 @@ const apiCaller = async (endpoint, method, body = null, queryParams = null) => {
             params: queryParams
         }
     }
+
+    console.log("requestConfig", requestConfig);
 
     return await spaClient.httpRequest(requestConfig);
 }
