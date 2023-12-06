@@ -49,7 +49,7 @@ function Dashboard() {
       }
       getCertificateRequests();
     }
-      , [state]);
+      , []);
 
     console.log(requests);
 
