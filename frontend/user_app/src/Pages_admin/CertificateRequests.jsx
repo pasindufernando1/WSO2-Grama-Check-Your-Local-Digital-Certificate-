@@ -27,6 +27,10 @@ function Dashboard() {
     const {requests, setRequests} = useState({});
     
     useEffect(() => {
+      getBasicUserInfo().then((info) => {
+        console.log("Information");
+        setBasicInfo(info);
+      });
       const params = {
         grama_division_id : basicInfo.gramaDivision
       }
@@ -45,7 +49,7 @@ function Dashboard() {
       }
       getCertificateRequests();
     }
-      , [state, basicInfo]);
+      , [state]);
 
     console.log(requests);
 
