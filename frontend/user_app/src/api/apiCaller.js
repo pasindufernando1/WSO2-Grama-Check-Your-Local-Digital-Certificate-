@@ -1,4 +1,4 @@
-import AsgardeoSPAClient from "@asgardeo/auth-react/dist/AsgardeoSPAClient";
+import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 
 const spaClient = AsgardeoSPAClient.getInstance();
 
