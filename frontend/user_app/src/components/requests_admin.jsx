@@ -193,7 +193,9 @@ function Requests() {
 
   return (
     <>
-      <DataCard data="Grama Division " description="Horana Wewala" />
+      <DataCard data="Grama Division " description={
+        gramaDivision ? gramaDivision.name : ''
+      } />
       <Grid
         container
         sx={{
