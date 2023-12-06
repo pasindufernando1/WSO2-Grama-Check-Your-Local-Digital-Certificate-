@@ -354,11 +354,11 @@ isolated service /api/v1 on new http:Listener(9090) {
 
     # A resource to get the certificate details of the last request by user
     # + user_id - id of the user
-    # + return - http:Ok,http:BadRequest or http:InternalServerError
-    resource function get certificate/[string user_id]/current() returns http:Ok|http:BadRequest|http:InternalServerError {
+    # + return - http:Ok,http:BadRequest, http:NotFound or http:InternalServerError
+    resource function get certificate/[string user_id]/current() returns http:Ok|http:BadRequest|http:NotFound|http:InternalServerError {
 
         lock {
-            http:BadRequest|json|error result = self.certificate_client.get_last_certificate_request(user_id);
+            http:Response|json|error result = self.certificate_client.get_last_certificate_request(user_id);
 
             if (result is error) {
                 return <http:InternalServerError>{
@@ -370,6 +370,13 @@ isolated service /api/v1 on new http:Listener(9090) {
             if (result is json) {
                 return <http:Ok>{
                     body: result.clone()
+                };
+            }
+            if (result.statusCode == 404) {
+                return <http:NotFound>{
+                    body: {
+                        "message": "Certificate for the given user id is not found."
+                    }
                 };
             }
             return <http:BadRequest>{

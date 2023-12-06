@@ -158,7 +158,7 @@ public class CertificateClient {
         }
     }
 
-    public isolated function get_last_certificate_request(string user_id) returns json|http:BadRequest|error? {
+    public isolated function get_last_certificate_request(string user_id) returns json|http:Response|error? {
 
         lock {
             http:Response|error response = self.certificate_api_client->/get\-user\-certificate\-request\-current/[user_id];
@@ -170,10 +170,10 @@ public class CertificateClient {
                 if (response.statusCode == 200) {
                     return response.getJsonPayload();
                 } else {
-                    return <http:BadRequest>{
-                    };
+                    io:println(response.statusCode);
+                    io:println(response.getJsonPayload());
+                    return response;
                 }
-
             }
         }
 
