@@ -34,16 +34,16 @@ function ApplyCertificate() {
 
   useEffect(() => {
     const getGramaDivisions = async () => {
-      try{
+      try {
         const response = await apiCaller('gramadivisions', 'GET');
 
         console.log(response);
-  
+
         if (response.status === 200) {
           setGrama(response.data);
         }
       }
-      catch(error){
+      catch (error) {
         console.log(error);
       }
     }
@@ -52,33 +52,33 @@ function ApplyCertificate() {
   }, []);
 
   const createCertificateRequest = async (e) => {
-    if(nic === "") {
+    if (nic === "") {
       alert("please enter nic");
       return;
     }
 
-    if(line1 === ""){
+    if (line1 === "") {
       alert("please enter line1");
       return;
     }
 
-    if(line2 === ""){
+    if (line2 === "") {
       alert("please enter line2");
       return;
     }
 
-    if(city === ""){
+    if (city === "") {
       alert("please enter city");
       return;
     }
 
-    if(selectedGrama === ""){
+    if (selectedGrama === "") {
       alert("please select grama division");
       return;
     }
 
     const sendingData = {
-      nic : nic,
+      nic: nic,
       address: {
         line_01: line1,
         line_02: line2,
@@ -91,6 +91,19 @@ function ApplyCertificate() {
 
     console.log(sendingData);
 
+    try {
+      //send the request
+      const createResponse = await apiCaller('certificate/request', 'POST', sendingData);
+
+      if (createResponse.status === 201) {
+        alert("successfully created ");
+        console.log(createResponse.data);
+      }
+    }
+    catch (e) {
+      alert("failed to create the request");
+      console.log(e);
+    }
   }
 
   const toggleSidebar = () => {
