@@ -26,7 +26,7 @@ function Dashboard() {
         console.log("Information");
         setBasicInfo(info);
       });
-      console.log("Basic Info" + basicInfo);
+      console.log(basicInfo);
       console.log("Grama Division" + basicInfo.gramaDivision);
 
       const params = {
