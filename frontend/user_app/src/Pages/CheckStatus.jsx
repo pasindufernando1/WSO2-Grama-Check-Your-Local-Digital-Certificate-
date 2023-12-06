@@ -20,10 +20,11 @@ const override = {
 
 function CheckStatus() {
   const arr = [
-    [ "No requests", noneImage],
-    [ "Processing", processingImage],
-    [ "Accepted", completedImage],
+    [ "No Requests", noneImage],
+    [ "Pending", processingImage],
+    [ "Approved", completedImage],
     [ "Rejected", rejectedImage],
+    ["Collected", completedImage]
   ];
 
   const [textIndex, setTextIndex] = useState(2);
@@ -40,18 +41,39 @@ function CheckStatus() {
 
   useEffect(() => {
     const getLatestCertificateRequest = async () => {
-      const response = await apiCaller(`certificate/${state.sub}/current`, 'GET');  
+      try{
+        const response = await apiCaller(`certificate/${state.sub}/current`, 'GET');  
 
-      console.log(response);
+        console.log(response);
+  
+        if (response.status === 200) { //got a current request
+          console.log(response.data);
+          setCurrentRequest(response.data);
 
-      if (response.status === 200) {
-        console.log(response.data);
-        setCurrentRequest(response.data);
+          if(response.data.status === "PENDING") {
+            setTextIndex(1);
+          }
+          else if(response.data.status === "APPROVED") {
+            setTextIndex(2);
+          }
+          else if(response.data.status === "REJECTED") {
+            setTextIndex(3);
+          }
+          else if(response.data.status === "COLLECTED") {
+            setTextIndex(4);
+          }
+
+        }
+      }
+      catch(error) {
+        if(error.response.status === 404) {
+          setTextIndex(0);
+        }
       }
     }
     getLatestCertificateRequest();
   }
-  , []);
+  , [state]);
 
   return (
     <>
@@ -189,9 +211,10 @@ function CheckStatus() {
                   },
                 }}
               >
-                NIC : 200079504080 <br />
-                Address : 38 B , Wewala , Horana <br />
-                Requested Date : 24/10/2023
+                NIC : {currentRequest?.nic} <br />
+                Address : {currentRequest?.line_01 + ", " + currentRequest?.line_02 + ", " + currentRequest.line_03 + ", " + currentRequest?.city} <br />
+                Issued Date : {currentRequest?.status === 'PENDING' || currentRequest?.status === 'APPROVED' ? 'Not yet issued' : currentRequest?.issued_date} <br />
+                Collected Date : {currentRequest?.status === 'PENDING' || currentRequest?.status === 'APPROVED' ? 'Not yet collected' : currentRequest?.collected_date} <br />
               </Typography>
             </Grid>
           </Grid>
