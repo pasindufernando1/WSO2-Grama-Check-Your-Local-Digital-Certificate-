@@ -14,7 +14,8 @@ import ArticleIcon from "@mui/icons-material/Article";
 import Stack from "@mui/material/Stack";
 import Model from "../components/Model";
 import Button from "@mui/material/Button";
-import { Link } from "@mui/material";
+import { Link, getCardUtilityClass } from "@mui/material";
+import { Navigate } from "react-router-dom";
 
 const columns = [
   { id: "Request ID", label: "Request ID", minWidth: "25%", maxWidth: "25%" },
@@ -33,23 +34,14 @@ const columns = [
   },
 ];
 
-const generateDummyData = () => {
-  const data = [];
-  for (let i = 1; i <= 4; i++) {
-    const req_id = `Req${i}`;
-    const nic = `NIC${i}`;
-    const address = `Address ${i}`;
-    const proof = `Base64EncodedImage${i}`; // Replace with your actual base64 image
-    data.push([req_id, nic, address, proof]);
-  }
-  return Promise.resolve(data);
-};
 
-export default function StickyHeadTable() {
+
+export default function StickyHeadTable({rows,setRows}) {
+  console.log("Rows");
+  console.log(rows);
   const [open, setOpen] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const rowsPerPage = "10";
-  const [rows, setRows] = useState([]);
   const [clickedImage, setClickedImage] = useState("");
 
   // const handleOpen = (index) => {
@@ -66,9 +58,7 @@ export default function StickyHeadTable() {
     setRows(newRows);
   };
 
-  useEffect(() => {
-    generateDummyData().then((data) => setRows(data));
-  }, []);
+  
 
   const handleAccept = (nic) => {
     // Implement your logic for handling acceptance
@@ -116,15 +106,17 @@ export default function StickyHeadTable() {
                   key={row.name}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell align="left">{row[0]}</TableCell>
-                  <TableCell align="left">{row[1]}</TableCell>
-                  <TableCell align="left">{row[2]}</TableCell>
+                  <TableCell align="left">{row['id']}</TableCell>
+                  <TableCell align="left">{row['nic']}</TableCell>
+                  <TableCell align="left">{row['line_01'] + "," + row['line_02']+ "," + row['line_03']+ "," + row['city']}</TableCell>
                   <TableCell
                     align="right"
                     style={{ cursor: "pointer" }}
                     // onClick={() => handleOpen(index)}
                   >
-                    <Link href="/admin/request_details/1">
+                    <Link href={`/admin/request_details/${row['id']}`}>
+                    {/* <Link to="/admin/request_details/1"> */}
+
                       <Button
                         variant="contained"
                         sx={{
