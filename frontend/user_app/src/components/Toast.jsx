@@ -60,4 +60,21 @@ export default function CustomizedSnackbars({ open, setOpen, mode,text }) {
       </Stack>
     );
   }
+
+  if (mode == 2) {
+    return (
+      <Stack spacing={2} sx={{ width: "100%" }}>
+        <Snackbar
+          open={open}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical, horizontal }}
+        >
+          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {text}
+          </Alert>
+        </Snackbar>
+      </Stack>
+    );
+  }
 }
