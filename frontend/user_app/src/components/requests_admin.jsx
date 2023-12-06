@@ -16,13 +16,14 @@ const DataCard = ({ data, description }) => (
       p: 2,
       backgroundColor: "#f6f6f6",
       width: {
-        xs: "70%",
+        xs: "90%",
         sm: "100%",
       },
       height: "27%",
+      mx:"auto",
       mb: 3,
       ml: {
-        xs: 1.3,
+        xs: 0,
         sm: 0,
       },
     }}
