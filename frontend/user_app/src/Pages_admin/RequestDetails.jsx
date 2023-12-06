@@ -107,7 +107,7 @@ function Dashboard() {
                     className={`flex items-center bg-[#699eee] text-white text-sm font-bold px-4 py-3 mt-5 rounded-lg`}
                     role="alert"
                     onClick={() => {
-                      if (index === 1 || index === 2) {
+                      if (index === 2) {
                         handleOpen(index);
                       }
                     }}
@@ -175,8 +175,6 @@ function Dashboard() {
           open={open}
           setOpen={setOpen}
           inputType={type}
-          dataRequestedAddress={requestAddress}
-          dataActualAddress={actualAddress}
           dataCriminal={criminalRecord}
         />
       </Box>
