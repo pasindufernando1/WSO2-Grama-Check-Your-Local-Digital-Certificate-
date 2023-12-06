@@ -24,7 +24,8 @@ function Register() {
   // console.log(state);
   const [userInfo, setUserInfo] = useState({});
   const navigate = useNavigate();
-  // console.log(state);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [redirectLink, setRedirectLink] = useState("/Dashboard");
 
   useEffect(() => {
     if (!state.isAuthenticated) {
@@ -33,12 +34,15 @@ function Register() {
 
     getBasicUserInfo().then((info) => {
       console.log(info);
+      if(info.groups === undefined){ //there is no groups attribute in the token
+        setRedirectLink("/Dashboard");
+        return;
+      }
+
       if(info.groups[0] === "Grama-PSSR"){
-        navigate("/admin/dashboard");
-        window.location.reload();
+        setRedirectLink("/admin/dashboard");
       } else {
-        navigate("/Dashboard");
-        window.location.reload();
+        setRedirectLink("/Dashboard");
       }
     });
   }, []);
@@ -179,8 +183,7 @@ function Register() {
           </Container>
         </div>
       ) : (
-        <>
-        </>
+        navigate(redirectLink)
       )}
     </div>
   );
