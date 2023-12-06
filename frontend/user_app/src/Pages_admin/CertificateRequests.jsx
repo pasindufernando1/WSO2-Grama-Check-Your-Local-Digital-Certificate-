@@ -17,18 +17,13 @@ function Dashboard() {
     const {state , getBasicUserInfo} = useAuthContext();
 
     const [basicInfo, setBasicInfo] = useState({});
-    console.log(state);
 
     const {requests, setRequests} = useState({});
-    const [isLoading, setIsLoading] = useState(true);
     
     useEffect(() => {
       getBasicUserInfo().then((info) => {
         console.log("Information");
         setBasicInfo(info);
-        setIsLoading(false);
-      });
-      if(isLoading===false){
         console.log("Basic Info");
         console.log(basicInfo);
         console.log("Grama Division");
@@ -52,8 +47,7 @@ function Dashboard() {
           
         }
         getCertificateRequests();
-        }
-      
+      });
       
     }, []);
 
