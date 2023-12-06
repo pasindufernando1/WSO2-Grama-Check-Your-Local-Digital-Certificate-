@@ -40,7 +40,7 @@ function CheckStatus() {
 
   useEffect(() => {
     const getLatestCertificateRequest = async () => {
-      const response = await apiCaller(`/certificate/${state.sub}/current`, 'GET');  
+      const response = await apiCaller(`certificate/${state.sub}/current`, 'GET');  
 
       console.log(response);
 
