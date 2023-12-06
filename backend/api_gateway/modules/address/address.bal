@@ -31,7 +31,13 @@ public isolated class AddressClient {
                     return error("Address Api Service Resppnse error");
                 }
 
-                json|error valid = response_json.validity;
+                json|error response_body = response_json.body;
+                if (response_body is error) {
+                    io:println("Error: " + response_body.message());
+                    return error("Address Api Service Resppnse error");
+                }
+
+                json|error valid = response_body.validity;
 
                 if (valid is error) {
                     io:println("Error: " + valid.message());
