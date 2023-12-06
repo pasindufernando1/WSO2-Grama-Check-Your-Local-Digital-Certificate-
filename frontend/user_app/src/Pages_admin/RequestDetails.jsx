@@ -152,7 +152,13 @@ function Dashboard() {
                       <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
                     </svg>
                     <Typography sx={{ fontSize: 12 }}>
-                      {item.successMessage}
+                      <Typography sx={{ fontSize: 12 }}>
+                        {index === 2
+                          ? policeDetails.eligibility
+                            ? item.successMessage
+                            : "Not eligible: " + item.successMessage
+                          : item.successMessage}
+                      </Typography>
                     </Typography>
                   </button>
                 </CardContent>
@@ -203,7 +209,12 @@ function Dashboard() {
             </Button>
           </div>
         </Grid>
-        <Model open={open} setOpen={setOpen} inputType={type} dataCriminal={policeDetails}/>
+        <Model
+          open={open}
+          setOpen={setOpen}
+          inputType={type}
+          dataCriminal={policeDetails}
+        />
       </Box>
     </>
   );
