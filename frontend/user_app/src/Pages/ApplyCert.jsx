@@ -11,6 +11,7 @@ import InputLabel from "@mui/material/InputLabel";
 import { useEffect } from "react";
 import { useAuthContext } from "@asgardeo/auth-react";
 import apiCaller from "../api/apiCaller";
+import Toast from "../components/Toast";
 
 const override = {
   display: "block",
@@ -53,27 +54,37 @@ function ApplyCertificate() {
 
   const createCertificateRequest = async (e) => {
     if (nic === "") {
-      alert("please enter nic");
+      setToastMode(1);
+      setToastText("Please Enter your NIC Number");
+      setToastOpen(true);
       return;
     }
 
     if (line1 === "") {
-      alert("please enter line1");
+      setToastMode(1);
+      setToastText("Please Enter Line 1 of your Address");
+      setToastOpen(true);
       return;
     }
 
     if (line2 === "") {
-      alert("please enter line2");
+      setToastMode(1);
+      setToastText("Please Enter Line 2 of your Address");
+      setToastOpen(true);
       return;
     }
 
     if (city === "") {
-      alert("please enter city");
+      setToastMode(1);
+      setToastText("Please Enter your City");
+      setToastOpen(true);
       return;
     }
 
     if (selectedGrama === "") {
-      alert("please select grama division");
+      setToastMode(1);
+      setToastText("Please Select your Grama Division");
+      setToastOpen(true);
       return;
     }
 
@@ -93,22 +104,32 @@ function ApplyCertificate() {
 
     try {
       //send the request
-      //disable the button
+      //disable the button using pending toast
+
+      setToastMode(2);
+      setToastText("Please wait while we create your request");
+      setToastOpen(true);
       
       const createResponse = await apiCaller('certificate/request', 'POST', sendingData);
 
       if (createResponse.status === 201) {
-        alert("successfully created");
+        setToastMode(0);
+        setToastText("Your request has been created successfully");
+        setToastOpen(true);
         console.log(createResponse.data);
       }
     }
     catch (e) {
       console.log(e);
       if(e.status === 400) {
-        alert(e.body.message);
+        setToastMode(1);
+        setToastText(e.data.message);
+        setToastOpen(true);
       }
       else{
-        alert("An error occurred while trying to create the request");
+        setToastMode(1);
+        setToastText("Something went wrong. Please try again later");
+        setToastOpen(true);
       }
     }
   }
@@ -117,8 +138,13 @@ function ApplyCertificate() {
     setSidebarOpen(!isSidebarOpen);
   };
 
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMode, setToastMode] = useState(0); //0-success, 1-error, 2-pending
+  const [toastText, setToastText] = useState("");
+  
   return (
     <>
+    <Toast open={toastOpen} mode={toastMode} setOpen={setToastOpen} text={toastText} />
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="pt-8">
         <Box
@@ -180,7 +206,7 @@ function ApplyCertificate() {
 
             <Grid>
               <InputLabel htmlFor="username" sx={{ color: "black" }}>
-                NIC or Passport ID
+                NIC Number
               </InputLabel>
               <TextField
                 id="filled-helperText"
@@ -296,6 +322,7 @@ function ApplyCertificate() {
                   p: 1,
                 }}
                 onClick={(e) => createCertificateRequest(e)}
+                disabled={toastOpen}
               >
                 Submit
               </Button>
