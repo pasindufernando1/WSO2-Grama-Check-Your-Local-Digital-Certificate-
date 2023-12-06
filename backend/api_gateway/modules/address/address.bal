@@ -12,15 +12,20 @@ public isolated class AddressClient {
     public function init() returns error? {
     }
 
-    public isolated function verify_address(string req_nic, string req_line_01, string req_line_02, string req_city, string req_line_03 = "") returns error|boolean {
+    public isolated function verify_address(string req_nic, string req_line_01, string req_line_02, string req_city, string req_line_03 = "") returns error|boolean|int {
         lock {
-            json|error response = self.address_api_client->/addresscheck(nic = req_nic, line_01 = req_line_01, line_02 = req_line_02, line_03 = req_line_03, city = req_city);
+            http:Response|error response = self.address_api_client->/addresscheck(nic = req_nic, line_01 = req_line_01, line_02 = req_line_02, line_03 = req_line_03, city = req_city);
 
             if (response is error) {
                 io:print("Error: " + response.message());
                 return error("Address module error");
             } else {
-                json|error response_json = response.body;
+                if (response.statusCode != 200) {
+                    io:println("Error: " + response.statusCode.toString());
+                    io:println(response.getJsonPayload());
+                    return response.statusCode;
+                }
+                json|error response_json = response.getJsonPayload();
                 if (response_json is error) {
                     io:println("Error: " + response_json.message());
                     return error("Address Api Service Resppnse error");

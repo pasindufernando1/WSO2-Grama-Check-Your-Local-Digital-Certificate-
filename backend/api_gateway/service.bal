@@ -32,7 +32,7 @@ isolated service /api/v1 on new http:Listener(9090) {
 
         lock {
 
-            boolean|error identity_check_result = self.identity_client.validate_nic(certificate_request.nic);
+            int|boolean|error identity_check_result = self.identity_client.validate_nic(certificate_request.nic);
 
             if (identity_check_result is error) {
                 io:println("Error: " + identity_check_result.toString());
@@ -43,13 +43,29 @@ isolated service /api/v1 on new http:Listener(9090) {
                 };
             }
 
-            boolean|error address_check_result = self.address_client.verify_address(certificate_request.nic, certificate_request.address.line_01, certificate_request.address.line_02, certificate_request.address.city, certificate_request.address.line_03.toString());
+            if (identity_check_result is int) {
+                return <http:BadRequest>{
+                    body: {
+                        "message": "Invalid nic."
+                    }
+                };
+            }
+
+            boolean|error|int address_check_result = self.address_client.verify_address(certificate_request.nic, certificate_request.address.line_01, certificate_request.address.line_02, certificate_request.address.city, certificate_request.address.line_03.toString());
 
             if (address_check_result is error) {
                 io:println("Error: " + address_check_result.toString());
                 return <http:InternalServerError>{
                     body: {
                         "message": "Error occurred while verifying the address."
+                    }
+                };
+            }
+
+            if (address_check_result is int) {
+                return <http:BadRequest>{
+                    body: {
+                        "message": "Invalid address."
                     }
                 };
             }

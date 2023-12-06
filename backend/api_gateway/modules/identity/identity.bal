@@ -12,22 +12,32 @@ public isolated class IdentityClient {
     public isolated function init() returns error? {
     }
 
-    public isolated function validate_nic(string nic) returns error|boolean {
+    public isolated function validate_nic(string nic) returns error|boolean|int {
 
         lock {
-            json|error response = self.identity_api_client->get("/identity/check/" + nic);
+            http:Response|error response = self.identity_api_client->get("/identity/check/" + nic);
 
             if (response is error) {
                 io:println("Error: " + response.message());
                 return error("Identity module Error");
             } else {
-                json response_payload = response;
-                json|error validity = response_payload.validity;
-                if (validity is error) {
-                    io:println("Error: " + validity.message());
-                    return error("Identity Api Service Response Error");
+                if (response.statusCode != 200) {
+                    io:println(response.statusCode.toString());
+                    io:println(response.getJsonPayload());
+                    return response.statusCode;
                 } else {
-                    return <boolean>validity;
+                    json|error response_payload = response.getJsonPayload();
+                    if (response_payload is error) {
+                        io:println("Error: " + response_payload.message());
+                        return error("Identity Api Service Response Error");
+                    }
+                    json|error validity = response_payload.validity;
+                    if (validity is error) {
+                        io:println("Error: " + validity.message());
+                        return error("Identity Api Service Response Error");
+                    } else {
+                        return <boolean>validity;
+                    }
                 }
             }
         }
