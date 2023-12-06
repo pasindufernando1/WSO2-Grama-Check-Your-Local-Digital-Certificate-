@@ -12,6 +12,8 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export default function CustomizedSnackbars({ open, setOpen, mode,text }) {
   React.useEffect(() => {
+    if(mode === -1) return;
+
     return setOpen(true);
   }, [mode]);
 
