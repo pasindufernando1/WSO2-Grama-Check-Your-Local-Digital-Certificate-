@@ -15,7 +15,10 @@ import PoliceCheckImage from "../images/police_check.jpg";
 function Dashboard() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [open, setOpen] = React.useState(false);
-  const [clickedImage, setClickedImage] = useState("");
+  const [actualAddress, setActualAddress] = useState("");
+  const [requestAddress, setRequestAddress] = useState("");
+  const [criminalRecord, setcriminalRecord] = useState("");
+  const [type, setType] = useState("");
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -45,12 +48,13 @@ function Dashboard() {
     },
   ];
   const handleOpen = (index) => {
-    setClickedImage(data[index].title);
+    setActualAddress("Actual");
+    setRequestAddress("Request");
+    setcriminalRecord("Criminal");
+    setType(index);
     setOpen(true);
+
   };
-  useEffect(() => {
-    console.log(clickedImage);
-  }, [clickedImage]);
 
   return (
     <>
@@ -102,7 +106,11 @@ function Dashboard() {
                   <button
                     className={`flex items-center bg-[#699eee] text-white text-sm font-bold px-4 py-3 mt-5 rounded-lg`}
                     role="alert"
-                    onClick={() => handleOpen(index)}
+                    onClick={() => {
+                      if (index === 1 || index === 2) {
+                        handleOpen(index);
+                      }
+                    }}
                   >
                     <svg
                       className="fill-current w-4 h-4 mr-2"
@@ -166,8 +174,10 @@ function Dashboard() {
         <Model
           open={open}
           setOpen={setOpen}
-          inputType={clickedImage}
-          inputData={clickedImage}
+          inputType={type}
+          dataRequestedAddress={requestAddress}
+          dataActualAddress={actualAddress}
+          dataCriminal={criminalRecord}
         />
       </Box>
     </>

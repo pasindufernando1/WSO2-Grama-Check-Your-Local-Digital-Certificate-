@@ -21,7 +21,7 @@ const style = {
   minHeight: "50vh",
 };
 
-export default function BasicModal({ open, setOpen, inputType, inputData }) {
+export default function BasicModal({ open, setOpen, inputType, dataRequestedAddress,dataActualAddress,dataCriminal}) {
   const handleClose = () => setOpen(false);
   console.log(inputType);
 
@@ -35,7 +35,7 @@ export default function BasicModal({ open, setOpen, inputType, inputData }) {
       >
         <Box sx={style}>
           <Grid container sx={{ justifyContent: "center", overflow: "auto" }}>
-            {inputType === "Address" ? (
+            {inputType === 1 ? (
               <>
                 <Typography
                   variant="h7"
@@ -54,7 +54,7 @@ export default function BasicModal({ open, setOpen, inputType, inputData }) {
                     sx={{ height: 70, width: "50%", textAlign: "center" }}
                     color="text.secondary"
                   >
-                    New
+                    {dataRequestedAddress}
                   </Typography>
                 </div>
                 <div style={{ width: "50%", textAlign: "center" }}>
@@ -66,7 +66,7 @@ export default function BasicModal({ open, setOpen, inputType, inputData }) {
                     sx={{ height: 50, width: "50%", textAlign: "center" }}
                     color="text.secondary"
                   >
-                    New
+                   {dataActualAddress}
                   </Typography>
                 </div>
               </>
@@ -90,7 +90,7 @@ export default function BasicModal({ open, setOpen, inputType, inputData }) {
                   }}
                   color="text.secondary"
                 >
-                  New
+                  {dataCriminal}
                 </Typography>
               </>
             )}
