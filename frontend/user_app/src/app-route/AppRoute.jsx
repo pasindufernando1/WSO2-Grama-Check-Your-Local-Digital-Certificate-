@@ -20,7 +20,7 @@ function AppRoute() {
       <Routes>
         <Route path="/" element={<Register />} />
 
-        <Route element={<AuthorizeRoutes allowedRoles={["Citizen-PSSR"]}/>}>
+        <Route element={<AuthorizeRoutes allowedRoles={["Citizen-PSSR"]} />}>
           <Route path="/applyCert" element={<ApplyCertificate />} />
           <Route path="/help" element={<Help />} />
           <Route path="/CheckStatus" element={<CheckStatus />} />

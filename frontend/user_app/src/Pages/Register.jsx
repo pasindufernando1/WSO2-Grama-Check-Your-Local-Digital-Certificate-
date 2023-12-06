@@ -127,8 +127,9 @@ function Register() {
                         },
                         xs: {
                           textAlign: "center",
-                        },
-                      }}
+                          display:"flex",
+                          justifyContent:"center"
+                        },}}
                     >
                       <Button
                         variant="contained"

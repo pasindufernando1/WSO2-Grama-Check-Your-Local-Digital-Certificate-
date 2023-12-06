@@ -121,9 +121,13 @@ function ApplyCertificate() {
     }
     catch (e) {
       console.log(e);
-      if(e.status === 400) {
+      if(e.response.status === 400) { //probably validation error
         setToastMode(1);
-        setToastText(e.data.message);
+        const msg = e.response.data.message;
+        // nic:NIC entered is invalid <- an example for the error message
+        //split the string by : and get the second part
+        const msgParts = msg.split(":");
+        setToastText(msgParts[2]);
         setToastOpen(true);
       }
       else{

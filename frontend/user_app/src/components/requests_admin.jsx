@@ -103,7 +103,7 @@ function requests() {
         justifyContent="center"
         p={0}
       >
-        <Grid xs={9} sm={4} height={300}>
+        <Grid xs={12} sm={4} height={300}>
           <Card sx={{ p: 4, backgroundColor: "#f9f9f9", height: 300 }}>
             <Stack
               direction="column"
@@ -144,7 +144,7 @@ function requests() {
           </Card>
         </Grid>
 
-        <Grid xs={12} sm={4} pl={3} height={300}>
+        <Grid xs={12} sm={4} sx ={{pl:{xs:0,sm:3}}} height={300}>
           <DataCard data="Certificates Requested" description="13" />
           <DataCard data="Certificates Issued" description="2" />
           <DataCard data="Certificates Rejected" description="11" />

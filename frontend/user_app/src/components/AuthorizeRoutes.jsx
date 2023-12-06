@@ -14,6 +14,13 @@ const AuthorizeRoutes = ({ allowedRoles }) => {
             if (!state.isAuthenticated) return;
 
             const info = await getBasicUserInfo();
+
+            if(info.groups === undefined){ //there is no groups attribute in the token
+                setUserGroup("Citizen-PSSR");
+                setIsLoading(false); // Set loading state to false after fetching user info
+                return;
+            }
+
             setUserGroup(info.groups[0]);
             setIsLoading(false); // Set loading state to false after fetching user info
         };
@@ -29,7 +36,7 @@ const AuthorizeRoutes = ({ allowedRoles }) => {
         return <Navigate to="/" state={{ from: location }} replace />;
     }
 
-    if (allowedRoles.includes(userGroup)) {
+    if (allowedRoles.includes(userGroup)){
         return <Outlet />;
     } else {
         return <Navigate to="/unauthorized" state={{ from: location }} replace />;
@@ -37,7 +44,7 @@ const AuthorizeRoutes = ({ allowedRoles }) => {
 };
 
 AuthorizeRoutes.propTypes = {
-    allowedRoles: PropTypes.array,
+    allowedRoles: PropTypes.array
 };
 
 export default AuthorizeRoutes;
