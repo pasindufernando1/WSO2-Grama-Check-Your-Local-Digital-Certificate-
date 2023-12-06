@@ -9,6 +9,7 @@ import Slide from "@mui/material/Slide";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Unstable_Grid2";
+import { useAuthContext } from "@asgardeo/auth-react";
 
 function HideOnScroll(props) {
   const { children, window } = props;
@@ -29,6 +30,7 @@ HideOnScroll.propTypes = {
 };
 
 export default function HideAppBar(props) {
+  const {signIn} = useAuthContext();
   return (
     <React.Fragment>
       <CssBaseline />
@@ -128,6 +130,7 @@ export default function HideAppBar(props) {
                       textTransform: "none",
                       float: { sm: "left", xs: "right" },
                     }}
+                    onClick={() => signIn()}
                   >
                     Sign in
                   </Button>

@@ -7,7 +7,7 @@ import processingImage from "../images/processing.svg";
 import completedImage from "../images/completed.svg";
 import noneImage from "../images/none.svg";
 import rejectedImage from "../images/rejected.svg";
-import Link from "@mui/material/Link";
+import { Link } from "react-router-dom";
 import { useAuthContext } from "@asgardeo/auth-react";
 import apiCaller from "../api/apiCaller";
 
@@ -39,7 +39,7 @@ function CheckStatus() {
     setSidebarOpen(!isSidebarOpen);
   };
 
-  const { state ,getBasicUserInfo } = useAuthContext();
+  const { state, getBasicUserInfo } = useAuthContext();
 
   useEffect(() => {
     const getLatestCertificateRequest = async () => {
@@ -222,7 +222,7 @@ function CheckStatus() {
                           },
                         }}
                       >
-                        NIC : {currentRequest ? currentRequest.nic : "Not Requested" } <br />
+                        NIC : {currentRequest ? currentRequest.nic : "Not Requested"} <br />
                         Address : {currentRequest ? currentRequest?.line_01 + ", " + currentRequest?.line_02 + ", " + currentRequest.line_03 + ", " + currentRequest?.city : "Not Requested"} <br />
                         Issued Date : {currentRequest ? currentRequest?.status === 'PENDING' || currentRequest?.status === 'APPROVED' ? 'Not yet issued' : currentRequest?.issued_date : "Not Requested"} <br />
                         Collected Date : {currentRequest ? currentRequest?.status === 'PENDING' || currentRequest?.status === 'APPROVED' ? 'Not yet collected' : currentRequest?.collected_date : "Not Requested"} <br />
@@ -250,8 +250,8 @@ function CheckStatus() {
                     >
                       If you need help with the processing or need further clarification
                       with the request processing please use the{" "}
-                      <Link href="#" sx={{ textDecoration: "underline" }}>
-                        help desk
+                      <Link to="/help">
+                        Help Desk
                       </Link>
                       .
                     </Typography>

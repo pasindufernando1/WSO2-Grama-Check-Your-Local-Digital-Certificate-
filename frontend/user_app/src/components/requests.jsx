@@ -63,14 +63,18 @@ const DataCard = ({ data, description, icon: IconComponent }) => (
     </Grid>
   </Card>
 );
-function Requests() {
+
+ function Requests() {
   const [displayName, setDisplayName] = useState("");
-
   const { state, getBasicUserInfo, httpRequest } = useAuthContext();
-
   const [userInfo, setUserInfo] = useState({});
-
   const [userCertificateRequests, setUserCertificateRequests] = useState([]);
+  const [latestCertificateRequest, setLatestCertificateRequest] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const [latestCertificateExpiryDate, setLatestCertificateExpiryDate] = useState(null);
+  const [latestCertificateGramaDivisionName, setLatestCertificateGramaDivisionName] = useState(null);
+
 
   useEffect(() => {
     const authInfo = async () => {
@@ -81,24 +85,89 @@ function Requests() {
       setUserInfo(info);
       setDisplayName(info.displayName);
 
-      console.log(window.configs.resourceServerURLs[0] + "certificates?user_id=" + info.sub);
+      //the following code is to get the user's certificate requests
+      try {
+        const certificateResponse = await apiCaller("certificates", "GET", null, {
+          user_id: info.sub
+        });
 
-
-      const certificateResponse = await apiCaller("certificates", "GET", null, {
-        user_id: info.sub
-      });
-
-      if (certificateResponse.status === 200) {
-        console.log(certificateResponse);
-        setUserCertificateRequests(certificateResponse.data);
+        if (certificateResponse.status === 200) {
+          console.log(certificateResponse);
+          setUserCertificateRequests(certificateResponse.data);
+        }
+      }
+      catch (error) {
+        if (error.response.status === 404) { //has no certificates
+          setUserCertificateRequests([]);
+        }
       }
     }
 
     authInfo();
   }, []);
 
-return (
-  <>
+  useEffect(() => {
+    const getLatestCertificateRequest = async () => {
+      
+      if (userCertificateRequests.length > 0) {
+        console.log("more than 0");
+
+        //the following code is to get the user's latest certificate request
+        try {
+          const latestCertificateResponse = await apiCaller(`certificate/${state.sub}/current`, "GET");
+
+          if (latestCertificateResponse.status === 200) {
+            console.log(latestCertificateResponse);
+            setLatestCertificateRequest(latestCertificateResponse.data);
+
+            if(latestCertificateResponse.data.status === "APPROVED" || latestCertificateResponse.data.status === "COLLECTED"){
+              const expiryDateObj = new Date(latestCertificateResponse.data.issued_date);
+
+              //expiry date is 6 months from the issued date
+              expiryDateObj.setMonth(expiryDateObj.getMonth() + 6);
+              setLatestCertificateExpiryDate(expiryDateObj);
+            }
+          }
+        }
+        catch (error) {
+          if (error.response.status === 404) { //has no certificates
+            setLatestCertificateRequest({});
+          }
+        }
+      }
+    }
+
+    getLatestCertificateRequest();
+  }, [state.sub, userCertificateRequests]);
+
+  //get the grama division name using the grama division id of the latest certificate request
+
+  useEffect(() => {
+    const getGramaDivisionName = async () => {
+      if (latestCertificateRequest.grama_divisionId) {
+        try {
+          const gramaDivisionResponse = await apiCaller(`gramadivisions`, "GET");
+
+          if (gramaDivisionResponse.status === 200) {
+            console.log(gramaDivisionResponse);
+            const gramaDivision = gramaDivisionResponse.data.find((gramaDivision) => gramaDivision.id === latestCertificateRequest.grama_divisionId);
+            setLatestCertificateGramaDivisionName(gramaDivision.name);
+          }
+        }
+        catch (error) {
+          console.log(error);
+        }
+      }
+      setLoading(false);
+    }
+
+    getGramaDivisionName();
+  }, [latestCertificateRequest]);
+
+
+  return (
+    loading ? <div>Loading...</div> :
+    <>
     <Card
       sx={{
         p: 2,
@@ -116,7 +185,6 @@ return (
             sx={{
               fontWeight: 400,
               fontFamily: "Poppins",
-              fontWeight: 500,
               color: "black",
             }}
           >
@@ -224,24 +292,24 @@ return (
         }}
       >
         <DataCard
-          data="Grama Division Assigned"
-          description="Horana Wewala"
+          data="Grama Division Assigned Based on Latest Certificate Request"
+          description={latestCertificateGramaDivisionName ? latestCertificateGramaDivisionName : "No certificates issued yet"}
           icon={AiFillBank}
         />
         <DataCard
-          data="Current Certificate Details"
-          description="Expiry : 2020/10/23"
+          data="Latest Issued Certificate Details"
+          description={latestCertificateExpiryDate ? `Expiry Date: ${latestCertificateExpiryDate.toDateString()}` : "No certificates issued yet"}
           icon={AiFillFileExcel}
         />
         <DataCard
           data="Number of Obtained certificates"
-          description="10"
+          description={userCertificateRequests.filter((certificate) => certificate.status === "COLLECTED").length}
           icon={AiFillFile}
         />
       </Grid>
     </Grid>
   </>
-);
+  );
 }
 
 export default Requests;
