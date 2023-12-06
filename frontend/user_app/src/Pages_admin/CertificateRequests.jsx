@@ -26,6 +26,9 @@ function Dashboard() {
         console.log("Information");
         setBasicInfo(info);
       });
+      console.log("Basic Info" + basicInfo);
+      console.log("Grama Division" + basicInfo.gramaDivision);
+
       const params = {
         grama_division_id : basicInfo.gramaDivision
       }
