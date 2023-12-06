@@ -62,6 +62,23 @@ function Dashboard() {
   console.log(id);
   const [policeDetails, setPoliceDetails] = useState([]);
 
+  // Function to handle the issuing certificate
+  const handleIssuing = async () => {
+    try {
+      const response = await apiCaller(
+        `certificate/${id}/issue`,
+        "POST",
+        null,
+        null
+      );
+      console.log(response);
+    } catch (error) {
+      if (error.status === 404) {
+        console.log("Issuing failed");
+      }
+    }
+  }
+
   useEffect(() => {
     const getCertificateRequests = async () => {
       try {
