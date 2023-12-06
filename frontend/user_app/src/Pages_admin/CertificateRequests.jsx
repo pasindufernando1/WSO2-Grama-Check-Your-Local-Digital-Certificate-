@@ -49,10 +49,14 @@ function Dashboard() {
         }
         getCertificateRequests();
       });
-      console.log("Requests");
-      console.log(requests);
+      
       
     }, []);
+
+    useEffect(() => {
+      console.log("Requests");
+      console.log(requests);
+    }, [requests]);
 
 
   return (
