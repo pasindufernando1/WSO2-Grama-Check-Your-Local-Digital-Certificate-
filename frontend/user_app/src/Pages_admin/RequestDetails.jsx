@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -11,6 +12,7 @@ import { Button } from "@mui/material";
 import AddressCheckImage from "../images/address.svg";
 import IdentityCheckImage from "../images/identity.svg";
 import PoliceCheckImage from "../images/police_check.jpg";
+import apiCaller from "../api/apiCaller";
 
 function Dashboard() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -51,6 +53,33 @@ function Dashboard() {
   useEffect(() => {
     console.log(clickedImage);
   }, [clickedImage]);
+
+  //Get the parameters from the URL
+  const { id } = useParams();
+  console.log(id);
+  const [policeDetails, setPoliceDetails] = useState({});
+
+  useEffect(() => {
+    
+    const getCertificateRequests = async () => {
+      try {
+        const response = await apiCaller(`certificate/${id}`, 'GET', null, null);
+        console.log(response);
+        setPoliceDetails(response.data['police_check_details']);
+      }
+      catch (error) {
+        if (error.status === 404) {
+          console.log("No requests found");
+        }
+      }
+      
+    }
+    getCertificateRequests();
+  }, []);
+  console.log(policeDetails);
+
+
+
 
   return (
     <>

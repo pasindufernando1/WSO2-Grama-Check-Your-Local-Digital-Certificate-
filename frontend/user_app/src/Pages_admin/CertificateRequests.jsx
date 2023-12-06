@@ -72,7 +72,7 @@ function Dashboard() {
           pr: 3,
           width: "70vw",
           height: "90vh",
-          ml: "22%",
+          ml: "22%",  
         }}
       >
         <Toolbar />
