@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useAuthContext } from "@asgardeo/auth-react";
 import { useEffect, useState } from "react";
 
-const AuthorizeRoutes = ({ allowedRoles,notAllowedRoles }) => {
+const AuthorizeRoutes = ({ allowedRoles }) => {
     const { state, signIn, signOut, getAccessToken, getIDToken, getBasicUserInfo } = useAuthContext();
     const location = useLocation();
     const [userGroup, setUserGroup] = useState("");
@@ -14,6 +14,13 @@ const AuthorizeRoutes = ({ allowedRoles,notAllowedRoles }) => {
             if (!state.isAuthenticated) return;
 
             const info = await getBasicUserInfo();
+
+            if(info.groups === undefined){ //there is no groups attribute in the token
+                setUserGroup("Citizen-PSSR");
+                setIsLoading(false); // Set loading state to false after fetching user info
+                return;
+            }
+
             setUserGroup(info.groups[0]);
             setIsLoading(false); // Set loading state to false after fetching user info
         };
@@ -29,7 +36,7 @@ const AuthorizeRoutes = ({ allowedRoles,notAllowedRoles }) => {
         return <Navigate to="/" state={{ from: location }} replace />;
     }
 
-    if (!userGroup || (allowedRoles.includes(userGroup) && !notAllowedRoles.includes(userGroup))){
+    if (allowedRoles.includes(userGroup)){
         return <Outlet />;
     } else {
         return <Navigate to="/unauthorized" state={{ from: location }} replace />;
@@ -37,8 +44,7 @@ const AuthorizeRoutes = ({ allowedRoles,notAllowedRoles }) => {
 };
 
 AuthorizeRoutes.propTypes = {
-    allowedRoles: PropTypes.array,
-    notAllowedRoles: PropTypes.array,
+    allowedRoles: PropTypes.array
 };
 
 export default AuthorizeRoutes;

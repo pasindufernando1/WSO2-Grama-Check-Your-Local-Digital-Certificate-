@@ -127,7 +127,7 @@ function ApplyCertificate() {
         // nic:NIC entered is invalid <- an example for the error message
         //split the string by : and get the second part
         const msgParts = msg.split(":");
-        setToastText(msgParts[1]);
+        setToastText(msgParts[2]);
         setToastOpen(true);
       }
       else{
