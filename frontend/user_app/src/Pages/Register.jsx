@@ -29,20 +29,21 @@ function Register() {
 
   useEffect(() => {
     if (!state.isAuthenticated) {
+      setIsLoading(false); // Set loading state to false after fetching user info
       return;
     }
 
     getBasicUserInfo().then((info) => {
       console.log(info);
       if(info.groups === undefined){ //there is no groups attribute in the token
-        setRedirectLink("/Dashboard");
+        navigate("/Dashboard");
         return;
       }
 
       if(info.groups[0] === "Grama-PSSR"){
-        setRedirectLink("/admin/dashboard");
+        navigate("/admin/dashboard");
       } else {
-        setRedirectLink("/Dashboard");
+        navigate("/Dashboard");
       }
       setIsLoading(false); // Set loading state to false after fetching user info
     });
