@@ -10,6 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import { useEffect } from "react";
 import { useAuthContext } from "@asgardeo/auth-react";
+import apiCaller from "../api/apiCaller";
 
 const override = {
   display: "block",
@@ -33,26 +34,64 @@ function ApplyCertificate() {
 
   useEffect(() => {
     const getGramaDivisions = async () => {
-      const requestConfig = {
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/scim+json",
-        },
-        method: "GET",
-        url: `https://cf3a4176-54c9-4547-bcd6-c6fe400ad0d8-dev.e1-us-east-azure.choreoapis.dev/ojjz/apigateway/api-v1-863/v1/gramadivisions`,
-      };
+      try{
+        const response = await apiCaller('gramadivisions', 'GET');
 
-      const response = await httpRequest(requestConfig);
-
-      console.log(response);
-
-      if (response.status === 200) {
-        setGrama(response.data);
+        console.log(response);
+  
+        if (response.status === 200) {
+          setGrama(response.data);
+        }
+      }
+      catch(error){
+        console.log(error);
       }
     }
 
     getGramaDivisions();
   }, []);
+
+  const createCertificateRequest = async (e) => {
+    if(nic === "") {
+      alert("please enter nic");
+      return;
+    }
+
+    if(line1 === ""){
+      alert("please enter line1");
+      return;
+    }
+
+    if(line2 === ""){
+      alert("please enter line2");
+      return;
+    }
+
+    if(city === ""){
+      alert("please enter city");
+      return;
+    }
+
+    if(selectedGrama === ""){
+      alert("please select grama division");
+      return;
+    }
+
+    const sendingData = {
+      nic : nic,
+      address: {
+        line_01: line1,
+        line_02: line2,
+        line_03: line3,
+        city: city
+      },
+      grama_division_id: selectedGrama,
+      user_id: state.sub
+    }
+
+    console.log(sendingData);
+
+  }
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -203,7 +242,7 @@ function ApplyCertificate() {
                 sx={{ width: { xs: "100%", sm: "50vw" } }}
                 size="small"
                 variant="standard"
-                onSelect={(e) => setSelectedGrama(e.target.value)}
+                onChange={(e) => setSelectedGrama(e.target.value)}
                 value={selectedGrama}
               >
                 {grama.map((currGrama) => (
@@ -236,6 +275,7 @@ function ApplyCertificate() {
                   },
                   p: 1,
                 }}
+                onClick={(e) => createCertificateRequest(e)}
               >
                 Submit
               </Button>
