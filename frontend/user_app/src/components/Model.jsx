@@ -21,7 +21,14 @@ const style = {
   minHeight: "50vh",
 };
 
-export default function BasicModal({ open, setOpen, inputType, dataRequestedAddress,dataActualAddress,dataCriminal}) {
+export default function BasicModal({
+  open,
+  setOpen,
+  inputType,
+  dataRequestedAddress,
+  dataActualAddress,
+  dataCriminal,
+}) {
   const handleClose = () => setOpen(false);
   console.log(inputType);
 
@@ -66,7 +73,7 @@ export default function BasicModal({ open, setOpen, inputType, dataRequestedAddr
                     sx={{ height: 50, width: "50%", textAlign: "center" }}
                     color="text.secondary"
                   >
-                   {dataActualAddress}
+                    {dataActualAddress}
                   </Typography>
                 </div>
               </>
@@ -85,12 +92,36 @@ export default function BasicModal({ open, setOpen, inputType, dataRequestedAddr
                   sx={{
                     width: "50%",
                     textAlign: "left",
-                    borderBottom: "0.1px solid #ccc",
+
                     p: 1,
                   }}
                   color="text.secondary"
                 >
-                  {dataCriminal}
+                  {dataCriminal.eligibility === false &&
+                    dataCriminal.records && (
+                      <div style={{width:"100%"}}>
+                          {dataCriminal.records.map((record, index) => (
+                            <Grid
+                              container
+                              spacing={2}
+                              sx={{
+                                borderBottom: "0.1px solid #ccc",
+                                margin: 2,
+                              }}
+                            >
+                              <Grid item xs={6}>
+                                <Typography>{record.record}</Typography>
+                              </Grid>
+                              <Grid item xs={6}>
+                                <Typography sx={{ fontSize: 14 }}>
+                                  {record.date.year}.{record.date.month}.
+                                  {record.date.day}
+                                </Typography>
+                              </Grid>
+                            </Grid>
+                          ))}
+                      </div>
+                    )}
                 </Typography>
               </>
             )}

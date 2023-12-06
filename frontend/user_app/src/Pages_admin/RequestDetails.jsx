@@ -55,7 +55,6 @@ function Dashboard() {
     setcriminalRecord("Criminal");
     setType(index);
     setOpen(true);
-
   };
 
   //Get the parameters from the URL
@@ -64,28 +63,28 @@ function Dashboard() {
   const [policeDetails, setPoliceDetails] = useState([]);
 
   useEffect(() => {
-    
     const getCertificateRequests = async () => {
       try {
-        const response = await apiCaller(`certificate/${id}`, 'GET', null, null);
+        const response = await apiCaller(
+          `certificate/${id}`,
+          "GET",
+          null,
+          null
+        );
         console.log(response);
-        setPoliceDetails(response.data['police_check_details']);
-      }
-      catch (error) {
+        setPoliceDetails(response.data["police_check_details"]);
+      } catch (error) {
         if (error.status === 404) {
           console.log("No requests found");
         }
       }
-      
-    }
+    };
     getCertificateRequests();
   }, []);
   console.log(policeDetails);
 
   //Convert an object to an array
   // const policeDetailsArray = Object.entries(policeDetails);
-
-
 
   return (
     <>
@@ -202,12 +201,7 @@ function Dashboard() {
             </Button>
           </div>
         </Grid>
-        <Model
-          open={open}
-          setOpen={setOpen}
-          inputType={type}
-          dataCriminal={Object.entries(policeDetails)}
-        />
+        <Model open={open} setOpen={setOpen} inputType={type} dataCriminal={policeDetails}/>
       </Box>
     </>
   );
