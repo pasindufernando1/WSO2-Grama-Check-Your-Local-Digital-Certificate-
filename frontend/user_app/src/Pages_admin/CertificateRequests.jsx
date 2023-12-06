@@ -25,10 +25,11 @@ function Dashboard() {
     
 
     const {requests, setRequests} = useState({});
-    const params = {
-      grama_division_id: basicInfo.gramaDivision
-    }
+    
     useEffect(() => {
+      const params = {
+        grama_division_id : basicInfo.gramaDivision
+      }
       const getCertificateRequests = async () => {
         try {
           const response = await apiCaller('certificates', 'GET', null, params);
@@ -44,7 +45,7 @@ function Dashboard() {
       }
       getCertificateRequests();
     }
-      , [state]);
+      , [state, basicInfo]);
 
     console.log(requests);
 
