@@ -20,33 +20,41 @@ function Dashboard() {
     console.log(state);
 
     const {requests, setRequests} = useState({});
+    const [isLoading, setIsLoading] = useState(true);
     
     useEffect(() => {
       getBasicUserInfo().then((info) => {
         console.log("Information");
         setBasicInfo(info);
+        setIsLoading(false);
       });
-      console.log("Basic Info" + basicInfo);
-      console.log("Grama Division" + basicInfo.gramaDivision);
+      if(isLoading===false){
+        console.log("Basic Info");
+        console.log(basicInfo);
+        console.log("Grama Division");
+        console.log(basicInfo.gramaDivision);
 
-      const params = {
-        grama_division_id : basicInfo.gramaDivision
-      }
-      console.log(params);
-      const getCertificateRequests = async () => {
-        try {
-          const response = await apiCaller('certificates', 'GET', null, params);
-          console.log(response);
-          setRequests(response.data);
+        const params = {
+          grama_division_id : basicInfo.gramaDivision
         }
-        catch (error) {
-          if (error.response.status === 404) {
-            console.log("No requests found");
+        console.log(params);
+        const getCertificateRequests = async () => {
+          try {
+            const response = await apiCaller('certificates', 'GET', null, params);
+            console.log(response);
+            setRequests(response.data);
           }
+          catch (error) {
+            if (error.response.status === 404) {
+              console.log("No requests found");
+            }
+          }
+          
         }
-        
-      }
-      getCertificateRequests();
+        getCertificateRequests();
+        }
+      
+      
     }, []);
 
     console.log(requests);
