@@ -23,6 +23,7 @@ function Dashboard() {
     useEffect(() => {
       getBasicUserInfo().then((info) => {
         console.log("Information");
+        console.log(info);
         setBasicInfo(info);
         console.log("Basic Info");
         console.log(basicInfo);
