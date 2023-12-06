@@ -11,6 +11,7 @@ import { AiFillFile } from "react-icons/ai";
 import { useAuthContext } from "@asgardeo/auth-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import apiCaller from "../api/apiCaller";
 
 const DataCard = ({ data, description, icon: IconComponent }) => (
   <Card
@@ -82,19 +83,10 @@ function Requests() {
 
       console.log(window.configs.resourceServerURLs[0] + "certificates?user_id=" + info.sub);
 
-      const certificateResponseConfig = {
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/scim+json"
-        },
-        method: "GET",
-        url: window.configs.resourceServerURLs[0] + "certificates",
-        params: {
-          user_id: info.sub
-        }
-      }
 
-      const certificateResponse = await httpRequest(certificateResponseConfig);
+      const certificateResponse = await apiCaller("certificates", "GET", null, {
+        user_id: info.sub
+      });
 
       if (certificateResponse.status === 200) {
         console.log(certificateResponse);
