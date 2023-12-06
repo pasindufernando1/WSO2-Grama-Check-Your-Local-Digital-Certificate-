@@ -79,17 +79,22 @@ function Help() {
     {
       id: 1,
       question: "How to apply for certificate? ",
-      answer: "React is a JavaScript library for building user interfaces.",
+      answer: "Go to Apply Certificate page and fill the form. You have to enter the exact details that are requested. If you select the wrong Grama Niladari Division, your application will be rejected by that Grama Niladari.",
     },
     {
       id: 2,
       question: "What to do when i get rejected from Grama Niladari?",
-      answer: "React is a JavaScript library for building user interfaces.",
+      answer: "You will get a SMS from Grama Niladari. You can re-apply for the certificate.",
     },
     {
       id: 3,
       question: "Can i apply before 6 months for another certificate?",
-      answer: "React is a JavaScript library for building user interfaces.",
+      answer: "Yes you can",
+    },
+    {
+      id: 4,
+      question: "What is Slack and how to join and use it?",
+      answer: "Slack is a communication platform. You can join our Slack workspace by clicking the button above. After joining, you can ask your questions in the #help-support channel. Make sure to come back and check for answers.",
     },
     // Add more FAQ items as needed
   ];
