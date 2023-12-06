@@ -21,7 +21,7 @@ const apiCaller = async (endpoint, method, body = null, queryParams = null) => {
     if(body){
         requestConfig = {
             ...requestConfig,
-            body: body
+            data: body
         }
     }
 
