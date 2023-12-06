@@ -64,12 +64,15 @@ function Dashboard() {
 
   // Function to handle the issuing certificate
   const handleIssuing = async () => {
+    const status = {
+      new_status: "APPROVED",
+    }
     try {
       const response = await apiCaller(
-        `certificate/${id}/issue`,
+        `certificate/${id}/status/update`,
         "POST",
         null,
-        null
+        status
       );
       console.log(response);
     } catch (error) {
@@ -192,6 +195,7 @@ function Dashboard() {
                 width: "50%",
                 textTransform: "none",
               }}
+              onClick={handleIssuing}
             >
               Issue Certifcate
             </Button>
