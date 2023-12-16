@@ -13,6 +13,7 @@ import AddressCheckImage from "../images/address.svg";
 import IdentityCheckImage from "../images/identity.svg";
 import PoliceCheckImage from "../images/police_check.jpg";
 import apiCaller from "../api/apiCaller";
+import Toast from "../components/Toast";
 
 function Dashboard() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -21,6 +22,8 @@ function Dashboard() {
   const [requestAddress, setRequestAddress] = useState("");
   const [criminalRecord, setcriminalRecord] = useState("");
   const [type, setType] = useState("");
+  const [certificateDetails, setCertificateDetails] = useState(null);
+  const [certificateStatus, setCertificateStatus] = useState(null);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -62,6 +65,10 @@ function Dashboard() {
   console.log(id);
   const [policeDetails, setPoliceDetails] = useState([]);
 
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMode, setToastMode] = useState(-1); //0-success, 1-error, 2-pending
+  const [toastText, setToastText] = useState("");
+
   // Function to handle the issuing certificate
   const handleIssuing = async () => {
     const status = {
@@ -70,17 +77,95 @@ function Dashboard() {
     try {
       const response = await apiCaller(
         `certificate/${id}/status/update`,
-        "POST",
+        "PATCH",
         null,
         status
       );
       console.log(response);
-    } catch (error) {
-      if (error.status === 404) {
-        console.log("Issuing failed");
+
+      if (response.status === 202 || response.status === 200) {
+        console.log("Issued successfully");
+        setToastMode(0);
+        setToastText(response.data.message);
+        setToastOpen(true);
+        setCertificateStatus("APPROVED");
       }
+
+    } catch (error) {
+      if (error.status === 400 || error.status === 500) {
+        console.log("Error in issuing");
+        setToastMode(1);
+        setToastText(error.data.message);
+        setToastOpen(true);
+      }
+
     }
   }
+
+  const handleReject = async () => {
+    const status = {
+      new_status: "REJECTED",
+    }
+
+    try {
+      const response = await apiCaller(
+        `certificate/${id}/status/update`,
+        "PATCH",
+        null,
+        status
+      );
+
+      if (response.status === 202 || response.status === 200) {
+        console.log("Rejected successfully");
+        setToastMode(0);
+        setToastText(response.data.message);
+        setToastOpen(true);
+        setCertificateStatus("REJECTED");
+      }
+
+    } catch (error) {
+      if (error.status === 400 || error.status === 500) {
+        console.log("Error in rejecting");
+        setToastMode(1);
+        setToastText(error.data.message);
+        setToastOpen(true);
+      }
+
+    }
+  }
+
+
+  const handleCollection = async () => {
+    const status = {
+      new_status: "COLLECTED",
+    }
+    try {
+      const response = await apiCaller(
+        `certificate/${id}/status/update`,
+        "PATCH",
+        null,
+        status
+      );
+
+      if (response.status === 202 || response.status === 200) {
+        console.log("Collected successfully");
+        setToastMode(0);
+        setToastText(response.data.message);
+        setToastOpen(true);
+        setCertificateStatus("COLLECTED");
+      }
+
+    } catch (error) {
+      if (error.status === 400 || error.status === 500) {
+        console.log("Error in collecting");
+        setToastMode(1);
+        setToastText(error.data.message);
+        setToastOpen(true);
+      }
+
+    }
+  }
+
 
   useEffect(() => {
     const getCertificateRequests = async () => {
@@ -93,6 +178,8 @@ function Dashboard() {
         );
         console.log(response);
         setPoliceDetails(response.data["police_check_details"]);
+        setCertificateDetails(response.data.certificate_details);
+        setCertificateStatus(response.data.certificate_details.status);
       } catch (error) {
         if (error.status === 404) {
           console.log("No requests found");
@@ -100,7 +187,7 @@ function Dashboard() {
       }
     };
     getCertificateRequests();
-  }, []);
+  }, [id]);
   console.log(policeDetails);
 
   //Convert an object to an array
@@ -108,6 +195,13 @@ function Dashboard() {
 
   return (
     <>
+      <Toast
+        open={toastOpen}
+        setOpen={setToastOpen}
+        mode={toastMode}
+        text={toastText}
+      />
+
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <Box
         component="main"
@@ -154,9 +248,8 @@ function Dashboard() {
                     {item.description}
                   </Typography>
                   <button
-                    className={`flex items-center ${
-                      policeDetails.eligibility ? "bg-[#699eee]" : "bg-red-500"
-                    } text-white text-sm font-bold px-4 py-3 mt-5 rounded-lg`}
+                    className={`flex items-center ${policeDetails.eligibility ? "bg-[#699eee]" : "bg-red-500"
+                      } text-white text-sm font-bold px-4 py-3 mt-5 rounded-lg`}
                     role="alert"
                     onClick={() => {
                       if (index === 2) {
@@ -185,50 +278,106 @@ function Dashboard() {
               </Card>
             </Grid>
           ))}
-          <div style={{ display: "flex", width: "80%", margin: "auto" }}>
-            <Button
-              variant="contained"
-              sx={{
-                mr: 1,
-                mt: 3,
-                backgroundColor: "#699eee",
-                ":hover": {
+          {
+            certificateDetails &&
+            certificateStatus === "PENDING" &&
+            <div style={{ display: "flex", width: "80%", margin: "auto" }} >
+              <Button
+                variant="contained"
+                sx={{
+                  mr: 1,
+                  mt: 3,
                   backgroundColor: "#699eee",
-                },
-                fontSize: {
-                  xs: 12,
-                  sm: 14,
-                  md: 15,
-                },
-                width: "50%",
-                textTransform: "none",
-              }}
-              onClick={handleIssuing}
-            >
-              Issue Certifcate
-            </Button>
+                  ":hover": {
+                    backgroundColor: "#699eee",
+                  },
+                  fontSize: {
+                    xs: 12,
+                    sm: 14,
+                    md: 15,
+                  },
+                  width: "50%",
+                  textTransform: "none",
+                }}
+                onClick={handleIssuing}
+              >
+                Issue Certifcate
+              </Button>
 
-            <Button
-              variant="contained"
-              sx={{
-                ml: 1, // Add margin to separate buttons
-                mt: 3,
-                backgroundColor: "black", // Customize background color
-                ":hover": {
-                  backgroundColor: "#ff8c00", // Customize hover background color
-                },
-                fontSize: {
-                  xs: 12,
-                  sm: 14,
-                  md: 15,
-                },
-                width: "50%",
-                textTransform: "none",
-              }}
-            >
-              Reject issue
-            </Button>
-          </div>
+              <Button
+                variant="contained"
+                sx={{
+                  ml: 1, // Add margin to separate buttons
+                  mt: 3,
+                  backgroundColor: "black", // Customize background color
+                  ":hover": {
+                    backgroundColor: "#ff8c00", // Customize hover background color
+                  },
+                  fontSize: {
+                    xs: 12,
+                    sm: 14,
+                    md: 15,
+                  },
+                  width: "50%",
+                  textTransform: "none",
+                }}
+                onClick={handleReject}
+              >
+                Reject issue
+              </Button>
+            </div>
+          }
+          {
+            certificateDetails &&
+            certificateStatus === "APPROVED" &&
+            <div style={{ display: 'flex', flexDirection: 'column', margin: "2rem auto", alignItems: "center" }}>
+              <div>
+                <Typography sx={{ fontSize: '2rem', color: 'green' }}>
+                  Certificate Has Been Issued On {certificateDetails.issued_date.day}/{certificateDetails.issued_date.month}/{certificateDetails.issued_date.year}
+                </Typography>
+              </div>
+              <div>
+                <Button variant="contained" sx={{
+                  mr: 1,
+                  mt: 3,
+                  backgroundColor: "#699eee",
+                  ":hover": {
+                    backgroundColor: "#699eee",
+                  },
+                  fontSize: {
+                    xs: 12,
+                    sm: 14,
+                    md: 15,
+                  },
+                  textTransform: "none",
+                }}
+                  onClick={handleCollection}
+                >
+                  Update User Collection
+                </Button>
+
+              </div>
+            </div>
+
+          }
+          {
+            certificateDetails &&
+            certificateStatus === "REJECTED" &&
+            <div style={{ height: "10vh", width: "80%", margin: "2rem auto", display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <Typography sx={{ fontSize: '2rem', color: 'red' }}>
+                Certificate Has Been Rejected
+              </Typography>
+            </div>
+          }
+          {
+            certificateDetails &&
+            certificateStatus === "COLLECTED" &&
+            <div style={{ height: "10vh", width: "80%", margin: "2rem auto", display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <Typography sx={{ fontSize: '2rem', color: 'green' }}>
+                Certificate Has Been Collected On {certificateDetails.collected_date.day}/{certificateDetails.collected_date.month}/{certificateDetails.collected_date.year}
+              </Typography>
+            </div>
+          }
         </Grid>
         <Model
           open={open}
