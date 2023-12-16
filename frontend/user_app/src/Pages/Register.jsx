@@ -47,7 +47,8 @@ function Register() {
       }
       setIsLoading(false); // Set loading state to false after fetching user info
     });
-  }, []);
+  }, [getBasicUserInfo, navigate, state]);
+
   return (
     <div
       style={{
@@ -187,7 +188,7 @@ function Register() {
               </Container>
             </div>
           ) : (
-            navigate(redirectLink)
+            <></>
           )
         )
       }
