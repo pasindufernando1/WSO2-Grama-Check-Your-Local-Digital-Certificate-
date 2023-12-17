@@ -1,0 +1,7 @@
+[address_check_service]
+host = "mysql-cf3a4176-54c9-4547-bcd6-c6fe400ad0d8-gramasew93283025-cho.a.aivencloud.com"
+port = 28760
+user = "avnadmin"
+password = "AVNS_rlpyZvci3jQDfNuGYzZ"
+database = "AddressDB"
+# options = {useSSL = true}
