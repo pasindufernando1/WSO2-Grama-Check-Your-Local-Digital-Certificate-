@@ -204,7 +204,7 @@ function CheckStatus() {
                             },
                           }}
                         >
-                          Cerificate Request Details
+                          Certificate Request Details
                         </Typography>
                       </Grid>
                       <Typography
@@ -224,8 +224,8 @@ function CheckStatus() {
                       >
                         NIC : {currentRequest ? currentRequest.nic : "Not Requested"} <br />
                         Address : {currentRequest ? currentRequest?.line_01 + ", " + currentRequest?.line_02 + ", " + currentRequest.line_03 + ", " + currentRequest?.city : "Not Requested"} <br />
-                        Issued Date : {currentRequest ? currentRequest?.status === 'PENDING' || currentRequest?.status === 'APPROVED' ? 'Not yet issued' : currentRequest?.issued_date : "Not Requested"} <br />
-                        Collected Date : {currentRequest ? currentRequest?.status === 'PENDING' || currentRequest?.status === 'APPROVED' ? 'Not yet collected' : currentRequest?.collected_date : "Not Requested"} <br />
+                        Issued Date : {currentRequest ? currentRequest?.status === 'PENDING'  ? 'Not yet issued' : currentRequest?.issued_date.day + "/" + currentRequest?.issued_date.month + "/"  + currentRequest?.issued_date.year  : "Not Requested"} <br />
+                        Collected Date : {currentRequest ? currentRequest?.status === 'PENDING' || currentRequest?.status === 'APPROVED' ? 'Not yet collected' : currentRequest?.collected_date.day + "/" + currentRequest?.collected_date.month + "/"  + currentRequest?.collected_date.year : "Not Requested"} <br />
                       </Typography>
                     </Grid>
                   </Grid>
