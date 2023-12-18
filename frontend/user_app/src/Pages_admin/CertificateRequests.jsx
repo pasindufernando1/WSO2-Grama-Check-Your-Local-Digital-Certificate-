@@ -55,7 +55,7 @@ function Dashboard() {
 
     
   // Filter the requests and take the requests whose status is pending
-  const pendingRequests = requests.filter((request) => request.status === "PENDING");
+  //const pendingRequests = requests.filter((request) => request.status === "PENDING");
 
 
 
@@ -76,7 +76,7 @@ function Dashboard() {
         }}
       >
         <Toolbar />
-        <Table rows={pendingRequests} setRows={setRequests} />
+        <Table rows={requests} setRows={setRequests} />
       </Box>
     </>
   );

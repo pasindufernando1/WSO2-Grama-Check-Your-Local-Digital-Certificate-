@@ -27,6 +27,12 @@ const columns = [
     maxWidth: "40%",
   },
   {
+    id: "status",
+    label: "Status",
+    minWidth: "10%",
+    maxWidth: "10%",
+  },
+  {
     id: "more",
     label: "",
     minWidth: "10%",
@@ -109,6 +115,7 @@ export default function StickyHeadTable({rows,setRows}) {
                   <TableCell align="left">{row['id']}</TableCell>
                   <TableCell align="left">{row['nic']}</TableCell>
                   <TableCell align="left">{row['line_01'] + "," + row['line_02']+ "," + row['line_03']+ "," + row['city']}</TableCell>
+                  <TableCell align="left">{row['status']}</TableCell>
                   <TableCell
                     align="right"
                     style={{ cursor: "pointer" }}
