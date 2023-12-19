@@ -246,6 +246,24 @@ function Dashboard() {
                     color="text.secondary"
                   >
                     {item.description}
+                    {
+                      index === 1  && (
+                        <Typography sx={{ fontSize: 14, fontWeight: '800' }}>
+                          {
+                            certificateDetails?.line_03 ? 
+                              certificateDetails?.line_01 + ", " + certificateDetails?.line_02 + ", " + certificateDetails?.line_03 + ", " + certificateDetails?.line_04 + ", " + certificateDetails?.line_05
+                              : certificateDetails?.line_01 + ", " + certificateDetails?.line_02 + ", " + certificateDetails?.city
+                          }
+                        </Typography>
+                      )
+                    }
+                    {
+                      index === 0 && (
+                        <Typography sx={{ fontSize: 14, fontWeight: '800' }}>
+                          {certificateDetails?.nic}
+                        </Typography>
+                      )
+                    }
                   </Typography>
                   <button
                     className={`flex items-center ${policeDetails.eligibility ? "bg-[#699eee]" : "bg-red-500"
