@@ -19,6 +19,8 @@ function Dashboard() {
     const [basicInfo, setBasicInfo] = useState({});
 
     const [requests, setRequests] = useState([]);
+
+    const [isLoading, setIsLoading] = useState(true);
     
     useEffect(() => {
       getBasicUserInfo().then((info) => {
@@ -39,6 +41,7 @@ function Dashboard() {
             const response = await apiCaller('certificates', 'GET', null, params);
             console.log(response);
             setRequests(response.data);
+            setIsLoading(false);
           }
           catch (error) {
             if (error.status === 404) {
@@ -57,7 +60,9 @@ function Dashboard() {
   // Filter the requests and take the requests whose status is pending
   //const pendingRequests = requests.filter((request) => request.status === "PENDING");
 
-
+  if(isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
